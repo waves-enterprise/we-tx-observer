@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 
 val hibernateTypesVersion: String by project
 
@@ -14,11 +14,4 @@ dependencies {
     implementation("com.vladmihalcea:hibernate-types-52:$hibernateTypesVersion")
 
     kapt("org.hibernate:hibernate-jpamodelgen") // Generate JPA Static Metamodel
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
 }

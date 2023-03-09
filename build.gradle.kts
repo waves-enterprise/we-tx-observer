@@ -5,6 +5,8 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val kotlinVersion: String by project
+val kotlinCoroutinesVersion: String by project
+val reactorVersion: String by project
 val springBootVersion: String by project
 val springCloudVersion: String by project
 val jacocoToolVersion: String by project
@@ -12,10 +14,16 @@ val logbackVersion: String by project
 val javaxAnnotationApiVersion: String by project
 val caffeineCacheVersion: String by project
 
+val ioGrpcVersion: String by project
+val ioGrpcKotlinVersion: String by project
+val protobufVersion: String by project
+
 val junitPlatformLauncherVersion: String by project
-val junitBom: String by project
 val mockkVersion: String by project
 val springMockkVersion: String by project
+val wireMockVersion: String by project
+
+val ktorVersion: String by project
 
 val weMavenUser: String? by project
 val weMavenPassword: String? by project
@@ -26,14 +34,12 @@ val sonaTypeMavenPassword: String? by project
 val weMavenBasePath = "https://artifacts.wavesenterprise.com/repository/"
 
 val sonaTypeBasePath = "https://s01.oss.sonatype.org"
-val gitHubProject = "waves-enterprise/we-spring-sdk"
+val gitHubProject = "waves-enterprise/we-node-client"
 val githubUrl = "https://github.com/$gitHubProject"
 
 val feignVersion: String by project
 val jacksonModuleKotlin: String by project
-
 val weNodeClientVersion: String by project
-val weContractSdkVersion: String by project
 
 plugins {
     kotlin("jvm") apply false
@@ -41,7 +47,6 @@ plugins {
     signing
     id("io.codearte.nexus-staging")
     kotlin("plugin.spring") apply false
-    kotlin("plugin.jpa") apply false
     id("org.springframework.boot") apply false
     id("io.spring.dependency-management") apply false
     id("io.gitlab.arturbosch.detekt") apply false
@@ -203,7 +208,7 @@ subprojects {
                     packaging = "jar"
                     name.set(project.name)
                     url.set(githubUrl)
-                    description.set("WE starter for Java/Kotlin")
+                    description.set("WE Node Client for Java/Kotlin")
 
                     licenses {
                         license {
@@ -250,22 +255,18 @@ subprojects {
             mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion") {
                 bomProperty("kotlin.version", kotlinVersion)
             }
-            mavenBom("org.junit:junit-bom:$junitBom")
         }
         dependencies {
-            dependency("com.wavesenterprise:we-node-client-grpc-blocking-client:$weNodeClientVersion")
-            dependency("com.wavesenterprise:we-node-client-feign-client:$weNodeClientVersion")
-            dependency("com.wavesenterprise:we-tx-signer-node:$weNodeClientVersion")
-            dependency("com.wavesenterprise:we-contract-sdk-blocking-client:$weContractSdkVersion")
+            dependency("com.wavesenterprise:we-node-client-domain:$weNodeClientVersion")
+
+            dependency("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$kotlinCoroutinesVersion")
+            dependency("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlinCoroutinesVersion")
+            dependency("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinCoroutinesVersion")
 
             dependency("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
 
-            dependency("com.github.ben-manes.caffeine:caffeine:$caffeineCacheVersion")
             dependency("ch.qos.logback:logback-classic:$logbackVersion")
-
-            dependency("io.github.openfeign:feign-core:$feignVersion")
-            dependency("io.github.openfeign:feign-jackson:$feignVersion")
-            dependency("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlin")
+            dependency("com.github.ben-manes.caffeine:caffeine:$caffeineCacheVersion")
 
             dependency("org.junit.platform:junit-platform-launcher:$junitPlatformLauncherVersion")
             dependency("io.mockk:mockk:$mockkVersion")
