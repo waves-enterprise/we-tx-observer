@@ -36,7 +36,20 @@ pluginManagement {
 rootProject.name = "we-tx-observer"
 
 include(
-    "we-tx-observer-core",
-    "we-tx-observer-domain",
-    "we-tx-observer-jpa-specification-utils"
+    "we-tx-observer-module",
+    "we-tx-observer-module:we-tx-observer-api",
+    "we-tx-observer-module:we-tx-observer-jpa",
+    "we-tx-observer-module:we-tx-observer-domain",
+    "we-tx-observer-module:we-tx-observer-starter",
+    "we-tx-observer-module:we-tx-observer-core-spring",
+
+    "we-tx-tracker-module",
+    "we-tx-tracker-module:we-tx-tracker-api",
+    "we-tx-tracker-module:we-tx-tracker-jpa",
+    "we-tx-tracker-module:we-tx-tracker-domain",
+    "we-tx-tracker-module:we-tx-tracker-starter",
+    "we-tx-tracker-module:we-tx-tracker-read-starter",
+    "we-tx-tracker-module:we-tx-tracker-core-spring",
+
+    "we-tx-observer-common-components"
 )

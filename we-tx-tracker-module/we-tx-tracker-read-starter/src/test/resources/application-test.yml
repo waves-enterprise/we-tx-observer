@@ -1,0 +1,41 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        event:
+          merge:
+            entity_copy_observer: allow
+        jdbc:
+          time_zone: UTC
+          log.warnings: true
+          lob.non_contextual_creation: true #https://github.com/pgjdbc/pgjdbc/issues/1102
+  application:
+    name: vst-tx-observer-tracker-sample
+  datasource:
+    hikari:
+      minimum-idle: 10
+    url: jdbc:tc:postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.schema}
+    username: ${embedded.postgresql.user}
+    password: ${embedded.postgresql.password}
+
+swagger:
+  basePath: /
+  oauth-url: http://localhost/oauth/token
+  basePackage: com.wavesplatform.vst.tx.observer.tracker
+
+logging:
+  level:
+    com:
+      playtika: debug
+    org:
+      springframework.orm.jpa: DEBUG
+      springframework.transaction: DEBUG
+      hibernate:
+        type: trace
+        SQL: DEBUG
+
+debug: true
