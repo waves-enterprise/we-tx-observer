@@ -40,6 +40,20 @@ val githubUrl = "https://github.com/$gitHubProject"
 val feignVersion: String by project
 val jacksonModuleKotlin: String by project
 val weNodeClientVersion: String by project
+val weSdkSpringVersion: String by project
+
+val shedlockProviderJdbcTemplateVersion: String by project
+val shedlockSpringVersion: String by project
+val micrometerCoreVersion: String by project
+val testContainersVersion: String by project
+val postgresVersion: String by project
+val jacksonVersion: String by project
+val sl4jKotlinExtVersion: String by project
+val flywaySchemaStarterVersion: String by project
+val jsonUnitAssertJVersion: String by project
+val awaitilityVersion: String by project
+val flywayVersion: String by project
+val hibernateTypesVersion: String by project
 
 plugins {
     kotlin("jvm") apply false
@@ -258,10 +272,30 @@ subprojects {
         }
         dependencies {
             dependency("com.wavesenterprise:we-node-client-domain:$weNodeClientVersion")
+            dependency("com.wavesenterprise:we-node-domain-test:$weNodeClientVersion")
+            dependency("com.wavesenterprise:we-node-client-json:$weNodeClientVersion")
+            dependency("com.wavesenterprise:we-node-client-feign-client:$weNodeClientVersion")
+            dependency("com.wavesenterprise:we-node-client-blocking-client:$weNodeClientVersion")
+            dependency("com.wavesenterprise:we-node-client-grpc-blocking-client:$weNodeClientVersion")
+            dependency("com.wavesenterprise:we-node-client-error:$weNodeClientVersion")
+            dependency("com.wavesplatform.we:flyway-schema-starter:$flywaySchemaStarterVersion")
+
+            dependency("com.wavesenterprise:we-starter-node-client:$weSdkSpringVersion")
+
+            dependency("org.flywaydb:flyway-core:$flywayVersion")
 
             dependency("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$kotlinCoroutinesVersion")
             dependency("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlinCoroutinesVersion")
             dependency("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinCoroutinesVersion")
+            dependency("com.frimastudio:slf4j-kotlin-extensions:$sl4jKotlinExtVersion")
+
+            dependency("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:$shedlockProviderJdbcTemplateVersion")
+            dependency("net.javacrumbs.shedlock:shedlock-spring:$shedlockSpringVersion")
+            dependency("io.micrometer:micrometer-core:$micrometerCoreVersion")
+            dependency("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+            dependency("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+            dependency("com.vladmihalcea:hibernate-types-52:$hibernateTypesVersion")
+            dependency("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
             dependency("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
 
@@ -271,6 +305,10 @@ subprojects {
             dependency("org.junit.platform:junit-platform-launcher:$junitPlatformLauncherVersion")
             dependency("io.mockk:mockk:$mockkVersion")
             dependency("com.ninja-squad:springmockk:$springMockkVersion")
+            dependency("com.playtika.testcontainers:embedded-postgresql:$testContainersVersion")
+            dependency("org.postgresql:postgresql:$postgresVersion")
+            dependency("net.javacrumbs.json-unit:json-unit-assertj:$jsonUnitAssertJVersion")
+            dependency("org.awaitility:awaitility:$awaitilityVersion")
         }
     }
 

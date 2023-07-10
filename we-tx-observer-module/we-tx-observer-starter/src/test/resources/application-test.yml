@@ -1,0 +1,64 @@
+tx-observer:
+  nodeAlias: node
+  privacy-check:
+    enabled: false
+  predicate:
+    tx-types:
+      - 104
+      - 105
+      - 103
+      - 114
+      - 120
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        event:
+          merge:
+            entity_copy_observer: allow
+        jdbc:
+          time_zone: UTC
+          log.warnings: true
+          lob.non_contextual_creation: true #https://github.com/pgjdbc/pgjdbc/issues/1102
+  application:
+    name: tx-observer-sample
+  datasource:
+    hikari:
+      minimum-idle: 1
+    url: jdbc:tc:postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.schema}
+    username: ${embedded.postgresql.user}
+    password: ${embedded.postgresql.password}
+  flyway:
+    enabled: true
+
+node:
+  config:
+    node-0:
+      url: http://api
+
+logging:
+  level:
+    org:
+      springframework.orm.jpa: DEBUG
+      springframework.transaction: DEBUG
+      hibernate:
+        type: trace
+        SQL: DEBUG
+
+embedded:
+  postgresql:
+    enabled: true
+    dockerImage: postgres:11-alpine
+    command: "postgres -c 'max_connections=200'"
+    database: test_db
+    user: test_user
+    password: test_password
+
+debug: true
