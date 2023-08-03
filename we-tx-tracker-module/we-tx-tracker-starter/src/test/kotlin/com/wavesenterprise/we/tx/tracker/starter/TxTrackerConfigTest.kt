@@ -1,6 +1,7 @@
 package com.wavesenterprise.we.tx.tracker.starter
 
 import com.ninjasquad.springmockk.MockkBean
+import com.wavesenterprise.sdk.node.client.blocking.node.NodeBlockingServiceFactory
 import com.wavesenterprise.sdk.node.domain.TxId
 import com.wavesenterprise.sdk.node.domain.tx.ExecutableTx
 import com.wavesenterprise.sdk.node.domain.tx.Tx
@@ -21,14 +22,20 @@ import org.springframework.boot.test.context.SpringBootTest
 @SpringBootTest(
     classes = [
         TxTrackerJpaAutoConfig::class,
-        TxTrackerConfig::class
+        TxTrackerConfig::class,
     ],
-    properties = ["tx-tracker.enabled = true"]
+    properties = [
+        "tx-tracker.enabled = true",
+        "debug=true"
+    ]
 )
 internal class TxTrackerConfigTest {
 
     @MockkBean(relaxed = true)
     lateinit var txTracker: TxTracker
+
+    @MockkBean(relaxed = true)
+    lateinit var nodeBlockingServiceFactory: NodeBlockingServiceFactory
 
     @MockkBean(relaxed = true)
     lateinit var txTrackInfoService: TxTrackInfoService
