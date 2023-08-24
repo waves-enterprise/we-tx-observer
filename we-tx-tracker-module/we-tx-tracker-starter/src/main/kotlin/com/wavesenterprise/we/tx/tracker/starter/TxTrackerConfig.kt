@@ -21,7 +21,6 @@ import com.wavesenterprise.we.tx.tracker.jpa.repository.TxTrackerJpaRepository
 import com.wavesenterprise.we.tx.tracker.starter.properties.SuccessSubscriberProperties
 import com.wavesenterprise.we.tx.tracker.starter.properties.TxTrackerProperties
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -32,6 +31,7 @@ import org.springframework.context.annotation.Import
 @Configuration
 @Import(
     TxTrackerJpaConfig::class,
+    TxTrackerSchedulerConfig::class,
 )
 @EnableConfigurationProperties(TxTrackerProperties::class, SuccessSubscriberProperties::class)
 @ConditionalOnTracker
@@ -91,7 +91,6 @@ class TxTrackerConfig {
     )
 
     @Bean
-    @ConditionalOnBean(NodeBlockingServiceFactory::class)
     fun scheduledTxTracker(
         nodeBlockingServiceFactory: NodeBlockingServiceFactory,
         txTracker: TxTracker,

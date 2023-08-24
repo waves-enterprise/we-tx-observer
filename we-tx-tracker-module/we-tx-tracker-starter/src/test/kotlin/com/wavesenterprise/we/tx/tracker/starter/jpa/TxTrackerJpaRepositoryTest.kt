@@ -7,9 +7,7 @@ import com.wavesenterprise.sdk.node.domain.TxType
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackInfo
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackStatus
 import com.wavesenterprise.we.tx.tracker.jpa.TxTrackerJpaAutoConfig
-import com.wavesenterprise.we.tx.tracker.jpa.config.TxTrackerJpaConfig
 import com.wavesenterprise.we.tx.tracker.jpa.repository.TxTrackerJpaRepository
-import com.wavesenterprise.we.tx.tracker.starter.TxTrackerConfig
 import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
@@ -34,9 +32,7 @@ import javax.persistence.PersistenceException
     classes = [
         DataSourceAutoConfiguration::class,
         TxTrackerJpaAutoConfig::class,
-        TxTrackerConfig::class,
         FlywaySchemaConfiguration::class,
-        TxTrackerJpaConfig::class,
     ]
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

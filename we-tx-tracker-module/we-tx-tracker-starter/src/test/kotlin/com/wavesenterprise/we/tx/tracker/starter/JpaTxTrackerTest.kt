@@ -4,6 +4,7 @@ package com.wavesenterprise.we.tx.tracker.starter
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.ninjasquad.springmockk.MockkBean
+import com.wavesenterprise.sdk.node.client.blocking.node.NodeBlockingServiceFactory
 import com.wavesenterprise.sdk.node.client.blocking.tx.TxService
 import com.wavesenterprise.sdk.node.client.http.tx.AtomicInnerTxDto.Companion.toDto
 import com.wavesenterprise.sdk.node.domain.Address
@@ -84,6 +85,9 @@ internal class JpaTxTrackerTest {
 
     @MockkBean
     lateinit var txService: TxService
+
+    @MockkBean(relaxed = true)
+    lateinit var nodeBlockingServiceFactory: NodeBlockingServiceFactory
 
     @Autowired
     lateinit var smartContractInfoJpaRepository: SmartContractInfoJpaRepository

@@ -1,6 +1,7 @@
 package com.wavesenterprise.we.tx.tracker.starter
 
 import com.ninjasquad.springmockk.MockkBean
+import com.wavesenterprise.sdk.node.client.blocking.node.NodeBlockingServiceFactory
 import com.wavesenterprise.sdk.node.client.blocking.tx.TxService
 import com.wavesenterprise.sdk.node.domain.TxId
 import com.wavesenterprise.sdk.node.domain.contract.ContractTxStatus.Companion.FATAL_ERROR_CODE
@@ -70,6 +71,9 @@ internal class JpaTxTrackerContractTxStatusTest {
 
     @MockkBean
     lateinit var txService: TxService
+
+    @MockkBean(relaxed = true)
+    lateinit var nodeBlockingServiceFactory: NodeBlockingServiceFactory
 
     private val createContractTx = TestDataFactory.createContractTx(id = TxId.fromByteArray(randomBytesFromUUID()))
 
