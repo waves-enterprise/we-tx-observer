@@ -51,5 +51,6 @@ include(
     "we-tx-tracker-module:we-tx-tracker-read-starter",
     "we-tx-tracker-module:we-tx-tracker-core-spring",
 
-    "we-tx-observer-common-components"
+    "we-tx-observer-common-components",
+    "we-tx-observer-bom",
 )
