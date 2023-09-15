@@ -38,7 +38,6 @@ class SyncInfoConfig(
             blockHeightJpaRepository = blockHeightJpaRepository,
             blockHistoryService = blockHistoryService,
             blocksService = blocksService,
-            nodeAliasForHeight = txObserverProperties.nodeAliasForHeight,
             syncHistory = SyncInfoServiceImpl.SyncHistoryProperties(
                 enabled = txObserverProperties.syncHistory,
                 fromHeight = txObserverProperties.activationHeight

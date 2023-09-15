@@ -28,13 +28,13 @@ spring:
           log.warnings: true
           lob.non_contextual_creation: true #https://github.com/pgjdbc/pgjdbc/issues/1102
   application:
-    name: tx-observer-sample
+    name: we_tx-observer-sample
   datasource:
     hikari:
-      minimum-idle: 1
-    url: jdbc:tc:postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.schema}
-    username: ${embedded.postgresql.user}
-    password: ${embedded.postgresql.password}
+      minimum-idle: 5
+      maximum-pool-size: 5
+    url: jdbc:tc:postgresql:11-alpine:///db_we_tx_observer_starter
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
   flyway:
     enabled: true
 
@@ -51,14 +51,5 @@ logging:
       hibernate:
         type: trace
         SQL: DEBUG
-
-embedded:
-  postgresql:
-    enabled: true
-    dockerImage: postgres:11-alpine
-    command: "postgres -c 'max_connections=200'"
-    database: test_db
-    user: test_user
-    password: test_password
 
 debug: true

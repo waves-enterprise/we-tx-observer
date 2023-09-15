@@ -15,6 +15,7 @@ import com.wavesenterprise.sdk.node.domain.atomic.AtomicBadge
 import com.wavesenterprise.sdk.node.domain.tx.AtomicTx
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomBytesFromUUID
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.core.spring.web.service.TxQueueService
 import com.wavesenterprise.we.tx.observer.domain.TxQueuePartition
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
@@ -28,7 +29,6 @@ import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingSe
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration.Companion.samplePolicyDataHashTx
 import com.wavesenterprise.we.tx.observer.starter.observer.config.ObjectMapperConfig
 import com.wavesenterprise.we.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import io.mockk.every
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull

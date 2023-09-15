@@ -1,11 +1,11 @@
 package com.wavesenterprise.we.tx.observer.starter.observer.jpa
 
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.common.tx.executor.TxExecutor
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
 import com.wavesenterprise.we.tx.observer.jpa.config.TxObserverJpaConfig
 import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHistoryRepository
 import com.wavesenterprise.we.tx.observer.starter.observer.util.ModelFactory.blockHistory
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

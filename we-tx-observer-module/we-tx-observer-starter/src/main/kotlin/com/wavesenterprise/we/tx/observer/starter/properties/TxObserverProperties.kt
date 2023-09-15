@@ -22,7 +22,6 @@ data class TxObserverProperties(
     @DataSizeUnit(DataUnit.MEGABYTES)
     override var blockSizeWindow: DataSize = DataSize.ofMegabytes(10),
     override var activationHeight: Long = 1,
-    override var nodeAliasForHeight: String = "node",
     override var blockHeightWindow: Long = 99,
     override var syncHistory: Boolean = true,
     override var blockHistoryDepth: Int = 100,
@@ -31,9 +30,9 @@ data class TxObserverProperties(
     override var blockHistoryCleanDelay: Duration = Duration.ofMinutes(30),
     override var liquidBlockPollingDelay: Long = 200,
     override var autoResetHeight: Boolean = false,
-    override var errorPriorityOffset: Int = 10,
+    override var errorPriorityOffset: Int = 100,
     override var defaultPartitionId: String = "defaultPartitionId",
-    override var lockEnabled: Boolean = false,
+    override var lockEnabled: Boolean = true,
     override var lockAtLeast: Long = 0,
     override var lockAtMost: Long = 10000,
     // todo: object mapper bean ref if exist

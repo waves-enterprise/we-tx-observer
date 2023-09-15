@@ -14,7 +14,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    implementation("com.wavesplatform.we:flyway-schema-starter")
+    implementation("com.wavesenterprise:we-flyway-starter")
     implementation("com.wavesenterprise:we-node-client-blocking-client")
     implementation("com.wavesenterprise:we-node-client-json")
     implementation("com.wavesenterprise:we-node-client-feign-client")
@@ -33,7 +33,7 @@ dependencies {
     api("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     testImplementation("org.postgresql:postgresql")
-    testImplementation("com.playtika.testcontainers:embedded-postgresql")
+    testImplementation("org.testcontainers:postgresql")
 
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("com.wavesenterprise:we-node-domain-test")

@@ -17,7 +17,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind")
 
     testImplementation("org.postgresql:postgresql")
-    testImplementation("com.playtika.testcontainers:embedded-postgresql")
+    testImplementation("org.testcontainers:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(project(":we-tx-tracker-module:we-tx-tracker-jpa"))
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")

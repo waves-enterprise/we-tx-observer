@@ -4,11 +4,11 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import com.wavesenterprise.sdk.node.client.blocking.tx.TxService
 import com.wavesenterprise.sdk.node.domain.TxType
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackInfo
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackStatus
 import com.wavesenterprise.we.tx.tracker.jpa.TxTrackerJpaAutoConfig
 import com.wavesenterprise.we.tx.tracker.jpa.repository.TxTrackerJpaRepository
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.hibernate.exception.ConstraintViolationException

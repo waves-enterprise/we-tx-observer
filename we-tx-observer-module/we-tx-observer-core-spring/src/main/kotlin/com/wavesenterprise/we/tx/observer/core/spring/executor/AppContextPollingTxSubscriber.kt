@@ -44,7 +44,7 @@ open class AppContextPollingTxSubscriber(
         availableTransactions.onEach { enqueuedTx ->
             val tx = objectMapper.treeToValue<TxDto>(enqueuedTx.body)
             getSubscribersFromAppContext().forEach { subscriber ->
-                subscriber.subscribe(tx!!.toDomain())
+                subscriber.subscribe(tx.toDomain())
             }
             enqueuedTx.apply { status = EnqueuedTxStatus.READ }
         }.also {

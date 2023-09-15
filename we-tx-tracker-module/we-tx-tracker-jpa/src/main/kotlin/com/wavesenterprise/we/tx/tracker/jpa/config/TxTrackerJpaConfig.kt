@@ -1,7 +1,7 @@
 package com.wavesenterprise.we.tx.tracker.jpa.config
 
+import com.wavesenterprise.we.flyway.starter.FlywaySchema
 import com.wavesenterprise.we.tx.observer.common.annotation.TX_TRACKER_SCHEMA_NAME
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchema
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.context.annotation.Bean

@@ -14,23 +14,16 @@ spring:
           log.warnings: true
           lob.non_contextual_creation: true #https://github.com/pgjdbc/pgjdbc/issues/1102
   application:
-    name: vst-tx-observer-tracker-sample
+    name: we-tx-tracker-sample
   datasource:
     hikari:
-      minimum-idle: 10
-    url: jdbc:tc:postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.schema}
-    username: ${embedded.postgresql.user}
-    password: ${embedded.postgresql.password}
-
-swagger:
-  basePath: /
-  oauth-url: http://localhost/oauth/token
-  basePackage: com.wavesplatform.vst.tx.observer.tracker
+      minimum-idle: 5
+      maximum-pool-size: 5
+    url: jdbc:tc:postgresql:11-alpine:///db_we_tx_tracker_read_starter
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
 
 logging:
   level:
-    com:
-      playtika: debug
     org:
       springframework.orm.jpa: DEBUG
       springframework.transaction: DEBUG

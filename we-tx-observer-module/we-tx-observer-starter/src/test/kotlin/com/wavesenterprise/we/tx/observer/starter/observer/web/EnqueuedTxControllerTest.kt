@@ -5,6 +5,7 @@ import com.wavesenterprise.sdk.node.client.http.tx.PolicyDataHashTxDto.Companion
 import com.wavesenterprise.sdk.node.domain.TxId
 import com.wavesenterprise.sdk.node.domain.TxType
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.core.spring.web.EnqueuedTxController
 import com.wavesenterprise.we.tx.observer.domain.TxQueuePartition
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
@@ -14,7 +15,6 @@ import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepo
 import com.wavesenterprise.we.tx.observer.starter.TxObserverStarterConfig
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration
 import com.wavesenterprise.we.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
