@@ -31,4 +31,10 @@ data class SmartContractInfo(
 
     @LastModifiedDate
     var modified: OffsetDateTime? = null,
-)
+) {
+    override fun toString(): String {
+        return "SmartContractInfo(id=$id, imageHash=$imageHash, image=$image, version=$version, " +
+            "contractName=$contractName, sender=$sender, " +
+            "created=$created, modified=$modified)"
+    }
+}
