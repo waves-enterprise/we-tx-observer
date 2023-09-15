@@ -8,6 +8,7 @@ import com.wavesenterprise.sdk.node.client.http.tx.CreateContractTxDto.Companion
 import com.wavesenterprise.sdk.node.domain.TxId
 import com.wavesenterprise.sdk.node.domain.tx.PolicyDataHashTx
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.api.privacy.PrivateContentResolver
 import com.wavesenterprise.we.tx.observer.core.spring.component.OffsetProvider
 import com.wavesenterprise.we.tx.observer.core.spring.executor.PrivacyAvailabilityChecker
@@ -20,7 +21,6 @@ import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepo
 import com.wavesenterprise.we.tx.observer.starter.TxObserverStarterConfig
 import com.wavesenterprise.we.tx.observer.starter.observer.config.ObjectMapperConfig
 import com.wavesenterprise.we.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import io.mockk.every
 import io.mockk.verify
 import org.awaitility.Awaitility.await

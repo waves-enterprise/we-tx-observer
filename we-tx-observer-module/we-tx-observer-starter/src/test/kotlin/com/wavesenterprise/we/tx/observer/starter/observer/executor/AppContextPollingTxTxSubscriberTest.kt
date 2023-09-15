@@ -6,6 +6,7 @@ import com.wavesenterprise.sdk.node.client.http.tx.PolicyDataHashTxDto.Companion
 import com.wavesenterprise.sdk.node.domain.TxId
 import com.wavesenterprise.sdk.node.domain.tx.Tx
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.common.tx.subscriber.TxSubscriber
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PartitionHandler
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PollingTxSubscriber
@@ -21,7 +22,6 @@ import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingSe
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration.Companion.samplePolicyDataHashTx
 import com.wavesenterprise.we.tx.observer.starter.observer.config.ObjectMapperConfig
 import com.wavesenterprise.we.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions

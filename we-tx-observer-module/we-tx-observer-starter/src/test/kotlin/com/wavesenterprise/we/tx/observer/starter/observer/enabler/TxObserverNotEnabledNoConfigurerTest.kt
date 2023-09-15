@@ -1,6 +1,7 @@
 package com.wavesenterprise.we.tx.observer.starter.observer.enabler
 
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.api.partition.TxQueuePartitionResolver
 import com.wavesenterprise.we.tx.observer.api.privacy.PrivateContentResolver
 import com.wavesenterprise.we.tx.observer.api.tx.TxEnqueuePredicate
@@ -12,7 +13,6 @@ import com.wavesenterprise.we.tx.observer.starter.TxObserverConfigurer
 import com.wavesenterprise.we.tx.observer.starter.TxObserverStarterConfig
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryTestConfiguration
 import com.wavesenterprise.we.tx.observer.starter.observer.config.ObjectMapperConfig
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue

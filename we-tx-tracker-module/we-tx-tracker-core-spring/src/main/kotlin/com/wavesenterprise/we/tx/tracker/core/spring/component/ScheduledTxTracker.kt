@@ -61,9 +61,6 @@ open class ScheduledTxTracker(
 
     private fun Tx.updateMinedTxStatus(): Unit? =
         if (txService.txInfo(id).isPresent) setTrackStatus(TxTrackStatus.SUCCESS) else null
-//        txService.txInfo(id).ifPresent {
-//            setTrackStatus(TxTrackStatus.SUCCESS)
-//        }
 
     private fun Tx.timeoutReached() =
         timestamp.toDateTimeFromUTCBlockChain().plus(txTimeout) < OffsetDateTime.now()

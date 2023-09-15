@@ -5,6 +5,7 @@ import com.wavesenterprise.sdk.node.domain.Timestamp
 import com.wavesenterprise.sdk.node.domain.TxId
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomBytesFromUUID
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.common.annotation.TX_OBSERVER_SCHEMA_NAME
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTx
 import com.wavesenterprise.we.tx.observer.domain.TxQueuePartition
@@ -15,7 +16,6 @@ import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepo
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration.Companion.mockPartition
 import com.wavesenterprise.we.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.contains
@@ -113,10 +113,10 @@ internal class TxQueuePartitionJpaRepositoryTest {
             """,
             TxQueuePartition::class.java
         )
-        assertThat(
-            findActualPartitionQuery.resultList as List<TxQueuePartition>,
-            contains(secondPartition, firstPartition)
-        )
+        (findActualPartitionQuery.resultList as List<TxQueuePartition>).also { txQueuePartitionsList ->
+            assertEquals(secondPartition.id, txQueuePartitionsList[0].id)
+            assertEquals(firstPartition.id, txQueuePartitionsList[1].id)
+        }
     }
 
     @Test

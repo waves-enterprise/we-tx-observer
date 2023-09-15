@@ -11,6 +11,7 @@ import com.wavesenterprise.sdk.node.domain.atomic.AtomicBadge
 import com.wavesenterprise.sdk.node.domain.tx.Tx
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomBytesFromUUID
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.api.block.WeBlockInfo
 import com.wavesenterprise.we.tx.observer.api.partition.TxQueuePartitionResolver
 import com.wavesenterprise.we.tx.observer.api.tx.TxEnqueuePredicate
@@ -30,7 +31,6 @@ import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingSe
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration.Companion.samplePolicyDataHashTx
 import com.wavesenterprise.we.tx.observer.starter.observer.config.ObjectMapperConfig
 import com.wavesenterprise.we.tx.observer.starter.observer.util.ModelFactory.blockAtHeight
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.verify

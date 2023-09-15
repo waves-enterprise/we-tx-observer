@@ -10,6 +10,7 @@ import com.wavesenterprise.sdk.node.domain.contract.TxStatus
 import com.wavesenterprise.sdk.node.domain.tx.Tx
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomBytesFromUUID
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.tracker.api.TxTracker
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackInfo
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackStatus
@@ -17,7 +18,6 @@ import com.wavesenterprise.we.tx.tracker.jpa.TxTrackerJpaAutoConfig
 import com.wavesenterprise.we.tx.tracker.jpa.repository.BusinessObjectInfoJpaRepository
 import com.wavesenterprise.we.tx.tracker.jpa.repository.SmartContractInfoJpaRepository
 import com.wavesenterprise.we.tx.tracker.jpa.repository.TxTrackerJpaRepository
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull

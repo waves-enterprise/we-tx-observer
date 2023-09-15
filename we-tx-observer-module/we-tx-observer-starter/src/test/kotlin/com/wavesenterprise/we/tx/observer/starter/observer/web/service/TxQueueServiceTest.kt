@@ -3,6 +3,7 @@ package com.wavesenterprise.we.tx.observer.starter.observer.web.service
 import com.wavesenterprise.sdk.node.client.http.tx.CreateContractTxDto.Companion.toDto
 import com.wavesenterprise.sdk.node.domain.TxId
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoService
 import com.wavesenterprise.we.tx.observer.core.spring.web.service.TxQueueService
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
@@ -16,7 +17,6 @@ import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingSe
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration.Companion.mockPartition
 import com.wavesenterprise.we.tx.observer.starter.observer.config.ObjectMapperConfig
 import com.wavesenterprise.we.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -48,7 +48,7 @@ import org.springframework.test.context.transaction.TestTransaction
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class TxQueueServiceTest(
-    @Value("\${tx-observer.error-priority-offset:10}")
+    @Value("\${tx-observer.error-priority-offset:100}")
     private val errorPriorityOffset: Int
 ) {
 

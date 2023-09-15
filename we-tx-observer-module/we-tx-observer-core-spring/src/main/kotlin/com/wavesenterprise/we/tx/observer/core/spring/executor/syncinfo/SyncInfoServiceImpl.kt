@@ -18,7 +18,6 @@ class SyncInfoServiceImpl(
     private val blockHeightJpaRepository: BlockHeightJpaRepository,
     private val blockHistoryService: BlockHistoryService,
     private val blocksService: BlocksService,
-    private val nodeAliasForHeight: String,
     private val syncHistory: SyncHistoryProperties,
     private val autoResetHeight: Boolean,
     private val forkNotResolvedHeightDrop: Long,
@@ -39,7 +38,6 @@ class SyncInfoServiceImpl(
                         syncHistory.enabled -> syncHistory.fromHeight
                         else -> blocksService.blockHeight().value
                     },
-                    nodeAlias = nodeAliasForHeight
                 )
             )
 
@@ -203,7 +201,7 @@ class SyncInfoServiceImpl(
         when {
             expectedCurrentHeight != null -> {
                 blockHeightJpaRepository.update(
-                    nodeAlias = blockInfoSingleRecord.nodeAlias,
+                    id = blockInfoSingleRecord.id,
                     currentHeight = height,
                     prevBlockSignature = prevBlockSignature,
                     expectedCurrentHeight = expectedCurrentHeight

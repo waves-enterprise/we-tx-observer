@@ -9,7 +9,6 @@ interface TxObserverConfig {
     var fixedDelay: Duration
     var blockSizeWindow: DataSize
     var activationHeight: Long
-    var nodeAliasForHeight: String
     var blockHeightWindow: Long
     var syncHistory: Boolean
     var blockHistoryDepth: Int

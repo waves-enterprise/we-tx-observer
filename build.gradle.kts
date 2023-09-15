@@ -49,7 +49,7 @@ val testContainersVersion: String by project
 val postgresVersion: String by project
 val jacksonVersion: String by project
 val sl4jKotlinExtVersion: String by project
-val flywaySchemaStarterVersion: String by project
+val weFlywayStarterVersion: String by project
 val jsonUnitAssertJVersion: String by project
 val awaitilityVersion: String by project
 val flywayVersion: String by project
@@ -278,26 +278,14 @@ configure(
             mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion") {
                 bomProperty("kotlin.version", kotlinVersion)
             }
+            mavenBom("com.wavesenterprise:we-node-client-bom:$weNodeClientVersion")
+            mavenBom("com.wavesenterprise:we-sdk-spring-bom:$weSdkSpringVersion")
+            mavenBom("org.jetbrains.kotlinx:kotlinx-coroutines-bom:$kotlinCoroutinesVersion")
         }
         dependencies {
-            dependency("com.wavesenterprise:we-node-client-domain:$weNodeClientVersion")
-            dependency("com.wavesenterprise:we-node-domain-test:$weNodeClientVersion")
-            dependency("com.wavesenterprise:we-node-client-json:$weNodeClientVersion")
-            dependency("com.wavesenterprise:we-node-client-feign-client:$weNodeClientVersion")
-            dependency("com.wavesenterprise:we-node-client-blocking-client:$weNodeClientVersion")
-            dependency("com.wavesenterprise:we-node-client-grpc-blocking-client:$weNodeClientVersion")
-            dependency("com.wavesenterprise:we-node-client-error:$weNodeClientVersion")
-            dependency("com.wavesplatform.we:flyway-schema-starter:$flywaySchemaStarterVersion") // todo move to java-sdk
+            dependency("com.wavesenterprise:we-flyway-starter:$weFlywayStarterVersion")
 
-            dependency("com.wavesenterprise:we-starter-node-client:$weSdkSpringVersion")
-
-            dependency("org.flywaydb:flyway-core:$flywayVersion")
-
-            dependency("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$kotlinCoroutinesVersion")
-            dependency("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlinCoroutinesVersion")
-            dependency("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinCoroutinesVersion")
             dependency("com.frimastudio:slf4j-kotlin-extensions:$sl4jKotlinExtVersion")
-
             dependency("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:$shedlockProviderJdbcTemplateVersion")
             dependency("net.javacrumbs.shedlock:shedlock-spring:$shedlockSpringVersion")
             dependency("io.micrometer:micrometer-core:$micrometerCoreVersion")
@@ -314,7 +302,7 @@ configure(
             dependency("org.junit.platform:junit-platform-launcher:$junitPlatformLauncherVersion")
             dependency("io.mockk:mockk:$mockkVersion")
             dependency("com.ninja-squad:springmockk:$springMockkVersion")
-            dependency("com.playtika.testcontainers:embedded-postgresql:$testContainersVersion")
+            dependency("org.testcontainers:postgresql:$testContainersVersion")
             dependency("org.postgresql:postgresql:$postgresVersion")
             dependency("net.javacrumbs.json-unit:json-unit-assertj:$jsonUnitAssertJVersion")
             dependency("org.awaitility:awaitility:$awaitilityVersion")

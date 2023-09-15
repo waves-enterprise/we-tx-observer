@@ -96,7 +96,6 @@ class SyncInfoServiceTest {
         syncHistory: Boolean = true,
         autoResetHeight: Boolean = false,
         forkNotResolvedHeightDrop: Long = 10,
-        nodeAliasForHeight: String = "node"
     ): SyncInfo {
         every { blocksService.blockHeight() } returns Height(nodeHeight)
         every { blockHeightJpaRepository.save(any()) } answers {
@@ -107,7 +106,6 @@ class SyncInfoServiceTest {
             syncHistory,
             autoResetHeight,
             forkNotResolvedHeightDrop,
-            nodeAliasForHeight
         ).syncInfo()
     }
 
@@ -116,12 +114,10 @@ class SyncInfoServiceTest {
         syncHistory: Boolean,
         autoResetHeight: Boolean,
         forkNotResolvedHeightDrop: Long,
-        nodeAliasForHeight: String
     ): SyncInfoService = SyncInfoServiceImpl(
         blockHeightJpaRepository = blockHeightJpaRepository,
         blockHistoryService = blockHistoryService,
         blocksService = blocksService,
-        nodeAliasForHeight = nodeAliasForHeight,
         syncHistory = SyncInfoServiceImpl.SyncHistoryProperties(
             enabled = syncHistory,
             fromHeight = activationHeight

@@ -3,6 +3,7 @@ package com.wavesenterprise.we.tx.observer.starter.observer.executor
 import com.ninjasquad.springmockk.SpykBean
 import com.wavesenterprise.sdk.node.client.http.tx.CreateContractTxDto.Companion.toDto
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.api.BlockListenerException
 import com.wavesenterprise.we.tx.observer.core.spring.partition.LatestTxPartitionPoller
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PollingTxSubscriber
@@ -15,7 +16,6 @@ import com.wavesenterprise.we.tx.observer.starter.TxObserverStarterConfig
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration
 import com.wavesenterprise.we.tx.observer.starter.observer.config.ObjectMapperConfig
 import com.wavesenterprise.we.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.AfterEach

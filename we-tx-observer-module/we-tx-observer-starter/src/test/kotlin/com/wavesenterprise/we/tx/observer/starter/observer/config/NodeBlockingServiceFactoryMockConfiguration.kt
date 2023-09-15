@@ -8,7 +8,7 @@ import com.wavesenterprise.sdk.node.client.blocking.node.NodeBlockingServiceFact
 import com.wavesenterprise.sdk.node.client.blocking.node.NodeInfoService
 import com.wavesenterprise.sdk.node.client.blocking.privacy.PrivacyService
 import com.wavesenterprise.sdk.node.client.blocking.tx.TxService
-import com.wavesenterprise.sdk.node.client.blocking.util.UtilsService
+import com.wavesenterprise.sdk.node.client.blocking.util.NodeUtilsService
 import com.wavesenterprise.sdk.node.domain.DataEntry
 import com.wavesenterprise.sdk.node.domain.DataKey
 import com.wavesenterprise.sdk.node.domain.DataValue
@@ -39,7 +39,7 @@ class NodeBlockingServiceFactoryMockConfiguration {
         every { it.nodeInfoService() } returns nodeInfoService()
         every { it.blockchainEventsService() } returns blockchainEventsService()
         every { it.addressService() } returns addressService()
-        every { it.utilService() } returns utilsService()
+        every { it.nodeUtilsService() } returns nodeUtilsService()
     }
 
     @Bean
@@ -67,7 +67,7 @@ class NodeBlockingServiceFactoryMockConfiguration {
     fun privacyService(): PrivacyService = mockk(relaxed = true)
 
     @Bean
-    fun utilsService(): UtilsService = mockk(relaxed = true)
+    fun nodeUtilsService(): NodeUtilsService = mockk(relaxed = true)
 
     companion object {
         val mockPartition = TxQueuePartition(

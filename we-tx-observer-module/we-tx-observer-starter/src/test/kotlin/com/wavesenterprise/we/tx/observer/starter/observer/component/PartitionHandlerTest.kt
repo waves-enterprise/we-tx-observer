@@ -1,6 +1,7 @@
 package com.wavesenterprise.we.tx.observer.starter.observer.component
 
 import com.ninjasquad.springmockk.MockkBean
+import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.core.spring.metrics.AddableLongMetricsContainer
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PartitionHandler
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
@@ -8,7 +9,6 @@ import com.wavesenterprise.we.tx.observer.jpa.config.TxObserverJpaConfig
 import com.wavesenterprise.we.tx.observer.starter.TxObserverStarterConfig
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration
 import com.wavesenterprise.we.tx.observer.starter.observer.config.ObjectMapperConfig
-import com.wavesplatform.we.flyway.schema.starter.FlywaySchemaConfiguration
 import io.mockk.verify
 import io.mockk.verifySequence
 import org.junit.jupiter.api.Test
