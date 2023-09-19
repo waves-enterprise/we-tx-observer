@@ -31,11 +31,11 @@ val weMavenPassword: String? by project
 val sonaTypeMavenUser: String? by project
 val sonaTypeMavenPassword: String? by project
 
-val weMavenBasePath = "https://artifacts.wavesenterprise.com/repository/"
+val weMavenBasePath: String by project
 
-val sonaTypeBasePath = "https://s01.oss.sonatype.org"
-val gitHubProject = "waves-enterprise/we-node-client"
-val githubUrl = "https://github.com/$gitHubProject"
+val sonaTypeBasePath: String by project
+val gitHubProject: String by project
+val githubUrl: String by project
 
 val feignVersion: String by project
 val jacksonModuleKotlin: String by project
@@ -230,7 +230,7 @@ configure(
                 pom {
                     packaging = "jar"
                     name.set(project.name)
-                    url.set(githubUrl)
+                    url.set(githubUrl + gitHubProject)
                     description.set("WE Node Client for Java/Kotlin")
 
                     licenses {
@@ -241,9 +241,9 @@ configure(
                     }
 
                     scm {
-                        connection.set("scm:$githubUrl")
+                        connection.set("scm:$githubUrl$gitHubProject")
                         developerConnection.set("scm:git@github.com:$gitHubProject.git")
-                        url.set(githubUrl)
+                        url.set(githubUrl + gitHubProject)
                     }
 
                     developers {
