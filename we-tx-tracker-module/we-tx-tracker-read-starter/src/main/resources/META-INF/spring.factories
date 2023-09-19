@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.wavesenterprise.we.tx.tracker.read.starter.TxTrackerReadConfig,\
+  com.wavesenterprise.we.tx.tracker.read.starter.TxTrackerReadJpaAutoConfig

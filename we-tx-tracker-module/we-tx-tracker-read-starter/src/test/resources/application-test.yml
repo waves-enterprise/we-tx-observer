@@ -1,0 +1,34 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        event:
+          merge:
+            entity_copy_observer: allow
+        jdbc:
+          time_zone: UTC
+          log.warnings: true
+          lob.non_contextual_creation: true #https://github.com/pgjdbc/pgjdbc/issues/1102
+  application:
+    name: we-tx-tracker-sample
+  datasource:
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 5
+    url: jdbc:tc:postgresql:11-alpine:///db_we_tx_tracker_read_starter
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+
+logging:
+  level:
+    org:
+      springframework.orm.jpa: DEBUG
+      springframework.transaction: DEBUG
+      hibernate:
+        type: trace
+        SQL: DEBUG
+
+debug: true
