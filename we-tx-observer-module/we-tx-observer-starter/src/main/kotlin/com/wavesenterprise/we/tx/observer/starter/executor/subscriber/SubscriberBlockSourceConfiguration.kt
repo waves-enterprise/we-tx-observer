@@ -53,13 +53,16 @@ class SubscriberBlockSourceConfiguration(
     ): EventSubscriber =
         EventSubscriber(
             syncInfoService = syncInfoService,
-            weBlockchainEventServices = nodeProperties.config.values.map { node ->
+            weBlockchainEventServices = nodeProperties.config.entries.map { (key, node) ->
+                val grpc = requireNotNull(node.grpc) {
+                    "GRPC properties should be specified for '$key' node when using tx-observer in SUBSCRIBER mode"
+                }
                 GrpcNodeServiceFactoryFactory.createClient(
                     grpcProperties = GrpcNodeClientParams(
-                        address = node.grpc.address,
-                        port = node.grpc.port,
-                        keepAliveTime = node.grpc.keepAliveTime,
-                        keepAliveWithoutCalls = node.grpc.keepAliveWithoutCalls,
+                        address = grpc.address,
+                        port = grpc.port,
+                        keepAliveTime = grpc.keepAliveTime,
+                        keepAliveWithoutCalls = grpc.keepAliveWithoutCalls,
                     )
                 ).blockchainEventsService()
             },
