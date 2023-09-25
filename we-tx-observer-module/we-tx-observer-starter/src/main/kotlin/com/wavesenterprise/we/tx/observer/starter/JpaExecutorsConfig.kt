@@ -16,5 +16,6 @@ import org.springframework.context.annotation.Import
     MetricsCollectorConfig::class,
     TxObserverSchedulerConfig::class,
     LockConfig::class,
+    PartitionPausedOnTxIdCleanerConfig::class,
 )
 class JpaExecutorsConfig

@@ -1,6 +1,7 @@
 package com.wavesenterprise.we.tx.observer.starter
 
 import com.wavesenterprise.we.tx.observer.core.spring.executor.ScheduledForkResolver
+import com.wavesenterprise.we.tx.observer.core.spring.executor.ScheduledPartitionPausedOnTxIdCleaner
 import com.wavesenterprise.we.tx.observer.core.spring.executor.ScheduledPartitionPoller
 import com.wavesenterprise.we.tx.observer.core.spring.executor.ScheduledPrivacyChecker
 import com.wavesenterprise.we.tx.observer.core.spring.executor.ScheduledTxQueueCleaner
@@ -10,6 +11,7 @@ import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.BlockHis
 import com.wavesenterprise.we.tx.observer.core.spring.metrics.ScheduledMetricsCollector
 import com.wavesenterprise.we.tx.observer.starter.properties.ForkResolverProperties
 import com.wavesenterprise.we.tx.observer.starter.properties.MetricsCollectorProperties
+import com.wavesenterprise.we.tx.observer.starter.properties.PartitionPausedOnTxIdCleanerProperties
 import com.wavesenterprise.we.tx.observer.starter.properties.PartitionPollerProperties
 import com.wavesenterprise.we.tx.observer.starter.properties.PrivacyAvailabilityCheckProperties
 import com.wavesenterprise.we.tx.observer.starter.properties.QueueCleanerProperties
@@ -39,6 +41,7 @@ import kotlin.reflect.jvm.javaMethod
     TxQueueConfig::class,
     ForkResolverConfig::class,
     MetricsCollectorConfig::class,
+    PartitionPausedOnTxIdCleanerConfig::class,
 )
 @EnableScheduling
 @EnableConfigurationProperties(TxObserverSchedulerProperties::class)
@@ -72,6 +75,12 @@ class TxObserverSchedulerConfig {
 
     @Autowired
     lateinit var scheduledTxQueueCleaner: ScheduledTxQueueCleaner
+
+    @Autowired
+    lateinit var scheduledPartitionPausedOnTxIdCleaner: ScheduledPartitionPausedOnTxIdCleaner
+
+    @Autowired
+    lateinit var partitionPausedOnTxIdCleanerProperties: PartitionPausedOnTxIdCleanerProperties
 
     @Autowired
     lateinit var queueCleanerProperties: QueueCleanerProperties
@@ -108,6 +117,7 @@ class TxObserverSchedulerConfig {
             addScheduledForkResolver()
             addQueueCleaner()
             addScheduledMetricsCollector()
+            addPartitionPausedOnTxIdCleaner()
         }
 
     private fun ThreadPoolTaskScheduler.addScheduledMetricsCollector() {
@@ -200,6 +210,18 @@ class TxObserverSchedulerConfig {
                     ScheduledPartitionPoller::pollWhileHavingActivePartitions
                 ),
                 PeriodicTrigger(partitionPollerProperties.fixedDelay.toMillis())
+            )
+        }
+    }
+
+    private fun ThreadPoolTaskScheduler.addPartitionPausedOnTxIdCleaner() {
+        if (partitionPausedOnTxIdCleanerProperties.enabled) {
+            schedule(
+                scheduledMethodRunnable(
+                    scheduledPartitionPausedOnTxIdCleaner,
+                    ScheduledPartitionPausedOnTxIdCleaner::clear
+                ),
+                PeriodicTrigger(partitionPausedOnTxIdCleanerProperties.fixedDelay.toMillis())
             )
         }
     }

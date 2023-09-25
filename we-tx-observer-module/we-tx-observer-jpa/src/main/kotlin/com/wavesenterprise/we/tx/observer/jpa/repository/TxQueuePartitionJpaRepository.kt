@@ -106,6 +106,17 @@ interface TxQueuePartitionJpaRepository :
         nativeQuery = true
     )
     fun countStuckPartitions(): Long
+
+    @Query(
+        """
+            update TxQueuePartition p set p.pausedOnTxId = null where p.pausedOnTxId is not null
+            and not exists (select etx.id from EnqueuedTx etx
+                               where etx.status = 'NEW'
+                               and etx.id = p.pausedOnTxId)
+        """
+    )
+    @Modifying
+    fun clearPausedOnTxIds(): Int
 }
 
 const val STUCK_PARTITION_PRIORITY_THRESHOLD: Int = -100
