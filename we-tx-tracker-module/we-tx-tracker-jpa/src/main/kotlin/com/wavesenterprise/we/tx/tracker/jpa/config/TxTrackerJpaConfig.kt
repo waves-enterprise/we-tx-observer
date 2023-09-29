@@ -10,14 +10,14 @@ import org.springframework.context.annotation.Import
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 import javax.sql.DataSource
 
 @Configuration
 @ConditionalOnClass(JpaRepository::class)
 @ConditionalOnBean(DataSource::class)
-@EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
-@Import(DateTimeProviderConfig::class)
+@Import(
+    JpaAuditingNonConflictingDeclaration::class,
+)
 class TxTrackerJpaConfig {
 
     @Bean
