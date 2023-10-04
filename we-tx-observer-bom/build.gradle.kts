@@ -1,6 +1,8 @@
 val gitHubProject: String by project
 val githubUrl: String by project
 
+val weFlywayStarterVersion: String by project
+
 plugins {
     signing
     `maven-publish`
@@ -16,6 +18,7 @@ dependencies {
         project.rootProject.subprojects.forEach { project ->
             api(project)
         }
+        runtime("com.wavesenterprise:we-flyway-starter:$weFlywayStarterVersion")
     }
 }
 
