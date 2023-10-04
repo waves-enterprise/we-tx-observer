@@ -30,7 +30,6 @@ import com.wavesenterprise.we.tx.tracker.jpa.repository.SmartContractInfoJpaRepo
 import com.wavesenterprise.we.tx.tracker.jpa.repository.TxTrackerJpaRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
-import java.util.UUID
 import javax.transaction.Transactional
 
 open class JpaTxTracker(
@@ -52,7 +51,7 @@ open class JpaTxTracker(
         tx: Tx,
         meta: Map<String, Any>,
         businessObjectInfos: List<TxTrackBusinessObjectInfo>,
-        userId: UUID?
+        userId: String?
     ): TxTrackInfo =
         when (tx) {
             is CreateContractTx -> smartContractInfoJpaRepository.save(
