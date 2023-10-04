@@ -126,7 +126,7 @@ It has three optional parameters for filtering:
 _**Note:** Message `meta` is derived from privacy data comment parsed as json (`SendDataRequest.info.comment`). 
 If the comment can't be parsed as JSON than this filter will fail._
 
-[MessageFilter](we-tx-observer-module%2Fwe-tx-observer-api%2Fsrc%2Fmain%2Fkotlin%2Fcom%2Fwavesenterprise%2Fwe%2Ftx%2Fobserver%2Fapi%2Fprivacy%2FMessageFilter.kt) - annotation containing an array of `MessageFilter`.
+[MessageFilters](we-tx-observer-module%2Fwe-tx-observer-api%2Fsrc%2Fmain%2Fkotlin%2Fcom%2Fwavesenterprise%2Fwe%2Ftx%2Fobserver%2Fapi%2Fprivacy%2FMessageFilter.kt) - annotation containing an array of `MessageFilter`.
 It has a single field:
 * `filters` - array of `MessageFilter`.
 #### Examples

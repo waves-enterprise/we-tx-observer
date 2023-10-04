@@ -5,6 +5,14 @@ import com.wavesenterprise.sdk.node.domain.tx.CreatePolicyTx
 import com.wavesenterprise.sdk.node.domain.tx.PolicyDataHashTx
 import com.wavesenterprise.we.tx.observer.api.NoPayloadException
 
+/**
+ * Class processed in @TxListener methods for privacy transactions (112, 113, 114)
+ * @property payload parametrized private data
+ * @property meta additional(comment) information by privacy data in JsonNode format
+ * @property policyName name of policy
+ * @property createPolicyTx policy creation transaction (112)
+ * @property policyDataHashTx transaction of sending private data to policy (114)
+ */
 data class PrivateDataEvent<T> private constructor(
     private val payloadInitializer: () -> T,
     val meta: JsonNode?,
