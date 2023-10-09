@@ -222,17 +222,35 @@ internal class EnqueueingBlockTxSubscriberTest {
     fun `should handle atomic with flat mapping it and setting position in atomic`() {
         val commonSender = Address(randomBytesFromUUID())
         val commonAtomicBadge = AtomicBadge(trustedSender = commonSender)
-        val first = TestDataFactory.policyDataHashTx(id = TxId.fromByteArray("3_1".toByteArray()), atomicBadge = commonAtomicBadge)
-        val second = TestDataFactory.createContractTx(id = TxId.fromByteArray("3_2".toByteArray()), atomicBadge = commonAtomicBadge)
-        val third = TestDataFactory.callContractTx(id = TxId.fromByteArray("3_3".toByteArray()), atomicBadge = commonAtomicBadge)
-        val forth = TestDataFactory.callContractTx(id = TxId.fromByteArray("3_4".toByteArray()), atomicBadge = commonAtomicBadge)
-        val fifth = TestDataFactory.callContractTx(id = TxId.fromByteArray("3_5".toByteArray()), atomicBadge = commonAtomicBadge)
+        val first = TestDataFactory.policyDataHashTx(
+            id = TxId.fromByteArray("3_1".toByteArray()),
+            atomicBadge = commonAtomicBadge,
+        )
+        val second = TestDataFactory.createContractTx(
+            id = TxId.fromByteArray("3_2".toByteArray()),
+            atomicBadge = commonAtomicBadge,
+        )
+        val third = TestDataFactory.callContractTx(
+            id = TxId.fromByteArray("3_3".toByteArray()),
+            atomicBadge = commonAtomicBadge,
+        )
+        val forth = TestDataFactory.callContractTx(
+            id = TxId.fromByteArray("3_4".toByteArray()),
+            atomicBadge = commonAtomicBadge,
+        )
+        val fifth = TestDataFactory.callContractTx(
+            id = TxId.fromByteArray("3_5".toByteArray()),
+            atomicBadge = commonAtomicBadge,
+        )
         val atomic = TestDataFactory.atomicTx(
             id = TxId.fromByteArray("3_atomic1".toByteArray()),
             txs = listOf(first, second, third, forth, fifth),
             senderAddress = commonSender,
         )
-        val sixth = TestDataFactory.callContractTx(id = TxId.fromByteArray("3_6".toByteArray()), atomicBadge = commonAtomicBadge)
+        val sixth = TestDataFactory.callContractTx(
+            id = TxId.fromByteArray("3_6".toByteArray()),
+            atomicBadge = commonAtomicBadge,
+        )
 
         every { txEnqueuedPredicate.isEnqueued(any()) } returns true
         val partFirstId = "part1"
