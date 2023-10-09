@@ -3,6 +3,7 @@ package com.wavesenterprise.we.tx.observer.starter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.wavesenterprise.sdk.node.client.blocking.node.NodeBlockingServiceFactory
 import com.wavesenterprise.sdk.node.domain.TxType
+import com.wavesenterprise.sdk.node.domain.tx.Tx
 import com.wavesenterprise.we.tx.observer.api.partition.TxQueuePartitionResolver
 import com.wavesenterprise.we.tx.observer.api.privacy.PrivateContentResolver
 import com.wavesenterprise.we.tx.observer.api.tx.TxEnqueuePredicate
@@ -34,6 +35,15 @@ class TxObserverEnablerConfig {
         override fun predicate(predicate: TxEnqueuePredicate): TxObserverConfigurer.TxEnqueuePredicateConfigurer =
             apply {
                 txEnqueuePredicates.add(predicate)
+            }
+
+        override fun predicate(predicate: (Tx) -> Boolean): TxObserverConfigurer.TxEnqueuePredicateConfigurer =
+            apply {
+                txEnqueuePredicates.add(
+                    object : TxEnqueuePredicate {
+                        override fun isEnqueued(tx: Tx): Boolean = predicate(tx)
+                    }
+                )
             }
 
         override fun types(types: Iterable<TxType>): TxObserverConfigurer.TxEnqueuePredicateConfigurer =

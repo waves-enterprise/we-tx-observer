@@ -1,5 +1,6 @@
 package com.wavesenterprise.we.tx.observer.starter.observer.enabler
 
+import com.wavesenterprise.sdk.node.domain.TxType
 import com.wavesenterprise.sdk.node.domain.tx.Tx
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
@@ -9,17 +10,15 @@ import com.wavesenterprise.we.tx.observer.api.tx.TxEnqueuePredicate
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
 import com.wavesenterprise.we.tx.observer.jpa.config.TxObserverJpaConfig
 import com.wavesenterprise.we.tx.observer.starter.TxObserverConfigurer
+import com.wavesenterprise.we.tx.observer.starter.TxObserverConfigurerBuilder
 import com.wavesenterprise.we.tx.observer.starter.TxObserverStarterConfig
 import com.wavesenterprise.we.tx.observer.starter.annotation.EnableTxObserver
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryTestConfiguration
 import com.wavesenterprise.we.tx.observer.starter.observer.config.ObjectMapperConfig
-import com.wavesenterprise.we.tx.observer.starter.observerConfigurer
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
@@ -30,20 +29,13 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
-private const val PROPERTY_TX_TYPE_1 = 1
-private const val PROPERTY_TX_TYPE_2 = 3
-
-@DataJpaTest(
-    properties = [
-        "tx-observer.predicate.tx-types = $PROPERTY_TX_TYPE_1,$PROPERTY_TX_TYPE_2"
-    ]
-)
+@DataJpaTest
 @ActiveProfiles("test")
 @ContextConfiguration(
     classes = [
         ObjectMapperConfig::class,
         NodeBlockingServiceFactoryTestConfiguration::class,
-        TxObserverEnabledConfigurerTest.Config::class,
+        TxObserverEnabledConfigurerWithBuilderTest.Config::class,
         DataSourceAutoConfiguration::class,
         TxObserverStarterConfig::class,
         TxObserverJpaAutoConfig::class,
@@ -52,19 +44,7 @@ private const val PROPERTY_TX_TYPE_2 = 3
     ]
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class TxObserverEnabledConfigurerTest {
-    companion object {
-        private val partitionResolver: TxQueuePartitionResolver = mockk()
-        private val privateContentResolver: PrivateContentResolver = mockk()
-        private val enqueuePredicate: TxEnqueuePredicate = mockk {
-            every { isEnqueued(any()) } returns true
-        }
-        private const val TX_TYPE_1 = 4
-        private const val TX_TYPE_2 = 5
-        private const val TX_TYPE_3 = 6
-        private const val TX_TYPE_4 = 8
-        private val txTypes = listOf(TX_TYPE_1, TX_TYPE_2)
-    }
+class TxObserverEnabledConfigurerWithBuilderTest {
 
     @Autowired
     lateinit var partitionResolver: TxQueuePartitionResolver
@@ -77,50 +57,62 @@ class TxObserverEnabledConfigurerTest {
 
     @Test
     internal fun `should configure beans using configurer`() {
-        assertEquals(Companion.partitionResolver, partitionResolver)
-        assertEquals(Companion.privateContentResolver, privateContentResolver)
+        Assertions.assertEquals(partitionResolver, partitionResolver)
+        Assertions.assertEquals(privateContentResolver, privateContentResolver)
 
         val txPropertyType1: Tx = TestDataFactory.genesisTx()
-        assertFalse(enqueuePredicate.isEnqueued(txPropertyType1))
-        verify { Companion.enqueuePredicate.isEnqueued(txPropertyType1) }
+        Assertions.assertFalse(enqueuePredicate.isEnqueued(txPropertyType1))
+        verify { enqueuePredicate.isEnqueued(txPropertyType1) }
 
         val txPropertyType2: Tx = TestDataFactory.issueTx()
-        assertFalse(enqueuePredicate.isEnqueued(txPropertyType2))
-        verify { Companion.enqueuePredicate.isEnqueued(txPropertyType2) }
+        Assertions.assertFalse(enqueuePredicate.isEnqueued(txPropertyType2))
+        verify { enqueuePredicate.isEnqueued(txPropertyType2) }
 
         val txType1: Tx = TestDataFactory.transferTx()
-        assertTrue(enqueuePredicate.isEnqueued(txType1))
-        verify { Companion.enqueuePredicate.isEnqueued(txType1) }
+        Assertions.assertTrue(enqueuePredicate.isEnqueued(txType1))
+        verify { enqueuePredicate.isEnqueued(txType1) }
 
         val txType2: Tx = TestDataFactory.reissueTx()
-        assertTrue(enqueuePredicate.isEnqueued(txType2))
-        verify { Companion.enqueuePredicate.isEnqueued(txType2) }
+        Assertions.assertTrue(enqueuePredicate.isEnqueued(txType2))
+        verify { enqueuePredicate.isEnqueued(txType2) }
 
         val txType3: Tx = TestDataFactory.burnTx()
-        assertTrue(enqueuePredicate.isEnqueued(txType3))
-        verify { Companion.enqueuePredicate.isEnqueued(txType3) }
+        Assertions.assertTrue(enqueuePredicate.isEnqueued(txType3))
+        verify { enqueuePredicate.isEnqueued(txType3) }
 
         val txType4: Tx = TestDataFactory.leaseTx()
-        assertTrue(enqueuePredicate.isEnqueued(txType4))
-        verify { Companion.enqueuePredicate.isEnqueued(txType4) }
+        Assertions.assertTrue(enqueuePredicate.isEnqueued(txType4))
+        verify { enqueuePredicate.isEnqueued(txType4) }
 
         val txType5: Tx = TestDataFactory.createContractTx()
-        assertFalse(enqueuePredicate.isEnqueued(txType5))
-        verify { Companion.enqueuePredicate.isEnqueued(txType5) }
+        Assertions.assertFalse(enqueuePredicate.isEnqueued(txType5))
+        verify { enqueuePredicate.isEnqueued(txType5) }
+    }
+
+    companion object {
+        private val partitionResolver: TxQueuePartitionResolver = mockk()
+        private val privateContentResolver: PrivateContentResolver = mockk()
+        private val enqueuePredicate: TxEnqueuePredicate = mockk {
+            every { isEnqueued(any()) } returns true
+        }
+        private val TX_TYPE_1 = TxType.fromInt(4)
+        private val TX_TYPE_2 = TxType.fromInt(5)
+        private val TX_TYPE_3 = TxType.fromInt(6)
+        private val TX_TYPE_4 = TxType.fromInt(8)
+        private val txTypes = listOf(TX_TYPE_1, TX_TYPE_2)
     }
 
     @Configuration
     @EnableTxObserver
     internal class Config {
         @Bean
-        fun txObserverConfigurer(): TxObserverConfigurer = observerConfigurer {
-            partitionResolver = Companion.partitionResolver
-            privateContentResolver = Companion.privateContentResolver
-            predicates {
-                types(txTypes)
-                types(TX_TYPE_3, TX_TYPE_4)
-                predicate(enqueuePredicate)
-            }
-        }
+        fun txObserverConfigurer(): TxObserverConfigurer =
+            TxObserverConfigurerBuilder()
+                .partitionResolver(Companion.partitionResolver)
+                .privateContentResolver(Companion.privateContentResolver)
+                .predicate(Companion.enqueuePredicate)
+                .types(txTypes)
+                .types(TX_TYPE_3, TX_TYPE_4)
+                .build()
     }
 }

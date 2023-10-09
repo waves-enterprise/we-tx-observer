@@ -31,8 +31,8 @@ spring:
     name: we_tx-observer-sample
   datasource:
     hikari:
-      minimum-idle: 5
-      maximum-pool-size: 5
+      minimum-idle: 2
+      maximum-pool-size: 10
     url: jdbc:tc:postgresql:11-alpine:///db_we_tx_observer_starter
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
   flyway:
