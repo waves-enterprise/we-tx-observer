@@ -12,7 +12,6 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.OffsetDateTime
-import java.util.UUID
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -68,7 +67,7 @@ data class TxTrackInfo(
     @LastModifiedDate
     var modified: OffsetDateTime? = null,
 
-    val userId: UUID? = null,
+    val userId: String? = null,
 
     @ManyToMany(
         cascade = [

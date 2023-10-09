@@ -84,6 +84,6 @@ class TxTrackerJpaRepositoryTest {
         type = type.code,
         body = objectMapper.valueToTree(mapOf<String, String>()),
         meta = mapOf(),
-        userId = UUID.randomUUID()
+        userId = "USER",
     )
 }

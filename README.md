@@ -103,6 +103,136 @@ class TxEnqueuePredicateImpl implements TxEnqueuePredicate {
     }
 }
 ```
+
+### TxQueuePartitionResolver
+Specifies the partition for the received transaction (`defaultPartitionId` by default).  
+Used to efficiently distribute transactions across partitions.  
+By default, all transactions will fall into one partition - `defaultPartitionId`.
+Implementation example of PartitionResolver  
+Kotlin:
+```kotlin
+@Component
+class UserPartitionResolver(
+    private val txService: TxService,
+) : TxQueuePartitionResolver {
+
+    // overridden method
+    override fun resolvePartitionId(tx: Tx): String? = when (tx) {
+        is PolicyDataHashTx -> resolveForPolicyDataHashTx(tx)
+        is ExecutedContractTx -> resolveForContractTx(tx)
+        else -> null
+    }
+
+    // Looks for the required key in the state and removes the mapping name. The remaining value will be the partition ID.
+    // If it does not find it, then the partition for this transaction will be equal to defaultPartitionId
+    private fun resolveForContractTx(executedContractTx: ExecutedContractTx): String? =
+        executedContractTx.results.map { param -> param.key.value }
+            .find { paramKey -> paramKey.startsWith("OBJECT_") }
+            ?.removePrefix("OBJECT_")
+
+    // Searches for the policy creation transaction to obtain its name.
+    // If the prefix matches the one you are looking for, the remaining value will be the partition id.
+    private fun resolveForPolicyDataHashTx(policyDataHashTx: PolicyDataHashTx): String? {
+        val createPolicyTx = txService.txInfo(policyDataHashTx.policyId.txId).get().tx as CreatePolicyTx
+        return createPolicyTx.policyName.value
+            .takeIf { policyName -> policyName.startsWith("OBJECT_") }
+            ?.removePrefix("OBJECT_")
+    }
+}
+```
+Java:
+```java
+@Component
+class UserPartitionResolver implements TxQueuePartitionResolver {
+    
+    @Autowired
+    private TxService txService;
+
+    // overridden method
+    @Override
+    String resolvePartitionId(Tx tx) {
+        return switch (tx) {
+            case tx instanceof PolicyDataHashTx -> resolveForPolicyDataHashTx(tx);
+            case tx instanceof ExecutedContractTx -> resolveForContractTx(tx);
+        };
+    }
+
+    // Looks for the required key in the state and removes the mapping name. The remaining value will be the partition ID.
+    // If it does not find it, then the partition for this transaction will be equal to defaultPartitionId
+    private String resolveForContractTx(ExecutedContractTx executedContractTx) {
+        List<String> list = executedContractTx.getResults().stream()
+                .filter(it -> it.getKey().getValue().startsWith("OBJECT_"))
+                .map(it -> it.getKey().getValue())
+                .toList();
+        if (!list.isEmpty()) {
+            return list.get(0).replaceAll("OBJECT_", "");
+        } else {
+            return null;
+        }
+    }
+
+    // Searches for the policy creation transaction to obtain its name.
+    // If the prefix matches the one you are looking for, the remaining value will be the partition id.
+    private String resolveForPolicyDataHashTx(PolicyDataHashTx policyDataHashTx) {
+        CreatePolicyTx createPolicyTx =  (CreatePolicyTx) txService.txInfo(policyDataHashTx.getPolicyId.getTxId).get().getTx();
+        String policyName = createPolicyTx.getPolicyName().getValue();
+        if (policyName.startsWith("OBJECT_")) {
+            return policyName.replaceAll("OBJECT_", "");
+        } else {
+            return null;
+        }
+    }
+}
+```
+
+### TxObserverConfigurer
+Configurer for basic observer components. Allows you to define all bean-components through one bean: 
+- TxQueuePartitionResolver;
+- TxEnqueuePredicate (default implementation is `com.wavesenterprise.we.tx.observer.starter.TxObserverEnablerConfig.TxEnqueuePredicateConfigurerImpl`);
+- ObjectMapper;
+- PrivateContentResolver;  
+
+It can be setup using TxObserverConfigurerBuilder or Kotlin DSL.
+#### Example
+Kotlin:
+```kotlin
+@Bean
+fun txObserverConfigurer(): TxObserverConfigurer =
+    TxObserverConfigurerBuilder()
+        .partitionResolver(customPartitionResolver)
+        .privateContentResolver(customPrivateContentResolver)
+        .predicate(customEnqueuePredicate)
+        .types(txTypes)
+        .types(TX_TYPE_3, TX_TYPE_4)
+        .build()
+```
+KotlinDsl:
+```kotlin
+@Bean
+fun txObserverConfigurer(): TxObserverConfigurer = observerConfigurer {
+    partitionResolver = customPartitionResolver
+    privateContentResolver = customPrivateContentResolver
+    predicates {
+        types(txTypes)
+        types(TX_TYPE_3, TX_TYPE_4)
+        predicate(customEnqueuePredicate)
+    }
+}
+```
+Java:
+```java
+@Bean
+TxObserverConfigurer txObserverConfigurer() {
+        return new TxObserverConfigurerBuilder()
+            .partitionResolver(customPartitionResolver)
+            .privateContentResolver(customPrivateContentResolver)
+            .predicate(customEnqueuePredicate)
+            .types(txTypes)
+            .types(TX_TYPE_3,TX_TYPE_4)
+            .build();
+        }
+```
+
 ### Implementing handlers using @TxListener
 After identifying filters for transactions, you need to write code for the listener that these filtered transactions will fall into.
 
@@ -126,7 +256,7 @@ It has three optional parameters for filtering:
 _**Note:** Message `meta` is derived from privacy data comment parsed as json (`SendDataRequest.info.comment`). 
 If the comment can't be parsed as JSON than this filter will fail._
 
-[MessageFilter](we-tx-observer-module%2Fwe-tx-observer-api%2Fsrc%2Fmain%2Fkotlin%2Fcom%2Fwavesenterprise%2Fwe%2Ftx%2Fobserver%2Fapi%2Fprivacy%2FMessageFilter.kt) - annotation containing an array of `MessageFilter`.
+[MessageFilters](we-tx-observer-module%2Fwe-tx-observer-api%2Fsrc%2Fmain%2Fkotlin%2Fcom%2Fwavesenterprise%2Fwe%2Ftx%2Fobserver%2Fapi%2Fprivacy%2FMessageFilter.kt) - annotation containing an array of `MessageFilter`.
 It has a single field:
 * `filters` - array of `MessageFilter`.
 #### Examples
