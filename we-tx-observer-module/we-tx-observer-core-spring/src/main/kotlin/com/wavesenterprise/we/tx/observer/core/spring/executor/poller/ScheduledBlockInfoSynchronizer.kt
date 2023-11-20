@@ -4,7 +4,7 @@ import com.wavesenterprise.we.tx.observer.common.tx.executor.TxExecutor
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import net.javacrumbs.shedlock.core.SchedulerLock
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.orm.ObjectOptimisticLockingFailureException
@@ -22,8 +22,6 @@ open class ScheduledBlockInfoSynchronizer(
 
     @SchedulerLock(
         name = "syncNodeBlockInfo_task",
-        lockAtLeastForString = "\${tx-observer.lock-at-least:0}",
-        lockAtMostForString = "\${tx-observer.lock-at-most:10000}"
     )
     open fun syncNodeBlockInfo() {
         val blockSyncInfo = txExecutor.requiresNew {
