@@ -30,6 +30,7 @@ import com.wavesenterprise.we.tx.tracker.jpa.repository.SmartContractInfoJpaRepo
 import com.wavesenterprise.we.tx.tracker.jpa.repository.TxTrackerJpaRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
+import java.util.Optional
 import javax.transaction.Transactional
 
 open class JpaTxTracker(
@@ -121,9 +122,20 @@ open class JpaTxTracker(
         body?.let { objectMapper.convertValue<TxDto>(it).toDomain() }
     }
 
-    override fun getLastUnsuccessfulTrackedTxForBusinessObject(businessObjectId: String): TxTrackInfo? =
+    override fun getLastUnsuccessfulTrackedTxForBusinessObject(
+        businessObjectId: String,
+    ): Optional<TxTrackInfo> =
         txTrackerJpaRepository.findFirstByStatusNotAndBusinessObjectInfosContainsOrderByModifiedDesc(
             status = TxTrackStatus.SUCCESS,
+            businessObjectInfos = businessObjectInfoJpaRepository.getById(businessObjectId),
+        )
+
+    override fun getLastTrackedTxForBusinessObjectWithStatus(
+        businessObjectId: String,
+        status: TxTrackStatus,
+    ): Optional<TxTrackInfo> =
+        txTrackerJpaRepository.findFirstByStatusAndBusinessObjectInfosContainsOrderByModifiedDesc(
+            status = status,
             businessObjectInfos = businessObjectInfoJpaRepository.getById(businessObjectId),
         )
 

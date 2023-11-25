@@ -1,4 +1,3 @@
-
 package com.wavesenterprise.we.tx.tracker.starter
 
 import com.fasterxml.jackson.core.type.TypeReference
@@ -22,6 +21,7 @@ import com.wavesenterprise.sdk.node.domain.tx.Tx
 import com.wavesenterprise.sdk.node.domain.tx.TxInfo
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomBytesFromUUID
+import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomStringBase58
 import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.tracker.api.TxTracker
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackBusinessObjectInfo
@@ -520,6 +520,38 @@ internal class JpaTxTrackerTest {
         assertTrue(result.size == 2)
         assertTrue(result[0] == createContractTx.id)
         assertTrue(result[1] == callContractTx.id)
+    }
+
+    @Test
+    fun `should return last tracked tx for business object with status`() {
+        val businessObjectId = "testId"
+        val businessObjectInfo = TxTrackBusinessObjectInfo(businessObjectId, "TEST_TYPE")
+        val expectedTxId = TxId.fromBase58(randomStringBase58())
+        with(txTracker) {
+            trackTx(
+                tx = createContractTx.copy(id = TxId.fromBase58(randomStringBase58())),
+                businessObjectInfos = listOf(businessObjectInfo),
+            )
+            trackTx(
+                tx = createContractTx.copy(id = expectedTxId),
+                businessObjectInfos = listOf(businessObjectInfo)
+            )
+            createContractTx.copy(id = TxId.fromBase58(randomStringBase58())).apply {
+                txTracker.trackTx(this, businessObjectInfos = listOf(businessObjectInfo))
+                txTracker.setTrackStatus(this, TxTrackStatus.SUCCESS)
+            }
+        }
+
+        em.flush()
+        em.clear()
+
+        val result = txTracker.getLastTrackedTxForBusinessObjectWithStatus(businessObjectId, TxTrackStatus.PENDING)
+
+        assertNotNull(result.orElse(null))
+        result.get().apply {
+            assertEquals(expectedTxId.asBase58String(), id)
+            assertEquals(TxTrackStatus.PENDING, status)
+        }
     }
 
     private fun preparePendingTrackedTxs(): Map<TxId, ContractTx> {
