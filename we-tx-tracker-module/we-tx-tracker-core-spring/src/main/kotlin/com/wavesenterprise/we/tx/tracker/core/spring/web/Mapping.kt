@@ -1,7 +1,7 @@
 package com.wavesenterprise.we.tx.tracker.core.spring.web
 
-import com.wavesenterprise.we.tx.observer.common.annotation.toEq
-import com.wavesenterprise.we.tx.observer.common.annotation.toIn
+import com.wavesenterprise.we.tx.observer.common.jpa.util.toEq
+import com.wavesenterprise.we.tx.observer.common.jpa.util.toIn
 import com.wavesenterprise.we.tx.tracker.core.spring.web.dto.TxTrackInfoApiDto
 import com.wavesenterprise.we.tx.tracker.core.spring.web.dto.TxTrackInfoListRequest
 import com.wavesenterprise.we.tx.tracker.domain.SmartContractInfo_

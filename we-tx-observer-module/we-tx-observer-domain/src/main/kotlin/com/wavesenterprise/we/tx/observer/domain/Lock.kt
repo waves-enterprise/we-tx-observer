@@ -1,6 +1,6 @@
 package com.wavesenterprise.we.tx.observer.domain
 
-import com.wavesenterprise.we.tx.observer.common.annotation.TX_OBSERVER_SCHEMA_NAME
+import com.wavesenterprise.we.tx.observer.common.jpa.util.TX_OBSERVER_SCHEMA_NAME
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table

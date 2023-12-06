@@ -1,6 +1,6 @@
 package com.wavesenterprise.we.tx.observer.starter
 
-import com.wavesenterprise.we.tx.observer.common.annotation.TX_OBSERVER_SCHEMA_NAME
+import com.wavesenterprise.we.tx.observer.common.jpa.util.TX_OBSERVER_SCHEMA_NAME
 import net.javacrumbs.shedlock.core.LockProvider
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock
