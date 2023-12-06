@@ -1,7 +1,7 @@
 package com.wavesenterprise.we.tx.tracker.read.starter.web
 
-import com.wavesenterprise.we.tx.observer.common.annotation.toEq
-import com.wavesenterprise.we.tx.observer.common.annotation.toIn
+import com.wavesenterprise.we.tx.observer.common.jpa.util.toEq
+import com.wavesenterprise.we.tx.observer.common.jpa.util.toIn
 import com.wavesenterprise.we.tx.tracker.domain.SmartContractInfo_
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackInfo
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackInfo_

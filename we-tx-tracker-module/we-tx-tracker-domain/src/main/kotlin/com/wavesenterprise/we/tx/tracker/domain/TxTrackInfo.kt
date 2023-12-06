@@ -2,8 +2,8 @@ package com.wavesenterprise.we.tx.tracker.domain
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType
-import com.wavesenterprise.we.tx.observer.common.annotation.JSONB_TYPE
-import com.wavesenterprise.we.tx.observer.common.annotation.TX_TRACKER_SCHEMA_NAME
+import com.wavesenterprise.we.tx.observer.common.jpa.util.JSONB_TYPE
+import com.wavesenterprise.we.tx.observer.common.jpa.util.TX_TRACKER_SCHEMA_NAME
 import org.hibernate.annotations.SQLInsert
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef

@@ -1,6 +1,6 @@
 package com.wavesenterprise.we.tx.observer.domain
 
-import com.wavesenterprise.we.tx.observer.common.annotation.TX_OBSERVER_SCHEMA_NAME
+import com.wavesenterprise.we.tx.observer.common.jpa.util.TX_OBSERVER_SCHEMA_NAME
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLInsert
 import org.hibernate.annotations.Where

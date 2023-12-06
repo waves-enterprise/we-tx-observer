@@ -10,6 +10,7 @@ import com.wavesenterprise.sdk.node.domain.tx.PolicyDataHashTx
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.api.privacy.PrivateContentResolver
+import com.wavesenterprise.we.tx.observer.common.jpa.util.flushAndClear
 import com.wavesenterprise.we.tx.observer.core.spring.component.OffsetProvider
 import com.wavesenterprise.we.tx.observer.core.spring.executor.PrivacyAvailabilityChecker
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PartitionHandler
@@ -145,8 +146,7 @@ internal class PrivacyAvailabilityCheckerTest {
                 )
             )
         }
-        em.flush()
-        em.clear()
+        em.flushAndClear()
         TestTransaction.flagForCommit()
         TestTransaction.end()
 

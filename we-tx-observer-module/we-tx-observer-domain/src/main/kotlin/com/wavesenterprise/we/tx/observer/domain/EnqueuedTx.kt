@@ -2,8 +2,8 @@ package com.wavesenterprise.we.tx.observer.domain
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType
-import com.wavesenterprise.we.tx.observer.common.annotation.JSONB_TYPE
-import com.wavesenterprise.we.tx.observer.common.annotation.TX_OBSERVER_SCHEMA_NAME
+import com.wavesenterprise.we.tx.observer.common.jpa.util.JSONB_TYPE
+import com.wavesenterprise.we.tx.observer.common.jpa.util.TX_OBSERVER_SCHEMA_NAME
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import org.hibernate.annotations.TypeDefs

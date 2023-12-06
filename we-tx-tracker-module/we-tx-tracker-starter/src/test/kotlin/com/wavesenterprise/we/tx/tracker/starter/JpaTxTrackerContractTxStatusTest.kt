@@ -11,6 +11,7 @@ import com.wavesenterprise.sdk.node.domain.tx.Tx
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomBytesFromUUID
 import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
+import com.wavesenterprise.we.tx.observer.common.jpa.util.flushAndClear
 import com.wavesenterprise.we.tx.tracker.api.TxTracker
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackInfo
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackStatus
@@ -111,8 +112,7 @@ internal class JpaTxTrackerContractTxStatusTest {
         txTracker.trackTx(tx)
         txTracker.setContractTxError(tx.id, contractTxStatusList)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val txTrackInfoForTx = em.find(TxTrackInfo::class.java, tx.id.asBase58String())
         assertNotNull(txTrackInfoForTx.errors)
@@ -132,8 +132,7 @@ internal class JpaTxTrackerContractTxStatusTest {
         txTracker.trackTx(tx)
         txTracker.setContractTxError(tx.id, contractTxStatusList)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val txTrackInfoForTx = em.find(TxTrackInfo::class.java, tx.id.asBase58String())
         assertNotNull(txTrackInfoForTx.errors)

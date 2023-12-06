@@ -16,6 +16,7 @@ import com.wavesenterprise.sdk.node.domain.tx.AtomicTx
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomBytesFromUUID
 import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
+import com.wavesenterprise.we.tx.observer.common.jpa.util.flushAndClear
 import com.wavesenterprise.we.tx.observer.core.spring.web.service.TxQueueService
 import com.wavesenterprise.we.tx.observer.domain.TxQueuePartition
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
@@ -125,8 +126,7 @@ internal class TxQueueStatusServiceImplTest {
         ).also {
             enqueuedTxJpaRepository.saveAll(it)
         }
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val queueStatus = txQueueStatusService.getQueueStatus()
 

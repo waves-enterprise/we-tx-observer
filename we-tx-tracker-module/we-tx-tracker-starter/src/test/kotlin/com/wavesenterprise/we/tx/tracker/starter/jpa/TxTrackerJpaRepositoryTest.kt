@@ -5,6 +5,7 @@ import com.ninjasquad.springmockk.MockkBean
 import com.wavesenterprise.sdk.node.client.blocking.tx.TxService
 import com.wavesenterprise.sdk.node.domain.TxType
 import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
+import com.wavesenterprise.we.tx.observer.common.jpa.util.flushAndClear
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackInfo
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackStatus
 import com.wavesenterprise.we.tx.tracker.jpa.TxTrackerJpaAutoConfig
@@ -58,8 +59,7 @@ class TxTrackerJpaRepositoryTest {
     fun `should throw sql constraint violation when tx type is one of contract modification`(type: TxType) {
         assertThrows<PersistenceException> {
             txTrackerJpaRepository.save(buildTxTrackInfo(type = type))
-            em.flush()
-            em.clear()
+            em.flushAndClear()
         }.apply {
             assertThat((cause as ConstraintViolationException).constraintName, `is`("contract_id_null_check"))
         }
@@ -73,8 +73,7 @@ class TxTrackerJpaRepositoryTest {
     )
     fun `should doesn't throw exception when tx type is not contract modification`(type: TxType) {
         txTrackerJpaRepository.save(buildTxTrackInfo(type = type))
-        em.flush()
-        em.clear()
+        em.flushAndClear()
     }
 
     private fun buildTxTrackInfo(type: TxType) = TxTrackInfo(

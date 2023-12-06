@@ -23,6 +23,7 @@ import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomBytesFromUUID
 import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomStringBase58
 import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
+import com.wavesenterprise.we.tx.observer.common.jpa.util.flushAndClear
 import com.wavesenterprise.we.tx.tracker.api.TxTracker
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackBusinessObjectInfo
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackInfo
@@ -128,8 +129,7 @@ internal class JpaTxTrackerTest {
     fun `should track createPolicyTx tx`() {
         txTracker.trackTx(createPolicyTx)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         em.find(TxTrackInfo::class.java, createPolicyTx.id.asBase58String()).apply {
             assertEquals(112, type)
@@ -144,8 +144,7 @@ internal class JpaTxTrackerTest {
     fun `should track Tx by saving it and the corresponding smart contract`() {
         txTracker.trackTx(createContractTx)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val txTrackInfoForTx = em.find(TxTrackInfo::class.java, createContractTx.id.asBase58String())
         assertEquals(TxTrackStatus.PENDING, txTrackInfoForTx.status)
@@ -167,8 +166,7 @@ internal class JpaTxTrackerTest {
         txTracker.trackTx(createContractTx)
         txTracker.trackTx(callContractTx.copy(contractId = ContractId(createContractTx.id)))
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val txTrackInfoForCreate = em.find(TxTrackInfo::class.java, createContractTx.id.asBase58String())
         val txTrackInfoForCall = em.find(TxTrackInfo::class.java, callContractTx.id.asBase58String())
@@ -183,8 +181,7 @@ internal class JpaTxTrackerTest {
         val disableContractTx = disableContractTx.copy(contractId = createContractTx.id.contractId)
         txTracker.trackTx(disableContractTx)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val txTrackInfoForCreate = em.find(TxTrackInfo::class.java, createContractTx.id.asBase58String())
         val txTrackInfoForDisable = em.find(TxTrackInfo::class.java, disableContractTx.id.asBase58String())
@@ -201,8 +198,7 @@ internal class JpaTxTrackerTest {
         val updateContractTx = updateContractTx.copy(contractId = createContractTx.id.contractId)
         txTracker.trackTx(updateContractTx)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val txTrackInfoForCreate = em.find(TxTrackInfo::class.java, createContractTx.id.asBase58String())
         val txTrackInfoForUpdate = em.find(TxTrackInfo::class.java, updateContractTx.id.asBase58String())
@@ -223,8 +219,7 @@ internal class JpaTxTrackerTest {
             businessObjectInfos = businessObjectInfos
         )
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val trackTxInfoSecondInvocation = txTracker.trackTx(
             tx = txToBeTracked,
@@ -254,8 +249,7 @@ internal class JpaTxTrackerTest {
                         tx = txToBeTracked,
                         businessObjectInfos = businessObjectInfos
                     ).also {
-                        em.flush()
-                        em.clear()
+                        em.flushAndClear()
 
                         countDownLatch.countDown()
                     }
@@ -307,8 +301,7 @@ internal class JpaTxTrackerTest {
 
         txTracker.trackTx(tx)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         assertTrue(smartContractInfoJpaRepository.existsById(contractId.asBase58String()))
         assertTrue(txTracker.existsInTracker(tx))
@@ -320,8 +313,7 @@ internal class JpaTxTrackerTest {
         val notTrackedTx: Tx = callContractTx.copy(id = TxId.fromByteArray("newNotTrackedTxId".toByteArray()))
         txTracker.trackTx(tx)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         assertTrue(txTracker.existsInTracker(tx))
         assertFalse(txTracker.existsInTracker(notTrackedTx))
@@ -336,8 +328,7 @@ internal class JpaTxTrackerTest {
         txTracker.trackTx(txNotToBeFound)
         txTracker.setTrackStatus(tx, TxTrackStatus.SUCCESS)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         assertTrue(txTracker.existsInTrackerWithStatus(tx, TxTrackStatus.SUCCESS))
         assertFalse(txTracker.existsInTrackerWithStatus(txNotToBeFound, TxTrackStatus.SUCCESS))
@@ -351,8 +342,7 @@ internal class JpaTxTrackerTest {
 
         txTracker.setTrackStatus(tx, TxTrackStatus.SUCCESS)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val txTrackInfoForTx = em.find(TxTrackInfo::class.java, tx.id.asBase58String())
         assertEquals(TxTrackStatus.SUCCESS, txTrackInfoForTx.status)
@@ -362,8 +352,7 @@ internal class JpaTxTrackerTest {
     fun `should get tracked tx for certain status`() {
         val pendingTxMap = preparePendingTrackedTxs()
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val trackedWithPending = txTracker.getTrackedTxWithStatus(TxTrackStatus.PENDING)
         assertEquals(pendingTxMap.size, trackedWithPending.size)
@@ -378,8 +367,7 @@ internal class JpaTxTrackerTest {
     fun `should get tracked tx ids for certain status`() {
         val pendingTxMap = preparePendingTrackedTxs()
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val trackedWithPending = txTracker.getTrackedTxIdsWithStatus(TxTrackStatus.PENDING)
         trackedWithPending.forEach { actualTxId ->
@@ -409,8 +397,7 @@ internal class JpaTxTrackerTest {
         txTracker.trackTx(tx)
         txTracker.setContractTxError(tx.id, contractTxStatusList)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val txTrackInfoForTx = em.find(TxTrackInfo::class.java, tx.id.asBase58String())
         assertEquals(TxTrackStatus.FAILURE, txTrackInfoForTx.status)
@@ -454,8 +441,7 @@ internal class JpaTxTrackerTest {
         txTracker.trackTx(tx)
         txTracker.setContractTxError(tx.id, contractTxStatusDtoList)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val txTrackInfoForTx = em.find(TxTrackInfo::class.java, tx.id.asBase58String())
         assertNotNull(txTrackInfoForTx.errors)
@@ -487,8 +473,7 @@ internal class JpaTxTrackerTest {
         txTracker.trackTx(tx)
         txTracker.setContractTxError(tx.id, contractTxStatusDtoList)
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val txTrackInfoForTx = em.find(TxTrackInfo::class.java, tx.id.asBase58String())
         assertNotNull(txTrackInfoForTx.errors)
@@ -501,8 +486,7 @@ internal class JpaTxTrackerTest {
         txTracker.trackTx(createContractTx)
         txTracker.trackTx(callContractTx.copy(contractId = ContractId(createContractTx.id)))
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val result = txTracker.getTrackedTxIdsWithStatusAndTypes(
             txTrackerStatus = TxTrackStatus.PENDING,
@@ -527,23 +511,24 @@ internal class JpaTxTrackerTest {
         val businessObjectId = "testId"
         val businessObjectInfo = TxTrackBusinessObjectInfo(businessObjectId, "TEST_TYPE")
         val expectedTxId = TxId.fromBase58(randomStringBase58())
-        with(txTracker) {
-            trackTx(
-                tx = createContractTx.copy(id = TxId.fromBase58(randomStringBase58())),
-                businessObjectInfos = listOf(businessObjectInfo),
-            )
-            trackTx(
-                tx = createContractTx.copy(id = expectedTxId),
-                businessObjectInfos = listOf(businessObjectInfo)
-            )
-            createContractTx.copy(id = TxId.fromBase58(randomStringBase58())).apply {
-                txTracker.trackTx(this, businessObjectInfos = listOf(businessObjectInfo))
-                txTracker.setTrackStatus(this, TxTrackStatus.SUCCESS)
-            }
-        }
 
-        em.flush()
-        em.clear()
+        txTracker.trackTx(
+            tx = createContractTx.copy(id = TxId.fromBase58(randomStringBase58())),
+            businessObjectInfos = listOf(businessObjectInfo),
+        )
+        em.flushAndClear()
+
+        txTracker.trackTx(
+            tx = createContractTx.copy(id = expectedTxId),
+            businessObjectInfos = listOf(businessObjectInfo)
+        )
+        em.flushAndClear()
+
+        createContractTx.copy(id = TxId.fromBase58(randomStringBase58())).apply {
+            txTracker.trackTx(this, businessObjectInfos = listOf(businessObjectInfo))
+            txTracker.setTrackStatus(this, TxTrackStatus.SUCCESS)
+        }
+        em.flushAndClear()
 
         val result = txTracker.getLastTrackedTxForBusinessObjectWithStatus(businessObjectId, TxTrackStatus.PENDING)
 

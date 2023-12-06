@@ -1,6 +1,6 @@
 package com.wavesenterprise.we.tx.observer.jpa.repository
 
-import com.wavesenterprise.we.tx.observer.common.annotation.TX_OBSERVER_SCHEMA_NAME
+import com.wavesenterprise.we.tx.observer.common.jpa.util.TX_OBSERVER_SCHEMA_NAME
 import com.wavesenterprise.we.tx.observer.domain.BlockHistory
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Modifying

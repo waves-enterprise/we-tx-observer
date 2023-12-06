@@ -6,7 +6,7 @@ import com.wavesenterprise.sdk.node.domain.TxId
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomBytesFromUUID
 import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
-import com.wavesenterprise.we.tx.observer.common.annotation.TX_OBSERVER_SCHEMA_NAME
+import com.wavesenterprise.we.tx.observer.common.jpa.util.TX_OBSERVER_SCHEMA_NAME
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTx
 import com.wavesenterprise.we.tx.observer.domain.TxQueuePartition
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
