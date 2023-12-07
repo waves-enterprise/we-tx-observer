@@ -1,18 +1,18 @@
 --region BlockHeightInfo
 create table if not exists block_height_info
 (
-    id                uuid         not null
+    id                uuid   not null
         constraint block_height_info_pkey
             primary key,
     created_timestamp timestamp,
-    current_height    bigint       not null,
+    current_height    bigint not null,
     node_alias        varchar(255) not null,
     update_timestamp  timestamp,
-    version           bigint       not null
+    version           bigint not null
 );
 
 create unique index if not exists block_height_info_one_row
-    on block_height_info ((node_alias is not null));
+    on block_height_info((node_alias is not null));
 
 create function block_height_info_no_delete()
     returns trigger
