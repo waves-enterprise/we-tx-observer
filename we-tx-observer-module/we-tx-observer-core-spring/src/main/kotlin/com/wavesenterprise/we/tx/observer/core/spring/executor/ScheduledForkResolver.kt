@@ -56,7 +56,7 @@ open class ScheduledForkResolver(
 
     private fun handleForkCandidate(enqueuedTx: EnqueuedTx) {
         val txInfoOptional = txService.txInfo(TxId.fromBase58(enqueuedTx.id))
-        if (!!txInfoOptional.isPresent) {
+        if (!txInfoOptional.isPresent) {
             run {
                 logger.error("No transaction info in node for TX with ID = ${enqueuedTx.id}. Marking it as CANCELLED_FORKED")
                 enqueuedTx.apply {
