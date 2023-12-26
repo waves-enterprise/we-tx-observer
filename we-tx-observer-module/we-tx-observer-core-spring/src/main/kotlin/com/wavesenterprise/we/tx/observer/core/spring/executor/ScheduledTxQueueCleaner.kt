@@ -18,7 +18,7 @@ open class ScheduledTxQueueCleaner(
     @SchedulerLock(
         name = "cleanReadEnqueuedTx_task",
     )
-    fun cleanReadEnqueuedTx() {
+    open fun cleanReadEnqueuedTx() {
         val blockHeightLimit = syncInfoService.observerHeight() - archiveBlockHeightWindow
         logger.info("Deleting all READ transactions having blockHeight < $blockHeightLimit")
         var totalDeleted = 0
