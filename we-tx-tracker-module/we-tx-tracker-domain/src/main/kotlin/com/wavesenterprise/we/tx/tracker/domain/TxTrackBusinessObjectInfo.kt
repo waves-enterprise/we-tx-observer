@@ -1,6 +1,6 @@
 package com.wavesenterprise.we.tx.tracker.domain
 
-import com.wavesenterprise.we.tx.observer.common.annotation.TX_TRACKER_SCHEMA_NAME
+import com.wavesenterprise.we.tx.observer.common.jpa.util.TX_TRACKER_SCHEMA_NAME
 import org.hibernate.annotations.SQLInsert
 import javax.persistence.Entity
 import javax.persistence.Id

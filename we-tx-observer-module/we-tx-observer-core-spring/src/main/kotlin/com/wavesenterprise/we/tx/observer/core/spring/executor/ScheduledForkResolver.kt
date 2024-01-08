@@ -8,7 +8,7 @@ import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfo
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTx
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
-import net.javacrumbs.shedlock.core.SchedulerLock
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
@@ -28,8 +28,6 @@ open class ScheduledForkResolver(
 
     @SchedulerLock(
         name = "resolveForkedTx_task",
-        lockAtLeastForString = "\${tx-observer.fork-resolver.lock-at-least:0}",
-        lockAtMostForString = "\${tx-observer.fork-resolver.lock-at-most:10000}"
     )
     @Transactional
     open fun resolveForkedTx() {
@@ -58,7 +56,7 @@ open class ScheduledForkResolver(
 
     private fun handleForkCandidate(enqueuedTx: EnqueuedTx) {
         val txInfoOptional = txService.txInfo(TxId.fromBase58(enqueuedTx.id))
-        if (!!txInfoOptional.isPresent) {
+        if (!txInfoOptional.isPresent) {
             run {
                 logger.error("No transaction info in node for TX with ID = ${enqueuedTx.id}. Marking it as CANCELLED_FORKED")
                 enqueuedTx.apply {

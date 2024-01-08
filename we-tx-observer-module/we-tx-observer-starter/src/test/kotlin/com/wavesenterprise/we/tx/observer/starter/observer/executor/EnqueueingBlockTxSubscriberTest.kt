@@ -15,6 +15,7 @@ import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.api.block.WeBlockInfo
 import com.wavesenterprise.we.tx.observer.api.partition.TxQueuePartitionResolver
 import com.wavesenterprise.we.tx.observer.api.tx.TxEnqueuePredicate
+import com.wavesenterprise.we.tx.observer.common.jpa.util.flushAndClear
 import com.wavesenterprise.we.tx.observer.core.spring.component.HttpApiWeBlockInfo
 import com.wavesenterprise.we.tx.observer.core.spring.executor.EnqueueingBlockSubscriber
 import com.wavesenterprise.we.tx.observer.core.spring.metrics.AddableLongMetricsContainer
@@ -126,8 +127,7 @@ internal class EnqueueingBlockTxSubscriberTest {
 
         enqueueingBlockSubscriber.subscribe(weBlockInfo(txList = mockTxList, height = Height(height)))
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val allEnqueuedTxs = enqueuedTxJpaRepository.findAll(Sort.by("positionInBlock"))
         val mockedTxIdSet = mockTxList.map { it.id.asBase58String() }.toSet()
@@ -172,8 +172,7 @@ internal class EnqueueingBlockTxSubscriberTest {
 
         enqueueingBlockSubscriber.subscribe(weBlockInfo(txList = mockTxList, height = Height(1)))
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val allEnqueuedTxs = enqueuedTxJpaRepository.findAll()
         assertEquals(mockTxList.size, allEnqueuedTxs.size)
@@ -184,8 +183,7 @@ internal class EnqueueingBlockTxSubscriberTest {
 
         enqueueingBlockSubscriber.subscribe(weBlockInfo(txList = mockTxList, height = Height(1)))
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val allEnqueuedAfterSecondInvocationTxs = enqueuedTxJpaRepository.findAll()
         assertEquals(mockTxList.size, allEnqueuedAfterSecondInvocationTxs.size)
@@ -205,8 +203,7 @@ internal class EnqueueingBlockTxSubscriberTest {
 
         enqueueingBlockSubscriber.subscribe(weBlockInfo(txList = mockTxList, height = Height(1)))
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         txQueuePartitionJpaRepository.findAll().apply {
             assertEquals(2, size)
@@ -271,8 +268,7 @@ internal class EnqueueingBlockTxSubscriberTest {
         val mockTxList = listOf(atomic, sixth)
         enqueueingBlockSubscriber.subscribe(weBlockInfo(txList = mockTxList, height = Height(height)))
 
-        em.flush()
-        em.clear()
+        em.flushAndClear()
 
         val allEnqueuedTxs = enqueuedTxJpaRepository.findAll(Sort.by("positionInBlock"))
         val mockedTxIdSet = mutableSetOf(atomic.id, sixth.id)

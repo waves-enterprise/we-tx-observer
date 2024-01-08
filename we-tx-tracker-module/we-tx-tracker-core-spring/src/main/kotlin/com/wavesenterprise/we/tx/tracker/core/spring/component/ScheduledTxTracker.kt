@@ -10,7 +10,7 @@ import com.wavesenterprise.sdk.node.domain.tx.Tx
 import com.wavesenterprise.sdk.node.domain.tx.Tx.Companion.type
 import com.wavesenterprise.we.tx.tracker.api.TxTracker
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackStatus
-import net.javacrumbs.shedlock.core.SchedulerLock
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.springframework.data.domain.PageRequest
 import java.time.Duration
 import java.time.OffsetDateTime
@@ -26,8 +26,6 @@ open class ScheduledTxTracker(
 
     @SchedulerLock(
         name = "trackPendingTx_task",
-        lockAtLeastForString = "\${tx-tracker.lock-at-least:0}",
-        lockAtMostForString = "\${tx-tracker.lock-at-most:10000}"
     )
     open fun trackPendingTx() {
         val trackedTxs = txTracker.getTrackedTxsWithStatus(

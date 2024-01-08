@@ -1,6 +1,6 @@
 package com.wavesenterprise.we.tx.tracker.domain
 
-import com.wavesenterprise.we.tx.observer.common.annotation.TX_TRACKER_SCHEMA_NAME
+import com.wavesenterprise.we.tx.observer.common.jpa.util.TX_TRACKER_SCHEMA_NAME
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener

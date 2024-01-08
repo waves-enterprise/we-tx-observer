@@ -1,6 +1,6 @@
 package com.wavesenterprise.we.tx.observer.core.spring.web
 
-import com.wavesenterprise.we.tx.observer.common.annotation.toIn
+import com.wavesenterprise.we.tx.observer.common.jpa.util.toIn
 import com.wavesenterprise.we.tx.observer.core.spring.web.dto.BlockHistoryApiDto
 import com.wavesenterprise.we.tx.observer.core.spring.web.dto.EnqueuedTxApiDto
 import com.wavesenterprise.we.tx.observer.core.spring.web.dto.EnqueuedTxSearchRequest

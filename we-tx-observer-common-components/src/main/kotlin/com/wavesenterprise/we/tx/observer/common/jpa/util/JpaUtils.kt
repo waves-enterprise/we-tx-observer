@@ -1,4 +1,4 @@
-package com.wavesenterprise.we.tx.observer.common.annotation
+package com.wavesenterprise.we.tx.observer.common.jpa.util
 
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.Predicate

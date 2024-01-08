@@ -2,7 +2,7 @@ package com.wavesenterprise.we.tx.observer.core.spring.executor
 
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoService
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
-import net.javacrumbs.shedlock.core.SchedulerLock
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -17,10 +17,8 @@ open class ScheduledTxQueueCleaner(
 
     @SchedulerLock(
         name = "cleanReadEnqueuedTx_task",
-        lockAtLeastForString = "\${tx-observer.queue-cleaner.lock-at-least:0}",
-        lockAtMostForString = "\${tx-observer.queue-cleaner.lock-at-most:10000}"
     )
-    fun cleanReadEnqueuedTx() {
+    open fun cleanReadEnqueuedTx() {
         val blockHeightLimit = syncInfoService.observerHeight() - archiveBlockHeightWindow
         logger.info("Deleting all READ transactions having blockHeight < $blockHeightLimit")
         var totalDeleted = 0

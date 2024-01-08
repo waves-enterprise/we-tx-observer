@@ -7,6 +7,7 @@ import com.wavesenterprise.we.tx.tracker.domain.TxTrackBusinessObjectInfo
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackInfo
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackStatus
 import org.springframework.data.domain.PageRequest
+import java.util.Optional
 
 /**
  * Service for tracking, managing and obtaining up-to-date information about necessary transactions.
@@ -73,7 +74,7 @@ interface TxTracker {
     fun getTrackedTxIdsWithStatusAndTypes(
         txTrackerStatus: TxTrackStatus,
         types: List<Int>,
-        pageRequest: PageRequest
+        pageRequest: PageRequest,
     ): List<TxId>
 
     /**
@@ -84,15 +85,28 @@ interface TxTracker {
      */
     fun getTrackedTxsWithStatus(
         txTrackerStatus: TxTrackStatus,
-        pageRequest: PageRequest
+        pageRequest: PageRequest,
     ): List<Tx>
 
     /**
      * Get last unsuccessful(ERROR, FAILURE statuses) TxTrackInfo by id of business object.
      * @param businessObjectId id of business object
-     * @return nullable TxTrackInfo
+     * @return optional TxTrackInfo
      */
-    fun getLastUnsuccessfulTrackedTxForBusinessObject(businessObjectId: String): TxTrackInfo?
+    fun getLastUnsuccessfulTrackedTxForBusinessObject(
+        businessObjectId: String,
+    ): Optional<TxTrackInfo>
+
+    /**
+     * Get last tracked TxTrackInfo by id of business object and transaction status.
+     * @param businessObjectId id of business object
+     * @param status status of tracked transaction
+     * @return optional TxTrackInfo
+     */
+    fun getLastTrackedTxForBusinessObjectWithStatus(
+        businessObjectId: String,
+        status: TxTrackStatus,
+    ): Optional<TxTrackInfo>
 
     /**
      * Establish the transaction status of a contract.

@@ -1,7 +1,7 @@
 package com.wavesenterprise.we.tx.observer.jpa.config
 
 import com.wavesenterprise.we.flyway.starter.FlywaySchema
-import com.wavesenterprise.we.tx.observer.common.annotation.TX_OBSERVER_SCHEMA_NAME
+import com.wavesenterprise.we.tx.observer.common.jpa.util.TX_OBSERVER_SCHEMA_NAME
 import com.wavesenterprise.we.tx.observer.common.tx.executor.TxExecutor
 import com.wavesenterprise.we.tx.observer.common.tx.executor.TxExecutorImpl
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
