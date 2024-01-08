@@ -1,11 +1,13 @@
 package com.wavesenterprise.we.tx.observer.starter.observer.config
 
 import com.wavesenterprise.sdk.node.client.blocking.address.AddressService
+import com.wavesenterprise.sdk.node.client.blocking.alias.AliasService
 import com.wavesenterprise.sdk.node.client.blocking.blocks.BlocksService
 import com.wavesenterprise.sdk.node.client.blocking.contract.ContractService
 import com.wavesenterprise.sdk.node.client.blocking.event.BlockchainEventsService
 import com.wavesenterprise.sdk.node.client.blocking.node.NodeBlockingServiceFactory
 import com.wavesenterprise.sdk.node.client.blocking.node.NodeInfoService
+import com.wavesenterprise.sdk.node.client.blocking.pki.PkiService
 import com.wavesenterprise.sdk.node.client.blocking.privacy.PrivacyService
 import com.wavesenterprise.sdk.node.client.blocking.tx.TxService
 import com.wavesenterprise.sdk.node.client.blocking.util.NodeUtilsService
@@ -32,15 +34,26 @@ class NodeBlockingServiceFactoryMockConfiguration {
 
     @Bean
     fun nodeBlockingServiceFactory(): NodeBlockingServiceFactory = mockk<NodeBlockingServiceFactory>().also {
+        every { it.addressService() } returns addressService()
+        every { it.aliasService() } returns aliasService()
+        every { it.blockchainEventsService() } returns blockchainEventsService()
         every { it.blocksService() } returns blocksService()
-        every { it.txService() } returns txService()
-        every { it.privacyService() } returns privacyService()
         every { it.contractService() } returns contractService()
         every { it.nodeInfoService() } returns nodeInfoService()
-        every { it.blockchainEventsService() } returns blockchainEventsService()
-        every { it.addressService() } returns addressService()
         every { it.nodeUtilsService() } returns nodeUtilsService()
+        every { it.pkiService() } returns pkiService()
+        every { it.privacyService() } returns privacyService()
+        every { it.txService() } returns txService()
     }
+
+    @Bean
+    fun addressService(): AddressService = mockk(relaxed = true)
+
+    @Bean
+    fun aliasService(): AliasService = mockk(relaxed = true)
+
+    @Bean
+    fun blockchainEventsService(): BlockchainEventsService = mockk(relaxed = true)
 
     @Bean
     fun blocksService(): BlocksService = mockk<BlocksService>(relaxed = true).also {
@@ -49,25 +62,22 @@ class NodeBlockingServiceFactoryMockConfiguration {
     }
 
     @Bean
-    fun txService(): TxService = mockk(relaxed = true)
-
-    @Bean
     fun contractService(): ContractService = mockk(relaxed = true)
 
     @Bean
     fun nodeInfoService(): NodeInfoService = mockk(relaxed = true)
 
     @Bean
-    fun blockchainEventsService(): BlockchainEventsService = mockk(relaxed = true)
+    fun nodeUtilsService(): NodeUtilsService = mockk(relaxed = true)
 
     @Bean
-    fun addressService(): AddressService = mockk(relaxed = true)
+    fun pkiService(): PkiService = mockk(relaxed = true)
 
     @Bean
     fun privacyService(): PrivacyService = mockk(relaxed = true)
 
     @Bean
-    fun nodeUtilsService(): NodeUtilsService = mockk(relaxed = true)
+    fun txService(): TxService = mockk(relaxed = true)
 
     companion object {
         val mockPartition = TxQueuePartition(
