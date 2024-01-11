@@ -1,0 +1,1 @@
+drop index if exists ix__enqueued_tx_partition_id_timestamp_for_new;
