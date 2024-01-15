@@ -16,16 +16,14 @@ interface TxQueuePartitionJpaRepository :
     @Query(
         """
             select tqp.id
-            from (
-                select * from $TX_OBSERVER_SCHEMA_NAME.tx_queue_partition
-                where paused_on_tx_id is null
-                order by priority desc
-            ) tqp
-            join (
+            from $TX_OBSERVER_SCHEMA_NAME.tx_queue_partition tqp
+            where tqp.paused_on_tx_id is null
+            and exists(
                 select * from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx
-                where status = 'NEW'
-            ) etx
-            on etx.partition_id = tqp.id
+                where partition_id = tqp.id
+                and status = 'NEW'
+            )
+            order by tqp.priority desc, tqp.id
             for update of tqp skip locked
             limit 1
         """,
