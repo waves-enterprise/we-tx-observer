@@ -23,7 +23,7 @@ interface TxQueuePartitionJpaRepository :
                 where partition_id = tqp.id
                 and status = 'NEW'
             )
-            order by tqp.priority desc, tqp.id
+            order by tqp.priority desc
             for update of tqp skip locked
             limit 1
         """,
