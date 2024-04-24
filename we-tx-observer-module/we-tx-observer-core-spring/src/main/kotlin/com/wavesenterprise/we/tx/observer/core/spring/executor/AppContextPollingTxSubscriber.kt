@@ -15,7 +15,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.data.domain.PageRequest
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 open class AppContextPollingTxSubscriber(
     val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
@@ -32,7 +32,7 @@ open class AppContextPollingTxSubscriber(
     override fun dequeuePartitionAndSendToSubscribers(partitionId: String): Int {
         logger.debug("Polling transaction for partitionId = $partitionId")
         val actualEnqueuedTx = enqueuedTxJpaRepository.findActualEnqueuedTxForPartition(
-            enqueuedTxStatus = EnqueuedTxStatus.NEW,
+            enqueuedTxStatus = EnqueuedTxStatus.NEW.name,
             partitionId = partitionId,
             pageable = PageRequest.of(0, dequeSize),
         )

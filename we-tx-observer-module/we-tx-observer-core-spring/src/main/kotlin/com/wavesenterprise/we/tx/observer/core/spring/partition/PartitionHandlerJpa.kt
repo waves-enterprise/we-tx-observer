@@ -4,7 +4,7 @@ import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 open class PartitionHandlerJpa(
     val partitionJpaRepository: TxQueuePartitionJpaRepository,
@@ -25,7 +25,6 @@ open class PartitionHandlerJpa(
 
     @Transactional
     override fun pausePartitionOnTx(partitionId: String, pausedOnTxId: String) {
-        enqueuedTxJpaRepository.findByIdWithLock(pausedOnTxId)
         if (partitionJpaRepository.updatePausedTxId(partitionId, pausedOnTxId) > 0) {
             logger.debug("Partition $partitionId has been paused by tx with ID = $pausedOnTxId")
         } else {

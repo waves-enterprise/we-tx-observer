@@ -2,15 +2,15 @@ package com.wavesenterprise.we.tx.observer.common.tx.executor
 
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.TransactionException
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
-import javax.transaction.Transactional
-import javax.transaction.Transactional.TxType
 
 open class TxExecutorImpl(
     private val transactionTemplate: TransactionTemplate,
 ) : TxExecutor {
 
-    @Transactional(TxType.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
     override fun <T> required(block: () -> T): T =
         block()
 
@@ -21,7 +21,7 @@ open class TxExecutorImpl(
             block = block,
         )
 
-    @Transactional(TxType.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     override fun <T> requiresNew(block: () -> T): T =
         block()
 
