@@ -12,7 +12,7 @@ import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 open class ScheduledForkResolver(
     private val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,

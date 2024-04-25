@@ -12,9 +12,9 @@ import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import javax.persistence.LockModeType
-import javax.transaction.Transactional
-import javax.transaction.Transactional.TxType
 
 @Repository
 interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecificationExecutor<EnqueuedTx> {
@@ -31,13 +31,17 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
     fun findAllSorted(specification: Specification<EnqueuedTx>, pageable: Pageable): Page<EnqueuedTx>
 
     @Query(
-        "select tx from EnqueuedTx tx where tx.status = :enqueuedTxStatus and tx.partition.id = :partitionId " +
-            "order by tx.blockHeight, tx.positionInBlock, tx.positionInAtomic"
+        value = """
+            select tx.* from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx tx
+            where tx.status = :#{#enqueuedTxStatus.name()} and tx.partition_id = :partitionId
+            order by tx.block_height, tx.position_in_block, tx.position_in_atomic for update skip locked
+        """,
+        nativeQuery = true
     )
     fun findActualEnqueuedTxForPartition(
         enqueuedTxStatus: EnqueuedTxStatus,
         partitionId: String,
-        pageable: Pageable,
+        pageable: Pageable
     ): Page<EnqueuedTx>
 
     fun findAllByStatusAndBlockHeightBeforeOrderByBlockHeight(
@@ -103,7 +107,7 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
     @Query("select min(tx.blockHeight) from EnqueuedTx tx where tx.status = :enqueuedTxStatus")
     fun findMinHeightForStatus(enqueuedTxStatus: EnqueuedTxStatus): Long?
 
-    @Transactional(TxType.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Query(
         """delete from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx where id in
         (select id from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx where status = :enqueuedTxStatus and block_height < :blockHeight limit :limit)""",

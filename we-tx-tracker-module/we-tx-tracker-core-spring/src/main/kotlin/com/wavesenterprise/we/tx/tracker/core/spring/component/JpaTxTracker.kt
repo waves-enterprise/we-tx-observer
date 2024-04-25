@@ -30,8 +30,8 @@ import com.wavesenterprise.we.tx.tracker.jpa.repository.SmartContractInfoJpaRepo
 import com.wavesenterprise.we.tx.tracker.jpa.repository.TxTrackerJpaRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
-import javax.transaction.Transactional
 
 open class JpaTxTracker(
     val txTrackerJpaRepository: TxTrackerJpaRepository,
