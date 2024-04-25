@@ -33,13 +33,13 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
     @Query(
         value = """
             select tx.* from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx tx
-            where tx.status = :enqueuedTxStatus and tx.partition_id = :partitionId
+            where tx.status = :#{#enqueuedTxStatus.name()} and tx.partition_id = :partitionId
             order by tx.block_height, tx.position_in_block, tx.position_in_atomic for update skip locked
         """,
         nativeQuery = true
     )
     fun findActualEnqueuedTxForPartition(
-        enqueuedTxStatus: String,
+        enqueuedTxStatus: EnqueuedTxStatus,
         partitionId: String,
         pageable: Pageable
     ): Page<EnqueuedTx>

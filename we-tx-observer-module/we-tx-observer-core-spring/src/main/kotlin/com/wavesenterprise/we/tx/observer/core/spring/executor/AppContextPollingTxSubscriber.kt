@@ -32,7 +32,7 @@ open class AppContextPollingTxSubscriber(
     override fun dequeuePartitionAndSendToSubscribers(partitionId: String): Int {
         logger.debug("Polling transaction for partitionId = $partitionId")
         val actualEnqueuedTx = enqueuedTxJpaRepository.findActualEnqueuedTxForPartition(
-            enqueuedTxStatus = EnqueuedTxStatus.NEW.name,
+            enqueuedTxStatus = EnqueuedTxStatus.NEW,
             partitionId = partitionId,
             pageable = PageRequest.of(0, dequeSize),
         )
