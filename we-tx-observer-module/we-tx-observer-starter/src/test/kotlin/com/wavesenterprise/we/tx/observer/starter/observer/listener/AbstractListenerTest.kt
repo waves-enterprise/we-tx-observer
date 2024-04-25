@@ -89,7 +89,7 @@ abstract class AbstractListenerTest {
         enqueuedTxList = mutableListOf()
         every {
             enqueuedTxJpaRepository.findActualEnqueuedTxForPartition(
-                enqueuedTxStatus = EnqueuedTxStatus.NEW,
+                enqueuedTxStatus = EnqueuedTxStatus.NEW.name,
                 partitionId = mockPartitionId,
                 pageable = PageRequest.of(0, 100)
             )

@@ -23,8 +23,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
-import javax.transaction.Transactional
 
 open class TxQueueStatusServiceImpl(
     val nodeBlockingServiceFactory: NodeBlockingServiceFactory,
