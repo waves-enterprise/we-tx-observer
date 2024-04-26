@@ -123,10 +123,10 @@ internal class TxQueuePartitionJpaRepositoryTest {
     fun `should find latest actual partition`() {
         val firstTxQueuePartition = partitionWithNewTx(
             id = "firstTxQueuePartitionId",
-            priority = 1,
+            priority = 0,
             enqueuedTxTimestamp = OffsetDateTime.of(
                 LocalDate.now(),
-                LocalTime.of(12, 0, 0),
+                LocalTime.of(11, 0, 0),
                 ZoneOffset.UTC
             )
         )

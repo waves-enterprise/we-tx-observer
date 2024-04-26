@@ -15,17 +15,12 @@ interface TxQueuePartitionJpaRepository :
 
     @Query(
         """
-            select tqp.id
-            from $TX_OBSERVER_SCHEMA_NAME.tx_queue_partition tqp
-            where tqp.paused_on_tx_id is null
-            and exists(
-                select * from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx
-                where partition_id = tqp.id
-                and status = 'NEW'
-            )
-            order by tqp.priority desc
-            for update of tqp skip locked
-            limit 1
+            select tqp.id from $TX_OBSERVER_SCHEMA_NAME.tx_queue_partition tqp
+                join $TX_OBSERVER_SCHEMA_NAME.enqueued_tx etx on etx.partition_id = tqp.id and etx.status = 'NEW'
+                    where tqp.paused_on_tx_id is null
+                order by tqp.priority desc, etx.tx_timestamp
+                for update of tqp skip locked
+                limit 1
         """,
         nativeQuery = true
     )
