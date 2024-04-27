@@ -24,7 +24,25 @@ interface TxQueuePartitionJpaRepository :
         """,
         nativeQuery = true
     )
-    fun findAndLockLatestActualPartition(): String?
+    fun findAndLockLatestPartition(): String?
+
+    @Query(
+        """
+            select tqp.id
+            from $TX_OBSERVER_SCHEMA_NAME.tx_queue_partition tqp
+            where tqp.paused_on_tx_id is null
+            and exists(
+                select * from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx
+                where partition_id = tqp.id
+                and status = 'NEW'
+            )
+            order by tqp.priority desc
+            for update of tqp skip locked
+            limit 1
+        """,
+        nativeQuery = true,
+    )
+    fun findAndLockRandomPartition(): String?
 
     @Query(
         """

@@ -6,4 +6,5 @@ interface PartitionPollerConfig {
     var enabled: Boolean
     var fixedDelay: Duration
     var threadCount: Int
+    var accelerateAtQueueSize: Long
 }

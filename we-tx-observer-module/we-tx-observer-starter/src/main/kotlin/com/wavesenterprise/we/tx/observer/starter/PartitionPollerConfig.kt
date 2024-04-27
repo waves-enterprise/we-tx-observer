@@ -2,11 +2,11 @@ package com.wavesenterprise.we.tx.observer.starter
 
 import com.wavesenterprise.we.tx.observer.core.spring.executor.AppContextPollingTxSubscriber
 import com.wavesenterprise.we.tx.observer.core.spring.executor.ScheduledPartitionPoller
-import com.wavesenterprise.we.tx.observer.core.spring.partition.DefaultLatestTxPartitionPoller
-import com.wavesenterprise.we.tx.observer.core.spring.partition.ErrorHandlingLatestTxPartitionPoller
-import com.wavesenterprise.we.tx.observer.core.spring.partition.LatestTxPartitionPoller
+import com.wavesenterprise.we.tx.observer.core.spring.partition.DefaultTxPartitionPoller
+import com.wavesenterprise.we.tx.observer.core.spring.partition.ErrorHandlingTxPartitionPoller
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PartitionHandler
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PollingTxSubscriber
+import com.wavesenterprise.we.tx.observer.core.spring.partition.TxPartitionPoller
 import com.wavesenterprise.we.tx.observer.jpa.config.TxObserverJpaConfig
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepository
@@ -34,30 +34,33 @@ class PartitionPollerConfig {
 
     @Bean
     fun scheduledPartitionPoller(
-        errorHandlingLatestTxPartitionPoller: LatestTxPartitionPoller,
+        errorHandlingTxPartitionPoller: TxPartitionPoller,
     ): ScheduledPartitionPoller = ScheduledPartitionPoller(
-        errorHandlingLatestTxPartitionPoller = errorHandlingLatestTxPartitionPoller,
+        errorHandlingTxPartitionPoller = errorHandlingTxPartitionPoller,
     )
 
     @Bean
-    fun errorHandlingLatestTxPartitionPoller(
-        defaultLatestTxPartitionPoller: LatestTxPartitionPoller,
+    fun errorHandlingTxPartitionPoller(
+        defaultTxPartitionPoller: TxPartitionPoller,
         partitionHandler: PartitionHandler,
-    ): LatestTxPartitionPoller = ErrorHandlingLatestTxPartitionPoller(
-        defaultLatestTxPartitionPoller = defaultLatestTxPartitionPoller,
+    ): TxPartitionPoller = ErrorHandlingTxPartitionPoller(
+        defaultTxPartitionPoller = defaultTxPartitionPoller,
         partitionHandler = partitionHandler,
     )
 
     @Bean
-    fun defaultLatestTxPartitionPoller(
+    fun defaultTxPartitionPoller(
         txQueuePartitionJpaRepository: TxQueuePartitionJpaRepository,
+        enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
         pollingTxSubscriber: PollingTxSubscriber,
         partitionHandler: PartitionHandler,
         partitionPollerProperties: PartitionPollerProperties,
-    ): LatestTxPartitionPoller = DefaultLatestTxPartitionPoller(
+    ): TxPartitionPoller = DefaultTxPartitionPoller(
         txQueuePartitionJpaRepository = txQueuePartitionJpaRepository,
+        enqueuedTxJpaRepository = enqueuedTxJpaRepository,
         pollingTxSubscriber = pollingTxSubscriber,
         partitionHandler = partitionHandler,
+        partitionPollerProperties = partitionPollerProperties,
     )
 
     @Bean
