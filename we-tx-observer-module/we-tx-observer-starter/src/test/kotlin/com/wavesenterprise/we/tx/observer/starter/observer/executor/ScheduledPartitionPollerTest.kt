@@ -1,7 +1,7 @@
 package com.wavesenterprise.we.tx.observer.starter.observer.executor
 
 import com.wavesenterprise.we.tx.observer.core.spring.executor.ScheduledPartitionPoller
-import com.wavesenterprise.we.tx.observer.core.spring.partition.LatestTxPartitionPoller
+import com.wavesenterprise.we.tx.observer.core.spring.partition.TxPartitionPoller
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 internal class ScheduledPartitionPollerTest {
 
     @MockK
-    lateinit var errorHandlingLatestTxPartitionPoller: LatestTxPartitionPoller
+    lateinit var errorHandlingTxPartitionPoller: TxPartitionPoller
 
     @InjectMockKs
     lateinit var scheduledPartitionPoller: ScheduledPartitionPoller
@@ -23,14 +23,14 @@ internal class ScheduledPartitionPollerTest {
     @Test
     fun `should poll latest actual partition while they are available`() {
         every {
-            errorHandlingLatestTxPartitionPoller.pollLatestActualPartition()
+            errorHandlingTxPartitionPoller.pollPartition()
         } returnsMany listOf("id1", "id2", "id3", null, "id4")
 
         scheduledPartitionPoller.pollWhileHavingActivePartitions()
 
         verify(exactly = 4) {
-            errorHandlingLatestTxPartitionPoller.pollLatestActualPartition()
+            errorHandlingTxPartitionPoller.pollPartition()
         }
-        confirmVerified(errorHandlingLatestTxPartitionPoller)
+        confirmVerified(errorHandlingTxPartitionPoller)
     }
 }

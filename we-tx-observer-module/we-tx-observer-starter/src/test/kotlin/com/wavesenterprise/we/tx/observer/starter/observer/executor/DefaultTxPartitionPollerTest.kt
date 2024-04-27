@@ -2,9 +2,12 @@ package com.wavesenterprise.we.tx.observer.starter.observer.executor
 
 import com.wavesenterprise.we.tx.observer.api.BlockListenerException
 import com.wavesenterprise.we.tx.observer.api.PartitionHandlingException
-import com.wavesenterprise.we.tx.observer.core.spring.partition.DefaultLatestTxPartitionPoller
+import com.wavesenterprise.we.tx.observer.core.spring.partition.DefaultTxPartitionPoller
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PartitionHandler
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PollingTxSubscriber
+import com.wavesenterprise.we.tx.observer.core.spring.properties.PartitionPollerConfig
+import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
+import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepository
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -15,6 +18,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -24,7 +28,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.lang.IllegalArgumentException
 
 @ExtendWith(MockKExtension::class)
-internal class DefaultLatestTxPartitionPollerTest {
+internal class DefaultTxPartitionPollerTest {
 
     @RelaxedMockK
     lateinit var txQueuePartitionJpaRepository: TxQueuePartitionJpaRepository
@@ -35,19 +39,50 @@ internal class DefaultLatestTxPartitionPollerTest {
     @MockK
     lateinit var pollingTxSubscriber: PollingTxSubscriber
 
+    @MockK
+    lateinit var enqueuedTxJpaRepository: EnqueuedTxJpaRepository
+
+    @MockK
+    lateinit var partitionPollerProperties: PartitionPollerConfig
+
     @InjectMockKs
-    lateinit var defaultLatestTxPartitionPoller: DefaultLatestTxPartitionPoller
+    lateinit var defaultTxPartitionPoller: DefaultTxPartitionPoller
+
+    private val accelerateAtQueueSize = 200L
+
+    @BeforeEach
+    fun init() {
+        every { enqueuedTxJpaRepository.countByStatus(EnqueuedTxStatus.NEW) } returns accelerateAtQueueSize - 1
+        every { partitionPollerProperties.accelerateAtQueueSize } returns accelerateAtQueueSize
+    }
 
     @Test
     fun `should get latest actual partition and handle it with success`() {
         val partitionId = "partId"
+        every { partitionPollerProperties.accelerateAtQueueSize } returns accelerateAtQueueSize
         every { pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(any()) } returns 1
-        every { txQueuePartitionJpaRepository.findAndLockLatestActualPartition() } returns partitionId
+        every { txQueuePartitionJpaRepository.findAndLockLatestPartition() } returns partitionId
 
-        defaultLatestTxPartitionPoller.pollLatestActualPartition()
+        defaultTxPartitionPoller.pollPartition()
 
         verifyOrder {
-            txQueuePartitionJpaRepository.findAndLockLatestActualPartition()
+            txQueuePartitionJpaRepository.findAndLockLatestPartition()
+            pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(partitionId)
+        }
+        confirmVerified(txQueuePartitionJpaRepository, partitionHandler)
+    }
+
+    @Test
+    fun `should get random actual partition and handle it with success`() {
+        val partitionId = "partId"
+        every { enqueuedTxJpaRepository.countByStatus(EnqueuedTxStatus.NEW) } returns accelerateAtQueueSize + 1
+        every { pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(any()) } returns 1
+        every { txQueuePartitionJpaRepository.findAndLockRandomPartition() } returns partitionId
+
+        defaultTxPartitionPoller.pollPartition()
+
+        verifyOrder {
+            txQueuePartitionJpaRepository.findAndLockRandomPartition()
             pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(partitionId)
         }
         confirmVerified(txQueuePartitionJpaRepository, partitionHandler)
@@ -55,12 +90,12 @@ internal class DefaultLatestTxPartitionPollerTest {
 
     @Test
     fun `should do nothing when having no actual partitions`() {
-        every { txQueuePartitionJpaRepository.findAndLockLatestActualPartition() } returns null
+        every { txQueuePartitionJpaRepository.findAndLockLatestPartition() } returns null
 
-        defaultLatestTxPartitionPoller.pollLatestActualPartition()
+        defaultTxPartitionPoller.pollPartition()
 
         verify(exactly = 1) {
-            txQueuePartitionJpaRepository.findAndLockLatestActualPartition()
+            txQueuePartitionJpaRepository.findAndLockLatestPartition()
         }
         confirmVerified(txQueuePartitionJpaRepository, pollingTxSubscriber, partitionHandler)
     }
@@ -71,20 +106,20 @@ internal class DefaultLatestTxPartitionPollerTest {
         exception: Exception
     ) {
         val partitionId = "partId"
-        every { txQueuePartitionJpaRepository.findAndLockLatestActualPartition() } returns partitionId
+        every { txQueuePartitionJpaRepository.findAndLockLatestPartition() } returns partitionId
         every {
             pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(partitionId)
         } throws exception
 
         val partitionHandlingException =
-            assertThrows<PartitionHandlingException> { defaultLatestTxPartitionPoller.pollLatestActualPartition() }
+            assertThrows<PartitionHandlingException> { defaultTxPartitionPoller.pollPartition() }
 
         partitionHandlingException.also {
             assertEquals(partitionId, it.partitionId)
             assertEquals(exception, it.cause)
         }
         verifyOrder {
-            txQueuePartitionJpaRepository.findAndLockLatestActualPartition()
+            txQueuePartitionJpaRepository.findAndLockLatestPartition()
             pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(partitionId)
         }
         confirmVerified(txQueuePartitionJpaRepository, pollingTxSubscriber, partitionHandler)
@@ -93,15 +128,15 @@ internal class DefaultLatestTxPartitionPollerTest {
     @Test
     fun `should handle empty partition`() {
         val partitionId = "partId"
-        every { txQueuePartitionJpaRepository.findAndLockLatestActualPartition() } returns partitionId
+        every { txQueuePartitionJpaRepository.findAndLockLatestPartition() } returns partitionId
         every {
             pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(partitionId)
         } returns 0
 
-        defaultLatestTxPartitionPoller.pollLatestActualPartition()
+        defaultTxPartitionPoller.pollPartition()
 
         verifyOrder {
-            txQueuePartitionJpaRepository.findAndLockLatestActualPartition()
+            txQueuePartitionJpaRepository.findAndLockLatestPartition()
             pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(partitionId)
             partitionHandler.handleEmptyPartition(partitionId)
         }

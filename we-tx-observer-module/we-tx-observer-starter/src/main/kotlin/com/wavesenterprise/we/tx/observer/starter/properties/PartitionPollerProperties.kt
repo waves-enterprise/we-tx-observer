@@ -17,4 +17,6 @@ data class PartitionPollerProperties(
     override var fixedDelay: Duration,
     @DefaultValue("4")
     override var threadCount: Int,
+    @DefaultValue("200")
+    override var accelerateAtQueueSize: Long,
 ) : PartitionPollerConfig
