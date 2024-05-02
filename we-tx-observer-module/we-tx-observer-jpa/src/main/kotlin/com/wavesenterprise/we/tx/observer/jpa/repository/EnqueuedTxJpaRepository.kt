@@ -19,6 +19,12 @@ import javax.persistence.LockModeType
 @Repository
 interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecificationExecutor<EnqueuedTx> {
 
+    @Query(
+        value = """
+            select count(*) from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx tx where tx.status = :#{#enqueuedTxStatus.name()}
+        """,
+        nativeQuery = true
+    )
     fun countByStatus(enqueuedTxStatus: EnqueuedTxStatus): Long
 
     @Query("select count(tx) from EnqueuedTx tx where status = 'NEW' and txType = 114")
