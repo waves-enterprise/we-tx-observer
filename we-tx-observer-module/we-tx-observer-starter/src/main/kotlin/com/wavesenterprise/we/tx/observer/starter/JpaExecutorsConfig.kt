@@ -1,6 +1,7 @@
 package com.wavesenterprise.we.tx.observer.starter
 
 import com.wavesenterprise.we.tx.observer.common.conditional.ConditionalOnJpaMode
+import com.wavesenterprise.we.tx.observer.starter.cache.DefaultTimeBasedCacheConfiguration
 import com.wavesenterprise.we.tx.observer.starter.lock.LockConfig
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -17,5 +18,6 @@ import org.springframework.context.annotation.Import
     TxObserverSchedulerConfig::class,
     LockConfig::class,
     PartitionPausedOnTxIdCleanerConfig::class,
+    DefaultTimeBasedCacheConfiguration::class,
 )
 class JpaExecutorsConfig

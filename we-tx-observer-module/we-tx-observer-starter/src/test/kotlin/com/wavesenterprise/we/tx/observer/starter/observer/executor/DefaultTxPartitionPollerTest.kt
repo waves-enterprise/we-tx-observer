@@ -5,8 +5,7 @@ import com.wavesenterprise.we.tx.observer.api.PartitionHandlingException
 import com.wavesenterprise.we.tx.observer.core.spring.partition.DefaultTxPartitionPoller
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PartitionHandler
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PollingTxSubscriber
-import com.wavesenterprise.we.tx.observer.core.spring.properties.PartitionPollerConfig
-import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
+import com.wavesenterprise.we.tx.observer.core.spring.partition.TxPartitionPollerAccelerationHelper
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepository
 import io.mockk.confirmVerified
@@ -43,23 +42,19 @@ internal class DefaultTxPartitionPollerTest {
     lateinit var enqueuedTxJpaRepository: EnqueuedTxJpaRepository
 
     @MockK
-    lateinit var partitionPollerProperties: PartitionPollerConfig
+    lateinit var txPartitionPollerAccelerationHelper: TxPartitionPollerAccelerationHelper
 
     @InjectMockKs
     lateinit var defaultTxPartitionPoller: DefaultTxPartitionPoller
 
-    private val accelerateAtQueueSize = 200L
-
     @BeforeEach
     fun init() {
-        every { enqueuedTxJpaRepository.countByStatus(EnqueuedTxStatus.NEW) } returns accelerateAtQueueSize - 1
-        every { partitionPollerProperties.accelerateAtQueueSize } returns accelerateAtQueueSize
+        every { txPartitionPollerAccelerationHelper.isAccelerationRequired() } returns false
     }
 
     @Test
     fun `should get latest actual partition and handle it with success`() {
         val partitionId = "partId"
-        every { partitionPollerProperties.accelerateAtQueueSize } returns accelerateAtQueueSize
         every { pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(any()) } returns 1
         every { txQueuePartitionJpaRepository.findAndLockLatestPartition() } returns partitionId
 
@@ -75,7 +70,7 @@ internal class DefaultTxPartitionPollerTest {
     @Test
     fun `should get random actual partition and handle it with success`() {
         val partitionId = "partId"
-        every { enqueuedTxJpaRepository.countByStatus(EnqueuedTxStatus.NEW) } returns accelerateAtQueueSize + 1
+        every { txPartitionPollerAccelerationHelper.isAccelerationRequired() } returns true
         every { pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(any()) } returns 1
         every { txQueuePartitionJpaRepository.findAndLockRandomPartition() } returns partitionId
 
