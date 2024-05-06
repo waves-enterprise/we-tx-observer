@@ -7,7 +7,9 @@ import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.BlockSea
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.BlockSearchResult.NotFound
 import com.wavesenterprise.we.tx.observer.core.spring.metrics.MetricsContainer
 import com.wavesenterprise.we.tx.observer.domain.BlockHeightInfo
+import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
 import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHeightJpaRepository
+import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import org.slf4j.debug
 import org.slf4j.info
 import org.slf4j.lazyLogger
@@ -16,6 +18,7 @@ import java.lang.Long.max
 
 class SyncInfoServiceImpl(
     private val blockHeightJpaRepository: BlockHeightJpaRepository,
+    private val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     private val blockHistoryService: BlockHistoryService,
     private val blocksService: BlocksService,
     private val syncHistory: SyncHistoryProperties,
@@ -26,7 +29,8 @@ class SyncInfoServiceImpl(
 ) : SyncInfoService {
     data class SyncHistoryProperties(
         val enabled: Boolean,
-        val fromHeight: Long
+        val fromHeight: Long,
+        val pauseSyncAtQueueSize: Long,
     )
 
     private val log by lazyLogger(SyncInfoServiceImpl::class)
@@ -49,6 +53,9 @@ class SyncInfoServiceImpl(
 
     override fun syncInfo(): SyncInfo {
         val nodeHeight = blocksService.blockHeight()
+        if (enqueuedTxJpaRepository.countByStatus(EnqueuedTxStatus.NEW) >= syncHistory.pauseSyncAtQueueSize) {
+            return blockInfoSingleRecord.toSyncInfo(nodeHeight)
+        }
         val blockInfo = blockInfoSingleRecord.updated(nodeHeight)
         log.debug {
             "Current node block height = $nodeHeight; current block height in repo = ${blockInfo.currentHeight}"
