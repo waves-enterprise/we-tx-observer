@@ -11,6 +11,7 @@ interface TxObserverConfig {
     var activationHeight: Long
     var blockHeightWindow: Long
     var syncHistory: Boolean
+    var pauseSyncAtQueueSize: Long
     var blockHistoryDepth: Int
     var forkNotResolvedHeightDrop: Long
     var blockHistoryCleanDelay: Duration

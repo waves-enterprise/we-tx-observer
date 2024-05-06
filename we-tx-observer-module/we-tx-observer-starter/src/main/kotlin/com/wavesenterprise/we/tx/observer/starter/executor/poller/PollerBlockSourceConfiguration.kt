@@ -9,6 +9,7 @@ import com.wavesenterprise.we.tx.observer.core.spring.executor.poller.ScheduledB
 import com.wavesenterprise.we.tx.observer.core.spring.executor.poller.SourceExecutor
 import com.wavesenterprise.we.tx.observer.core.spring.executor.poller.SourceExecutorImpl
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoService
+import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.starter.executor.BLOCK_SOURCE_MODE
 import com.wavesenterprise.we.tx.observer.starter.properties.TxObserverProperties
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -36,10 +37,13 @@ class PollerBlockSourceConfiguration(
     fun scheduledSourceExecutor(
         sourceExecutor: SourceExecutor,
         txExecutor: TxExecutor,
+        enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     ) =
         ScheduledBlockInfoSynchronizer(
             sourceExecutor = sourceExecutor,
             syncInfoService = syncInfoService,
+            enqueuedTxJpaRepository = enqueuedTxJpaRepository,
+            pauseSyncAtQueueSize = txObserverProperties.pauseSyncAtQueueSize,
             blockHeightWindow = txObserverProperties.blockHeightWindow,
             liquidBlockPollingDelay = txObserverProperties.liquidBlockPollingDelay,
             txExecutor = txExecutor,
