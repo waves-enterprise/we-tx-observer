@@ -6,11 +6,15 @@ import com.wavesenterprise.we.tx.observer.core.spring.executor.poller.ScheduledB
 import com.wavesenterprise.we.tx.observer.core.spring.executor.poller.SourceExecutor
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfo
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoService
+import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
+import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.starter.observer.util.TxExecutorStub
+import io.mockk.called
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,6 +30,10 @@ internal class ScheduledWeBlockInfoSynchronizerTest {
     @MockK
     lateinit var syncInfoService: SyncInfoService
 
+    @MockK
+    lateinit var enqueuedTxJpaRepository: EnqueuedTxJpaRepository
+
+    private val pauseSyncAtQueueSize = 100L
     private val blockHeightWindow = 10L
 
     private lateinit var scheduledBlockInfoSynchronizer: ScheduledBlockInfoSynchronizer
@@ -35,10 +43,21 @@ internal class ScheduledWeBlockInfoSynchronizerTest {
         scheduledBlockInfoSynchronizer = ScheduledBlockInfoSynchronizer(
             sourceExecutor = sourceExecutor,
             syncInfoService = syncInfoService,
+            enqueuedTxJpaRepository = enqueuedTxJpaRepository,
+            pauseSyncAtQueueSize = pauseSyncAtQueueSize,
             liquidBlockPollingDelay = 0,
             blockHeightWindow = blockHeightWindow,
             txExecutor = TxExecutorStub
         )
+    }
+
+    @Test
+    fun `should pause sync when queue size too big`() {
+        every { enqueuedTxJpaRepository.countByStatus(EnqueuedTxStatus.NEW) } returns pauseSyncAtQueueSize
+
+        scheduledBlockInfoSynchronizer.syncNodeBlockInfo()
+
+        verify { syncInfoService wasNot called }
     }
 
     @Test
@@ -51,6 +70,7 @@ internal class ScheduledWeBlockInfoSynchronizerTest {
         }
         every { syncInfoService.syncInfo() } returns syncInfo
         every { syncInfoService.syncedTo(any(), any()) } returns Unit
+        every { enqueuedTxJpaRepository.countByStatus(any()) } returns pauseSyncAtQueueSize - 1
         every { sourceExecutor.execute(any(), any()) } answers { arg(1) as Long + 1 }
 
         scheduledBlockInfoSynchronizer.syncNodeBlockInfo()
@@ -75,6 +95,7 @@ internal class ScheduledWeBlockInfoSynchronizerTest {
         }
         every { syncInfoService.syncInfo() } returns syncInfo
         every { syncInfoService.syncedTo(any(), any()) } returns Unit
+        every { enqueuedTxJpaRepository.countByStatus(any()) } returns pauseSyncAtQueueSize - 1
         every { sourceExecutor.execute(any(), any()) } answers { arg(1) as Long }
 
         scheduledBlockInfoSynchronizer.syncNodeBlockInfo()
