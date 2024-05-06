@@ -1,7 +1,5 @@
 package com.wavesenterprise.we.tx.observer.core.spring.web.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.wavesenterprise.sdk.node.client.blocking.blocks.BlocksService
 import com.wavesenterprise.sdk.node.client.blocking.node.NodeBlockingServiceFactory
 import com.wavesenterprise.sdk.node.client.blocking.tx.TxService
@@ -12,7 +10,6 @@ import com.wavesenterprise.sdk.node.domain.tx.TxInfo
 import com.wavesenterprise.we.tx.observer.api.block.WeBlockInfo
 import com.wavesenterprise.we.tx.observer.api.block.subscriber.BlockSubscriber
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoService
-import com.wavesenterprise.we.tx.observer.core.spring.partition.TxQueuePartitionResolveService
 import com.wavesenterprise.we.tx.observer.core.spring.web.dto.PatchTxApiDto
 import com.wavesenterprise.we.tx.observer.core.spring.web.dto.PrivacyStatusApiDto
 import com.wavesenterprise.we.tx.observer.core.spring.web.dto.QueueStatusApiDto
@@ -30,10 +27,8 @@ open class TxQueueStatusServiceImpl(
     val nodeBlockingServiceFactory: NodeBlockingServiceFactory,
     private val syncInfoService: SyncInfoService,
     val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
-    val txQueuePartitionResolveService: TxQueuePartitionResolveService,
     val enqueueingBlockSubscriber: BlockSubscriber,
     val errorPriorityOffset: Int,
-    private val objectMapper: ObjectMapper = jacksonObjectMapper(), // todo
 ) : TxQueueService {
 
     private val txService: TxService = nodeBlockingServiceFactory.txService()
@@ -43,12 +38,12 @@ open class TxQueueStatusServiceImpl(
 
     override fun getQueueStatus(): QueueStatusApiDto {
         val nodeHeight = blocksService.blockHeight()
-        val observerHeight = syncInfoService.syncInfo().observerHeight
+        val observerHeight = syncInfoService.observerHeight()
         val queueHeight = enqueuedTxJpaRepository.findMinHeightForStatus(EnqueuedTxStatus.NEW)
         val queueSize = enqueuedTxJpaRepository.countByStatus(EnqueuedTxStatus.NEW)
         return QueueStatusApiDto(
             nodeHeight = nodeHeight.value,
-            observerHeight = observerHeight.value,
+            observerHeight = observerHeight,
             queueHeight = queueHeight,
             queueSize = queueSize,
             privacyStatusApiDto = PrivacyStatusApiDto(
