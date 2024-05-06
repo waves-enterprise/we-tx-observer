@@ -24,7 +24,6 @@ data class TxObserverProperties(
     override var activationHeight: Long = 1,
     override var blockHeightWindow: Long = 99,
     override var syncHistory: Boolean = true,
-    override var pauseSyncAtQueueSize: Long = 10000,
     override var blockHistoryDepth: Int = 100,
     override var forkNotResolvedHeightDrop: Long = 10,
     @DurationUnit(ChronoUnit.MILLIS)

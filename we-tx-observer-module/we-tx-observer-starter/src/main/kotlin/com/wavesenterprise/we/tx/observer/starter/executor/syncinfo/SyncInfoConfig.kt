@@ -12,7 +12,6 @@ import com.wavesenterprise.we.tx.observer.core.spring.metrics.MetricContainerDat
 import com.wavesenterprise.we.tx.observer.core.spring.metrics.MetricsContainer
 import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHeightJpaRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHistoryRepository
-import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.starter.properties.TxObserverProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -26,7 +25,6 @@ class SyncInfoConfig(
     private val blocksService: BlocksService,
     private val txObserverProperties: TxObserverProperties,
     private val blockHeightJpaRepository: BlockHeightJpaRepository,
-    private val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     private val blockHistoryRepository: BlockHistoryRepository,
 ) {
 
@@ -38,13 +36,11 @@ class SyncInfoConfig(
     ): SyncInfoService =
         SyncInfoServiceImpl(
             blockHeightJpaRepository = blockHeightJpaRepository,
-            enqueuedTxJpaRepository = enqueuedTxJpaRepository,
             blockHistoryService = blockHistoryService,
             blocksService = blocksService,
             syncHistory = SyncInfoServiceImpl.SyncHistoryProperties(
                 enabled = txObserverProperties.syncHistory,
-                fromHeight = txObserverProperties.activationHeight,
-                pauseSyncAtQueueSize = txObserverProperties.pauseSyncAtQueueSize,
+                fromHeight = txObserverProperties.activationHeight
             ),
             autoResetHeight = txObserverProperties.autoResetHeight,
             forkNotResolvedHeightDrop = txObserverProperties.forkNotResolvedHeightDrop,
