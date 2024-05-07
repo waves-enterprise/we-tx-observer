@@ -48,7 +48,7 @@ open class ScheduledBlockInfoSynchronizer(
 
     private fun syncNodeBlockInfo(startHeight: Long, nodeHeight: Long) {
         var syncedToHeight = startHeight
-        while (syncedToHeight <= nodeHeight) {
+        if (syncedToHeight <= nodeHeight) {
             try {
                 syncedToHeight = sync(
                     syncedToHeight,

@@ -2,7 +2,6 @@ package com.wavesenterprise.we.tx.observer.starter.observer.executor.poller
 
 import com.wavesenterprise.sdk.node.domain.Height
 import com.wavesenterprise.we.tx.observer.core.spring.executor.poller.ScheduledBlockInfoSynchronizer
-import com.wavesenterprise.we.tx.observer.core.spring.executor.poller.ScheduledBlockInfoSynchronizer.Companion.OFFSET
 import com.wavesenterprise.we.tx.observer.core.spring.executor.poller.SourceExecutor
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfo
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoService
@@ -19,7 +18,6 @@ import io.mockk.verifyOrder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.lang.Long.min
 
 @ExtendWith(MockKExtension::class)
 internal class ScheduledWeBlockInfoSynchronizerTest {
@@ -61,7 +59,7 @@ internal class ScheduledWeBlockInfoSynchronizerTest {
     }
 
     @Test
-    fun `should sync from observer height to node height using window`() {
+    fun `should sync from observer height to height plus window `() {
         val observerHeight = 3L
         val nodeHeight = 50L
         val syncInfo: SyncInfo = mockk {
@@ -77,10 +75,8 @@ internal class ScheduledWeBlockInfoSynchronizerTest {
 
         verifyOrder {
             syncInfoService.syncInfo()
-            sectionsOfHeight(observerHeight, nodeHeight).forEach { section ->
-                sourceExecutor.execute(section.first, section.second)
-                syncInfoService.syncedTo(section.second + 1)
-            }
+            sourceExecutor.execute(observerHeight, observerHeight + blockHeightWindow)
+            syncInfoService.syncedTo(observerHeight + blockHeightWindow + 1)
         }
     }
 
@@ -106,17 +102,4 @@ internal class ScheduledWeBlockInfoSynchronizerTest {
             syncInfoService.syncedTo(nodeHeight + 1)
         }
     }
-
-    private fun sectionsOfHeight(
-        observerHeight: Long,
-        nodeHeight: Long
-    ): Sequence<Pair<Long, Long>> =
-        generateSequence(observerHeight) { it + blockHeightWindow + 1 }
-            .map { first -> first to first + blockHeightWindow }
-            .takeWhile { section ->
-                section.first < nodeHeight
-            }
-            .map { section ->
-                section.first to min(section.second, nodeHeight + OFFSET)
-            }
 }
