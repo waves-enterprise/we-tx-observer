@@ -2,6 +2,8 @@ package com.wavesenterprise.we.tx.observer.core.spring.partition
 
 import com.wavesenterprise.we.tx.observer.api.BlockListenerException
 import com.wavesenterprise.we.tx.observer.api.PartitionHandlingException
+import com.wavesenterprise.we.tx.observer.core.spring.properties.PartitionPollerConfig
+import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepository
 import org.slf4j.Logger
@@ -13,14 +15,14 @@ open class DefaultTxPartitionPoller(
     val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     val pollingTxSubscriber: PollingTxSubscriber,
     val partitionHandler: PartitionHandler,
-    val txPartitionPollerAccelerationHelper: TxPartitionPollerAccelerationHelper,
+    val partitionPollerProperties: PartitionPollerConfig,
 ) : TxPartitionPoller {
 
     private val logger: Logger = LoggerFactory.getLogger(DefaultTxPartitionPoller::class.java)
 
     @Transactional
     override fun pollPartition(): String? {
-        val partitionId = if (txPartitionPollerAccelerationHelper.isAccelerationRequired()) {
+        val partitionId = if (isAccelerationRequired()) {
             txQueuePartitionJpaRepository.findAndLockRandomPartition()
         } else {
             txQueuePartitionJpaRepository.findAndLockLatestPartition()
@@ -48,4 +50,7 @@ open class DefaultTxPartitionPoller(
             throw PartitionHandlingException(partitionId, e)
         }
     }
+
+    private fun isAccelerationRequired(): Boolean =
+        enqueuedTxJpaRepository.countByStatus(EnqueuedTxStatus.NEW) >= partitionPollerProperties.accelerateAtQueueSize
 }
