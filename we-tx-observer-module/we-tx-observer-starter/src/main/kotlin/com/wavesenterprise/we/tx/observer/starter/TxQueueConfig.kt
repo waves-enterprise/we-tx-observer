@@ -1,6 +1,5 @@
 package com.wavesenterprise.we.tx.observer.starter
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.wavesenterprise.sdk.node.client.blocking.node.NodeBlockingServiceFactory
 import com.wavesenterprise.we.tx.observer.api.block.subscriber.BlockSubscriber
 import com.wavesenterprise.we.tx.observer.api.partition.TxQueuePartitionResolver
@@ -63,15 +62,12 @@ class TxQueueConfig {
         @Qualifier("enqueueingBlockSubscriber")
         enqueueingBlockSubscriber: BlockSubscriber,
         txObserverProperties: TxObserverProperties,
-        objectMapper: ObjectMapper,
     ): TxQueueService = TxQueueStatusServiceImpl(
         nodeBlockingServiceFactory = nodeBlockingServiceFactory,
         syncInfoService = syncInfoService,
         enqueuedTxJpaRepository = enqueuedTxJpaRepository,
-        txQueuePartitionResolveService = txQueuePartitionResolveService,
         enqueueingBlockSubscriber = enqueueingBlockSubscriber,
         errorPriorityOffset = txObserverProperties.errorPriorityOffset,
-        objectMapper = objectMapper,
     )
 
     @Bean

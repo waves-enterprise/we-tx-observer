@@ -15,6 +15,19 @@ interface TxQueuePartitionJpaRepository :
 
     @Query(
         """
+            select tqp.id from $TX_OBSERVER_SCHEMA_NAME.tx_queue_partition tqp
+                join $TX_OBSERVER_SCHEMA_NAME.enqueued_tx etx on etx.partition_id = tqp.id and etx.status = 'NEW'
+                    where tqp.paused_on_tx_id is null
+                order by tqp.priority desc, etx.tx_timestamp
+                for update of tqp skip locked
+                limit 1
+        """,
+        nativeQuery = true
+    )
+    fun findAndLockLatestPartition(): String?
+
+    @Query(
+        """
             select tqp.id
             from $TX_OBSERVER_SCHEMA_NAME.tx_queue_partition tqp
             where tqp.paused_on_tx_id is null
@@ -27,9 +40,9 @@ interface TxQueuePartitionJpaRepository :
             for update of tqp skip locked
             limit 1
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
-    fun findAndLockLatestActualPartition(): String?
+    fun findAndLockRandomPartition(): String?
 
     @Query(
         """

@@ -9,6 +9,7 @@ import com.wavesenterprise.we.tx.observer.core.spring.executor.poller.SourceExec
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoService
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
 import com.wavesenterprise.we.tx.observer.jpa.config.TxObserverJpaConfig
+import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration
 import io.mockk.every
 import org.junit.jupiter.api.Assertions.assertNull
@@ -48,6 +49,9 @@ class ScheduledWeBlockInfoSynchronizerOptimisticLockTest {
     lateinit var sourceExecutor: SourceExecutor
 
     @Autowired
+    lateinit var enqueuedTxJpaRepository: EnqueuedTxJpaRepository
+
+    @Autowired
     lateinit var syncInfoService: SyncInfoService
 
     @Autowired
@@ -67,6 +71,8 @@ class ScheduledWeBlockInfoSynchronizerOptimisticLockTest {
             sourceExecutor = sourceExecutor,
             txExecutor = txExecutor,
             syncInfoService = syncInfoService,
+            enqueuedTxJpaRepository = enqueuedTxJpaRepository,
+            pauseSyncAtQueueSize = 10000L,
             liquidBlockPollingDelay = 1,
             blockHeightWindow = 1
         )

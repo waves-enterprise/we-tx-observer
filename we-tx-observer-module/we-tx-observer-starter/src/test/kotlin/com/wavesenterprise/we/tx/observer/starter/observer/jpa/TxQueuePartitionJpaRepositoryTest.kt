@@ -18,7 +18,6 @@ import com.wavesenterprise.we.tx.observer.starter.observer.config.NodeBlockingSe
 import com.wavesenterprise.we.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.contains
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -123,10 +122,10 @@ internal class TxQueuePartitionJpaRepositoryTest {
     fun `should find latest actual partition`() {
         val firstTxQueuePartition = partitionWithNewTx(
             id = "firstTxQueuePartitionId",
-            priority = 1,
+            priority = 0,
             enqueuedTxTimestamp = OffsetDateTime.of(
                 LocalDate.now(),
-                LocalTime.of(12, 0, 0),
+                LocalTime.of(11, 0, 0),
                 ZoneOffset.UTC
             )
         )
@@ -158,8 +157,46 @@ internal class TxQueuePartitionJpaRepositoryTest {
         }
         flushAndClear()
 
-        txQueuePartitionJpaRepository.findAndLockLatestActualPartition().also {
+        txQueuePartitionJpaRepository.findAndLockLatestPartition().also {
             assertEquals(firstTxQueuePartition.first.id, it)
+        }
+    }
+
+    @Test
+    fun `should find actual partition`() {
+        val firstTxQueuePartition = partitionWithNewTx(
+            id = "firstTxQueuePartitionId",
+            priority = 0,
+            enqueuedTxTimestamp = OffsetDateTime.of(
+                LocalDate.now(),
+                LocalTime.of(11, 0, 0),
+                ZoneOffset.UTC
+            )
+        )
+        val secondTxQueuePartition = partitionWithNewTx(
+            id = "secondTxQueuePartitionId",
+            priority = 0,
+            enqueuedTxTimestamp = OffsetDateTime.of(
+                LocalDate.now(),
+                LocalTime.of(12, 0, 0),
+                ZoneOffset.UTC
+            )
+        )
+        setOf(
+            firstTxQueuePartition,
+            secondTxQueuePartition,
+        ).apply {
+            map { it.first }.also { txQueuePartitionJpaRepository.saveAll(it) }
+            map { it.second }.also { enqueuedTxJpaRepository.saveAll(it) }
+        }
+        flushAndClear()
+
+        txQueuePartitionJpaRepository.findAndLockRandomPartition().also {
+            if (firstTxQueuePartition.first.id == it) {
+                assertEquals(firstTxQueuePartition.first.id, it)
+            } else {
+                assertEquals(secondTxQueuePartition.first.id, it)
+            }
         }
     }
 
@@ -172,7 +209,7 @@ internal class TxQueuePartitionJpaRepositoryTest {
         txQueuePartitionJpaRepository.saveAndFlush(partition)
         enqueuedTxJpaRepository.saveAndFlush(enqueuedTx)
 
-        assertEquals(partition.id, txQueuePartitionJpaRepository.findAndLockLatestActualPartition())
+        assertEquals(partition.id, txQueuePartitionJpaRepository.findAndLockLatestPartition())
     }
 
     @ParameterizedTest
@@ -184,7 +221,7 @@ internal class TxQueuePartitionJpaRepositoryTest {
         txQueuePartitionJpaRepository.saveAndFlush(partition)
         enqueuedTx?.also { enqueuedTxJpaRepository.saveAndFlush(enqueuedTx) }
 
-        assertNull(txQueuePartitionJpaRepository.findAndLockLatestActualPartition())
+        assertNull(txQueuePartitionJpaRepository.findAndLockLatestPartition())
     }
 
     companion object {

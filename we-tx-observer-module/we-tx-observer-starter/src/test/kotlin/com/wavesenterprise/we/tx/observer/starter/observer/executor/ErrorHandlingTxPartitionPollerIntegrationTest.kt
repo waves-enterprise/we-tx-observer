@@ -5,8 +5,8 @@ import com.wavesenterprise.sdk.node.client.http.tx.CreateContractTxDto.Companion
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.api.BlockListenerException
-import com.wavesenterprise.we.tx.observer.core.spring.partition.LatestTxPartitionPoller
 import com.wavesenterprise.we.tx.observer.core.spring.partition.PollingTxSubscriber
+import com.wavesenterprise.we.tx.observer.core.spring.partition.TxPartitionPoller
 import com.wavesenterprise.we.tx.observer.domain.TxQueuePartition
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
 import com.wavesenterprise.we.tx.observer.jpa.config.TxObserverJpaConfig
@@ -48,7 +48,7 @@ import javax.persistence.PersistenceContext
     ]
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-internal class ErrorHandlingLatestTxPartitionPollerIntegrationTest {
+internal class ErrorHandlingTxPartitionPollerIntegrationTest {
 
     @Autowired
     lateinit var txQueuePartitionJpaRepository: TxQueuePartitionJpaRepository
@@ -57,7 +57,7 @@ internal class ErrorHandlingLatestTxPartitionPollerIntegrationTest {
     lateinit var enqueuedTxJpaRepository: EnqueuedTxJpaRepository
 
     @Autowired
-    lateinit var errorHandlingLatestTxPartitionPoller: LatestTxPartitionPoller
+    lateinit var errorHandlingTxPartitionPoller: TxPartitionPoller
 
     @SpykBean
     lateinit var pollingTxSubscriber: PollingTxSubscriber
@@ -104,7 +104,7 @@ internal class ErrorHandlingLatestTxPartitionPollerIntegrationTest {
         TestTransaction.flagForCommit()
         TestTransaction.end()
 
-        repeat(3) { errorHandlingLatestTxPartitionPoller.pollLatestActualPartition() }
+        repeat(3) { errorHandlingTxPartitionPoller.pollPartition() }
 
         verify {
             errorPartitions.forEach {

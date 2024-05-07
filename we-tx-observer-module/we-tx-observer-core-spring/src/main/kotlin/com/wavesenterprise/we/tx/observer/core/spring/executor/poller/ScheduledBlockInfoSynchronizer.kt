@@ -2,6 +2,8 @@ package com.wavesenterprise.we.tx.observer.core.spring.executor.poller
 
 import com.wavesenterprise.we.tx.observer.common.tx.executor.TxExecutor
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoService
+import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
+import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
@@ -13,6 +15,8 @@ import java.lang.Long.min
 open class ScheduledBlockInfoSynchronizer(
     private val sourceExecutor: SourceExecutor,
     private val syncInfoService: SyncInfoService,
+    private val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
+    private val pauseSyncAtQueueSize: Long,
     private val liquidBlockPollingDelay: Long,
     private val blockHeightWindow: Long,
     private val txExecutor: TxExecutor,
@@ -24,6 +28,9 @@ open class ScheduledBlockInfoSynchronizer(
         name = "syncNodeBlockInfo_task",
     )
     open fun syncNodeBlockInfo() {
+        if (pauseSyncRequired()) {
+            return
+        }
         val blockSyncInfo = txExecutor.requiresNew {
             syncInfoService.syncInfo()
         }
@@ -33,12 +40,15 @@ open class ScheduledBlockInfoSynchronizer(
         syncNodeBlockInfo(startHeight, nodeHeight.value)
     }
 
+    private fun pauseSyncRequired(): Boolean =
+        enqueuedTxJpaRepository.countByStatus(EnqueuedTxStatus.NEW) >= pauseSyncAtQueueSize
+
     private fun stableNodeHeight(nodeHeight: Long) =
         nodeHeight - 1
 
     private fun syncNodeBlockInfo(startHeight: Long, nodeHeight: Long) {
         var syncedToHeight = startHeight
-        while (syncedToHeight <= nodeHeight) {
+        if (syncedToHeight <= nodeHeight) {
             try {
                 syncedToHeight = sync(
                     syncedToHeight,

@@ -17,13 +17,14 @@ data class TxObserverProperties(
     @DefaultValue("true")
     override var enabled: Boolean,
     override var queueMode: String = "JPA",
-    @DurationUnit(ChronoUnit.MILLIS) @DefaultValue("2s")
+    @DurationUnit(ChronoUnit.MILLIS) @DefaultValue("200ms")
     override var fixedDelay: Duration,
     @DataSizeUnit(DataUnit.MEGABYTES)
     override var blockSizeWindow: DataSize = DataSize.ofMegabytes(10),
     override var activationHeight: Long = 1,
     override var blockHeightWindow: Long = 99,
     override var syncHistory: Boolean = true,
+    override var pauseSyncAtQueueSize: Long = 10000,
     override var blockHistoryDepth: Int = 100,
     override var forkNotResolvedHeightDrop: Long = 10,
     @DurationUnit(ChronoUnit.MILLIS)
