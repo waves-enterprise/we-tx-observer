@@ -13,4 +13,6 @@ data class PartitionCleanerProperties(
     override var enabled: Boolean,
     @DefaultValue("5m")
     override var fixedDelay: Duration,
+    @DefaultValue("100")
+    override var batchSize: Int,
 ) : PartitionCleanerConfig
