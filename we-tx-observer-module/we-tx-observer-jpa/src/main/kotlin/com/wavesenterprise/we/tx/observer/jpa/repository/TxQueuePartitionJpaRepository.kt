@@ -135,6 +135,19 @@ interface TxQueuePartitionJpaRepository :
     )
     @Modifying
     fun clearPausedOnTxIds(): Int
+
+    @Query(
+        """
+            delete
+            from $TX_OBSERVER_SCHEMA_NAME.tx_queue_partition p
+            where not exists(select *
+                             from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx etx
+                             where etx.partition_id = p.id)
+        """,
+        nativeQuery = true,
+    )
+    @Modifying
+    fun deleteEmptyPartitions(): Int
 }
 
 const val STUCK_PARTITION_PRIORITY_THRESHOLD: Int = -100
