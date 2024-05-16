@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 interface TxQueuePartitionJpaRepository :
@@ -135,6 +136,29 @@ interface TxQueuePartitionJpaRepository :
     )
     @Modifying
     fun clearPausedOnTxIds(): Int
+
+    @Query(
+        """
+            with empty_partitions_batch 
+            as (
+                select tqp.id
+                from tx_observer.tx_queue_partition tqp
+                where not exists(
+                    select *
+                    from tx_observer.enqueued_tx etx
+                    where etx.partition_id = tqp.id
+                )
+                limit :limit
+            )
+            delete
+            from tx_observer.tx_queue_partition tqp
+            using empty_partitions_batch where tqp.id = empty_partitions_batch.id;  
+        """,
+        nativeQuery = true,
+    )
+    @Modifying
+    @Transactional
+    fun deleteEmptyPartitions(limit: Int): Int
 }
 
 const val STUCK_PARTITION_PRIORITY_THRESHOLD: Int = -100

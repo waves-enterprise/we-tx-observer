@@ -1,20 +1,18 @@
 package com.wavesenterprise.we.tx.observer.starter.properties
 
-import com.wavesenterprise.we.tx.observer.core.spring.properties.PartitionPollerConfig
+import com.wavesenterprise.we.tx.observer.core.spring.properties.PartitionCleanerConfig
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.boot.context.properties.bind.DefaultValue
 import java.time.Duration
 
-@ConfigurationProperties("tx-observer.partition-poller")
+@ConfigurationProperties("tx-observer.partition-cleaner")
 @ConstructorBinding
-data class PartitionPollerProperties(
+data class PartitionCleanerProperties(
     @DefaultValue("true")
     override var enabled: Boolean,
-    @DefaultValue("50ms")
+    @DefaultValue("5m")
     override var fixedDelay: Duration,
-    @DefaultValue("4")
-    override var threadCount: Int,
-    @DefaultValue("200")
-    override var accelerateAtQueueSize: Long,
-) : PartitionPollerConfig
+    @DefaultValue("100")
+    override var batchSize: Int,
+) : PartitionCleanerConfig

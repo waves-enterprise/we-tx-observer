@@ -17,7 +17,7 @@ data class TxObserverProperties(
     @DefaultValue("true")
     override var enabled: Boolean,
     override var queueMode: String = "JPA",
-    @DurationUnit(ChronoUnit.MILLIS) @DefaultValue("200ms")
+    @DefaultValue("50ms")
     override var fixedDelay: Duration,
     @DataSizeUnit(DataUnit.MEGABYTES)
     override var blockSizeWindow: DataSize = DataSize.ofMegabytes(10),
