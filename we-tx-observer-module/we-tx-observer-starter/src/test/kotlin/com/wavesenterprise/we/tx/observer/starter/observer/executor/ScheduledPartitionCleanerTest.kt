@@ -52,6 +52,7 @@ class ScheduledPartitionCleanerTest {
 
     @Test
     fun `should delete empty partitions`() {
+        val batchSize = 1
         val activePartition =
             TxQueuePartition(
                 id = "activePartitionId",
@@ -76,7 +77,7 @@ class ScheduledPartitionCleanerTest {
         enqueuedTxJpaRepository.saveAndFlush(tx2)
         em.flushAndClear()
 
-        val deletedCount = txQueuePartitionJpaRepository.deleteEmptyPartitions()
+        val deletedCount = txQueuePartitionJpaRepository.deleteEmptyPartitions(limit = batchSize)
         em.flushAndClear()
 
         assertEquals(1, deletedCount)

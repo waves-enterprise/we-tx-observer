@@ -1,6 +1,7 @@
 package com.wavesenterprise.we.tx.observer.starter
 
 import com.wavesenterprise.we.tx.observer.core.spring.executor.ScheduledPartitionCleaner
+import com.wavesenterprise.we.tx.observer.core.spring.properties.PartitionCleanerConfig
 import com.wavesenterprise.we.tx.observer.jpa.config.TxObserverJpaConfig
 import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepository
 import com.wavesenterprise.we.tx.observer.starter.properties.PartitionCleanerProperties
@@ -17,8 +18,10 @@ class PartitionCleanerConfig {
     @Bean
     fun scheduledPartitionCleaner(
         txQueuePartitionJpaRepository: TxQueuePartitionJpaRepository,
+        partitionCleanerConfig: PartitionCleanerConfig,
     ) =
         ScheduledPartitionCleaner(
             txQueuePartitionJpaRepository = txQueuePartitionJpaRepository,
+            partitionCleanerConfig = partitionCleanerConfig,
         )
 }

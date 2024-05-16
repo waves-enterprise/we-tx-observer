@@ -241,7 +241,7 @@ class TxObserverSchedulerConfig {
             schedule(
                 scheduledMethodRunnable(
                     scheduledPartitionCleaner,
-                    ScheduledPartitionCleaner::clean
+                    ScheduledPartitionCleaner::cleanEmptyPartitions
                 ),
                 PeriodicTrigger(partitionCleanerProperties.fixedDelay.toMillis())
             )

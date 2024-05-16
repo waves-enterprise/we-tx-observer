@@ -138,16 +138,25 @@ interface TxQueuePartitionJpaRepository :
 
     @Query(
         """
+            with empty_partitions_batch 
+            as (
+                select tqp.id
+                from tx_observer.tx_queue_partition tqp
+                where not exists(
+                    select *
+                    from tx_observer.enqueued_tx etx
+                    where etx.partition_id = tqp.id
+                )
+                limit :limit
+            )
             delete
-            from $TX_OBSERVER_SCHEMA_NAME.tx_queue_partition p
-            where not exists(select *
-                             from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx etx
-                             where etx.partition_id = p.id)
+            from tx_observer.tx_queue_partition tqp
+            using empty_partitions_batch where tqp.id = empty_partitions_batch.id;  
         """,
         nativeQuery = true,
     )
     @Modifying
-    fun deleteEmptyPartitions(): Int
+    fun deleteEmptyPartitions(limit: Int): Int
 }
 
 const val STUCK_PARTITION_PRIORITY_THRESHOLD: Int = -100
