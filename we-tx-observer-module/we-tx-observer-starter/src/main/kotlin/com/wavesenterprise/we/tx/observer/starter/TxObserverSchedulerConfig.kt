@@ -26,9 +26,9 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.scheduling.annotation.SchedulingConfigurer
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
-import org.springframework.scheduling.support.CronTrigger
-import org.springframework.scheduling.support.PeriodicTrigger
+import org.springframework.scheduling.config.ScheduledTaskRegistrar
 import org.springframework.scheduling.support.ScheduledMethodRunnable
 import kotlin.reflect.KFunction
 import kotlin.reflect.jvm.javaMethod
@@ -48,7 +48,7 @@ import kotlin.reflect.jvm.javaMethod
 )
 @EnableScheduling
 @EnableConfigurationProperties(TxObserverSchedulerProperties::class)
-class TxObserverSchedulerConfig {
+class TxObserverSchedulerConfig : SchedulingConfigurer {
     @Autowired
     lateinit var txObserverSchedulerProperties: TxObserverSchedulerProperties
 
@@ -106,7 +106,7 @@ class TxObserverSchedulerConfig {
     @Autowired
     lateinit var metricsCollectorProperties: MetricsCollectorProperties
 
-    @Bean // TODO mb refactor Duration to cron+, separate inits+
+    @Bean
     fun observerScheduler() =
         ThreadPoolTaskScheduler().apply {
             poolSize = listOf(
@@ -116,6 +116,11 @@ class TxObserverSchedulerConfig {
             ).sum()
             setThreadNamePrefix("tx-observer-pool-")
             initialize()
+        }
+
+    override fun configureTasks(taskRegistrar: ScheduledTaskRegistrar) {
+        taskRegistrar.setTaskScheduler(observerScheduler())
+        taskRegistrar.apply {
             addBlockInfoSynchronizer()
             addEventSubscriber()
             addBlockHistoryCleaner()
@@ -129,121 +134,121 @@ class TxObserverSchedulerConfig {
             addPartitionPausedOnTxIdCleaner()
             addPartitionCleaner()
         }
+    }
 
-    private fun ThreadPoolTaskScheduler.addScheduledMetricsCollector() {
+    private fun ScheduledTaskRegistrar.addScheduledMetricsCollector() {
         if (metricsCollectorProperties.enabled)
-            schedule(
+            addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledMetricsCollector,
                     ScheduledMetricsCollector::metricsCollector
                 ),
-                PeriodicTrigger(metricsCollectorProperties.fixedDelay.toMillis())
+                metricsCollectorProperties.fixedDelay.toMillis()
             )
     }
 
-    private fun ThreadPoolTaskScheduler.addQueueCleaner() {
+    private fun ScheduledTaskRegistrar.addQueueCleaner() {
         if (queueCleanerProperties.enabled)
-            schedule(
+            addCronTask(
                 scheduledMethodRunnable(
                     scheduledTxQueueCleaner,
                     ScheduledTxQueueCleaner::cleanReadEnqueuedTx
                 ),
-                CronTrigger(queueCleanerProperties.cleanCronExpression)
+                queueCleanerProperties.cleanCronExpression
             )
     }
 
-    private fun ThreadPoolTaskScheduler.addScheduledForkResolver() {
+    private fun ScheduledTaskRegistrar.addScheduledForkResolver() {
         if (forkResolverProperties.enabled)
-            schedule(
+            addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledForkResolver,
                     ScheduledForkResolver::resolveForkedTx
                 ),
-                PeriodicTrigger(forkResolverProperties.fixedDelay.toMillis())
+                forkResolverProperties.fixedDelay.toMillis()
             )
     }
 
-    private fun ThreadPoolTaskScheduler.addBlockHistoryCleaner() {
+    private fun ScheduledTaskRegistrar.addBlockHistoryCleaner() {
         if (txObserverProperties.enabled)
-            schedule(
+            addFixedDelayTask(
                 scheduledMethodRunnable(
                     blockHistoryCleaner,
                     BlockHistoryCleaner::clean
                 ),
-                PeriodicTrigger(txObserverProperties.blockHistoryCleanDelay.toMillis())
+                txObserverProperties.blockHistoryCleanDelay.toMillis()
             )
     }
 
-    private fun ThreadPoolTaskScheduler.addEventSubscriber() {
+    private fun ScheduledTaskRegistrar.addEventSubscriber() {
         eventSubscriber?.let { eventSubscriber ->
             if (txObserverProperties.enabled)
-                schedule(
+                addFixedDelayTask(
                     scheduledMethodRunnable(
                         eventSubscriber,
                         EventSubscriber::subscribe
                     ),
-                    PeriodicTrigger(txObserverProperties.fixedDelay.toMillis())
+                    txObserverProperties.fixedDelay.toMillis()
                 )
         }
     }
 
-    private fun ThreadPoolTaskScheduler.addBlockInfoSynchronizer() {
+    private fun ScheduledTaskRegistrar.addBlockInfoSynchronizer() {
         scheduledBlockInfoSynchronizer?.let { scheduledBlockInfoSynchronizer ->
-            if (txObserverProperties.enabled)
-                schedule(
-                    scheduledMethodRunnable(
-                        scheduledBlockInfoSynchronizer,
-                        ScheduledBlockInfoSynchronizer::syncNodeBlockInfo
-                    ),
-                    PeriodicTrigger(txObserverProperties.fixedDelay.toMillis())
-                )
+            addFixedDelayTask(
+                scheduledMethodRunnable(
+                    scheduledBlockInfoSynchronizer,
+                    ScheduledBlockInfoSynchronizer::syncNodeBlockInfo
+                ),
+                txObserverProperties.fixedDelay.toMillis()
+            )
         }
     }
 
-    internal fun ThreadPoolTaskScheduler.initPrivacyChecker() {
+    internal fun ScheduledTaskRegistrar.initPrivacyChecker() {
         repeat(privacyAvailabilityCheckProperties.threadCount) {
-            schedule(
+            addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledPrivacyChecker,
                     ScheduledPrivacyChecker::checkPrivacyAvailabilityWhileTheyExist
                 ),
-                PeriodicTrigger(privacyAvailabilityCheckProperties.fixedDelay.toMillis())
+                privacyAvailabilityCheckProperties.fixedDelay.toMillis()
             )
         }
     }
 
-    private fun ThreadPoolTaskScheduler.initPartitionPoller() {
+    private fun ScheduledTaskRegistrar.initPartitionPoller() {
         repeat(partitionPollerProperties.threadCount) {
-            schedule(
+            addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledPartitionPoller,
                     ScheduledPartitionPoller::pollWhileHavingActivePartitions
                 ),
-                PeriodicTrigger(partitionPollerProperties.fixedDelay.toMillis())
+                partitionPollerProperties.fixedDelay.toMillis()
             )
         }
     }
 
-    private fun ThreadPoolTaskScheduler.addPartitionPausedOnTxIdCleaner() {
+    private fun ScheduledTaskRegistrar.addPartitionPausedOnTxIdCleaner() {
         if (partitionPausedOnTxIdCleanerProperties.enabled) {
-            schedule(
+            addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledPartitionPausedOnTxIdCleaner,
                     ScheduledPartitionPausedOnTxIdCleaner::clear
                 ),
-                PeriodicTrigger(partitionPausedOnTxIdCleanerProperties.fixedDelay.toMillis())
+                partitionPausedOnTxIdCleanerProperties.fixedDelay.toMillis()
             )
         }
     }
 
-    private fun ThreadPoolTaskScheduler.addPartitionCleaner() {
+    private fun ScheduledTaskRegistrar.addPartitionCleaner() {
         if (partitionCleanerProperties.enabled) {
-            schedule(
+            addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledPartitionCleaner,
                     ScheduledPartitionCleaner::cleanEmptyPartitions
                 ),
-                PeriodicTrigger(partitionCleanerProperties.fixedDelay.toMillis())
+                partitionCleanerProperties.fixedDelay.toMillis()
             )
         }
     }
