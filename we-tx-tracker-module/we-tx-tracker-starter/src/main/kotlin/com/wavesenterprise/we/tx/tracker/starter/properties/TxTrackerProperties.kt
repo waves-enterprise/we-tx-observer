@@ -16,8 +16,6 @@ data class TxTrackerProperties(
     override var findContractInNode: Boolean = true,
     @DurationUnit(ChronoUnit.MILLIS) @DefaultValue("10s")
     override var fixedDelay: Duration,
-    override var lockAtLeast: Long = 0,
-    override var lockAtMost: Long = 10000,
     override var trackedTxPageRequestLimit: Int = 100,
     @DurationUnit(ChronoUnit.SECONDS) @DefaultValue("2H")
     override var timeout: Duration,

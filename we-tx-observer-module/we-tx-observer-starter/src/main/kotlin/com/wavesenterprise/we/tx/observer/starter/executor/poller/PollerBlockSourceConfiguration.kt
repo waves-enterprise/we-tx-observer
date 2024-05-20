@@ -43,9 +43,7 @@ class PollerBlockSourceConfiguration(
             sourceExecutor = sourceExecutor,
             syncInfoService = syncInfoService,
             enqueuedTxJpaRepository = enqueuedTxJpaRepository,
-            pauseSyncAtQueueSize = txObserverProperties.pauseSyncAtQueueSize,
-            blockHeightWindow = txObserverProperties.blockHeightWindow,
-            liquidBlockPollingDelay = txObserverProperties.liquidBlockPollingDelay,
+            txObserverConfig = txObserverProperties,
             txExecutor = txExecutor,
         )
 

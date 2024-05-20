@@ -20,6 +20,4 @@ interface TxObserverConfig {
     var errorPriorityOffset: Int
     var defaultPartitionId: String
     var lockEnabled: Boolean
-    var lockAtLeast: Long
-    var lockAtMost: Long
 }

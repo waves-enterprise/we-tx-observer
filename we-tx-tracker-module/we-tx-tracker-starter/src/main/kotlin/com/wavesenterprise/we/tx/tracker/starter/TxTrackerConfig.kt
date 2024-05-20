@@ -98,7 +98,6 @@ class TxTrackerConfig {
     ) = ScheduledTxTracker(
         nodeBlockingServiceFactory = nodeBlockingServiceFactory,
         txTracker = txTracker,
-        trackedTxPageRequestLimit = txTrackerProperties.trackedTxPageRequestLimit,
-        txTimeout = txTrackerProperties.timeout,
+        txTrackerProperties = txTrackerProperties,
     )
 }

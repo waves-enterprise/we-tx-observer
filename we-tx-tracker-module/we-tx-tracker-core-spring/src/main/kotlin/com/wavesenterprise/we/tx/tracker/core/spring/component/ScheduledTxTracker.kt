@@ -9,28 +9,29 @@ import com.wavesenterprise.sdk.node.domain.tx.AtomicTx
 import com.wavesenterprise.sdk.node.domain.tx.Tx
 import com.wavesenterprise.sdk.node.domain.tx.Tx.Companion.type
 import com.wavesenterprise.we.tx.tracker.api.TxTracker
+import com.wavesenterprise.we.tx.tracker.core.spring.properties.TxTrackerProps
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackStatus
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.springframework.data.domain.PageRequest
-import java.time.Duration
 import java.time.OffsetDateTime
 
 open class ScheduledTxTracker(
     val nodeBlockingServiceFactory: NodeBlockingServiceFactory,
     val txTracker: TxTracker,
-    val trackedTxPageRequestLimit: Int,
-    val txTimeout: Duration,
+    val txTrackerProperties: TxTrackerProps,
 ) {
     private val txService: TxService = nodeBlockingServiceFactory.txService()
     private val contractService: ContractService = nodeBlockingServiceFactory.contractService()
 
     @SchedulerLock(
         name = "trackPendingTx_task",
+        lockAtLeastFor = "\${tx-tracker.lock-at-least:PT0S}",
+        lockAtMostFor = "\${tx-tracker.lock-at-most:PT1M}",
     )
     open fun trackPendingTx() {
         val trackedTxs = txTracker.getTrackedTxsWithStatus(
             txTrackerStatus = TxTrackStatus.PENDING,
-            pageRequest = PageRequest.of(0, trackedTxPageRequestLimit)
+            pageRequest = PageRequest.of(0, txTrackerProperties.trackedTxPageRequestLimit)
         )
         if (trackedTxs.isNotEmpty()) {
             val unconfirmedTxIds = txService.utxInfo()
@@ -61,7 +62,7 @@ open class ScheduledTxTracker(
         if (txService.txInfo(id).isPresent) setTrackStatus(TxTrackStatus.SUCCESS) else null
 
     private fun Tx.timeoutReached() =
-        timestamp.toDateTimeFromUTCBlockChain().plus(txTimeout) < OffsetDateTime.now()
+        timestamp.toDateTimeFromUTCBlockChain().plus(txTrackerProperties.timeout) < OffsetDateTime.now()
 
     private fun Tx.setTrackStatus(status: TxTrackStatus) {
         txTracker.setTrackStatus(this, status)
