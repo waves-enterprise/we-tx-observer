@@ -14,11 +14,12 @@ import javax.sql.DataSource
 @ConditionalOnProperty(
     name = ["tx-observer.lock-enabled"],
     havingValue = "true",
+    matchIfMissing = true,
 )
 
 @EnableSchedulerLock(
     interceptMode = EnableSchedulerLock.InterceptMode.PROXY_SCHEDULER,
-    defaultLockAtMostFor = "PT10S",
+    defaultLockAtMostFor = "PT1M",
 )
 class TxObserverLockConfig {
 

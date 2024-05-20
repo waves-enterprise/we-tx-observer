@@ -13,6 +13,4 @@ data class QueueCleanerProperties(
     override var archiveHeightWindow: Long = 100,
     override var deleteBatchSize: Long = 100,
     override var cleanCronExpression: String = "0 0/5 * * * ?",
-    override var lockAtLeast: Long = 0,
-    override var lockAtMost: Long = 10000,
 ) : QueueCleanerConfig

@@ -33,8 +33,7 @@ data class TxObserverProperties(
     override var autoResetHeight: Boolean = false,
     override var errorPriorityOffset: Int = 100,
     override var defaultPartitionId: String = "defaultPartitionId",
-    override var lockEnabled: Boolean = true,
-    override var lockAtLeast: Long = 0,
-    override var lockAtMost: Long = 10000,
+    @DefaultValue("true")
+    override var lockEnabled: Boolean,
     // todo: object mapper bean ref if exist
 ) : TxObserverConfig

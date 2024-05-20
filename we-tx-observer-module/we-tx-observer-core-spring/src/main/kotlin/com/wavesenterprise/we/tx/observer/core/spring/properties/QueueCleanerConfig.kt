@@ -5,6 +5,4 @@ interface QueueCleanerConfig {
     var archiveHeightWindow: Long
     var deleteBatchSize: Long
     var cleanCronExpression: String
-    var lockAtLeast: Long
-    var lockAtMost: Long
 }

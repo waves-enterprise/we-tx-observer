@@ -13,6 +13,7 @@ import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomBytesFromUUID
 import com.wavesenterprise.we.tx.tracker.api.TxTracker
 import com.wavesenterprise.we.tx.tracker.core.spring.component.ScheduledTxTracker
 import com.wavesenterprise.we.tx.tracker.domain.TxTrackStatus
+import com.wavesenterprise.we.tx.tracker.starter.properties.TxTrackerProperties
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -42,19 +43,23 @@ internal class ScheduledTxTrackerTest {
     @RelaxedMockK
     lateinit var contractService: ContractService
 
+    @RelaxedMockK
+    lateinit var txTrackerProperties: TxTrackerProperties
+
     private lateinit var scheduledTxTracker: ScheduledTxTracker
 
     private val txTimeout: Duration = Duration.ofHours(1)
 
     @BeforeEach
     fun setUp() {
+        every { txTrackerProperties.trackedTxPageRequestLimit } returns 1000
+        every { txTrackerProperties.timeout } returns txTimeout
         every { nodeBlockingServiceFactory.txService() } returns txService
         every { nodeBlockingServiceFactory.contractService() } returns contractService
         scheduledTxTracker = ScheduledTxTracker(
             nodeBlockingServiceFactory = nodeBlockingServiceFactory,
             txTracker = txTracker,
-            trackedTxPageRequestLimit = 1000,
-            txTimeout = txTimeout
+            txTrackerProperties = txTrackerProperties,
         )
     }
 
