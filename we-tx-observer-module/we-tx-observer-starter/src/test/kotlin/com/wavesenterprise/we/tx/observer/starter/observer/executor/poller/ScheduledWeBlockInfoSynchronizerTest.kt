@@ -8,6 +8,7 @@ import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfo
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.starter.observer.util.TxExecutorStub
+import com.wavesenterprise.we.tx.observer.starter.properties.TxObserverProperties
 import io.mockk.called
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -29,6 +30,9 @@ internal class ScheduledWeBlockInfoSynchronizerTest {
     lateinit var syncInfoService: SyncInfoService
 
     @MockK
+    lateinit var txObserverProperties: TxObserverProperties
+
+    @MockK
     lateinit var enqueuedTxJpaRepository: EnqueuedTxJpaRepository
 
     private val pauseSyncAtQueueSize = 100L
@@ -38,13 +42,14 @@ internal class ScheduledWeBlockInfoSynchronizerTest {
 
     @BeforeEach
     fun setUp() {
+        every { txObserverProperties.pauseSyncAtQueueSize } returns pauseSyncAtQueueSize
+        every { txObserverProperties.blockHeightWindow } returns blockHeightWindow
+        every { txObserverProperties.liquidBlockPollingDelay } returns 0
         scheduledBlockInfoSynchronizer = ScheduledBlockInfoSynchronizer(
             sourceExecutor = sourceExecutor,
             syncInfoService = syncInfoService,
             enqueuedTxJpaRepository = enqueuedTxJpaRepository,
-            pauseSyncAtQueueSize = pauseSyncAtQueueSize,
-            liquidBlockPollingDelay = 0,
-            blockHeightWindow = blockHeightWindow,
+            txObserverConfig = txObserverProperties,
             txExecutor = TxExecutorStub
         )
     }

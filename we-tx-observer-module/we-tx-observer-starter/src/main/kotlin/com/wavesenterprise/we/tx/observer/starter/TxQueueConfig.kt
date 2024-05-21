@@ -91,8 +91,7 @@ class TxQueueConfig {
         ScheduledTxQueueCleaner(
             enqueuedTxJpaRepository = enqueuedTxJpaRepository,
             syncInfoService = syncInfoService,
-            archiveBlockHeightWindow = queueCleanerProperties.archiveHeightWindow,
-            deleteBatchSize = queueCleanerProperties.deleteBatchSize,
+            queueCleanerConfig = queueCleanerProperties,
         )
 
     @Bean

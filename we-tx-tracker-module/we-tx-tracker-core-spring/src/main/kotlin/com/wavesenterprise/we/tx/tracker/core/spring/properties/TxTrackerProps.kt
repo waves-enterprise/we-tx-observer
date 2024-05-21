@@ -6,8 +6,6 @@ interface TxTrackerProps {
     var enabled: Boolean
     var findContractInNode: Boolean
     var fixedDelay: Duration
-    var lockAtLeast: Long
-    var lockAtMost: Long
     var trackedTxPageRequestLimit: Int
     var timeout: Duration
     var minContractTxErrorCount: Int

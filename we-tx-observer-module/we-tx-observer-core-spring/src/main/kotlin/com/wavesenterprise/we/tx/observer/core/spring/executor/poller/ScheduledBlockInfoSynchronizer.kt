@@ -2,6 +2,7 @@ package com.wavesenterprise.we.tx.observer.core.spring.executor.poller
 
 import com.wavesenterprise.we.tx.observer.common.tx.executor.TxExecutor
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoService
+import com.wavesenterprise.we.tx.observer.core.spring.properties.TxObserverConfig
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import kotlinx.coroutines.delay
@@ -16,9 +17,7 @@ open class ScheduledBlockInfoSynchronizer(
     private val sourceExecutor: SourceExecutor,
     private val syncInfoService: SyncInfoService,
     private val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
-    private val pauseSyncAtQueueSize: Long,
-    private val liquidBlockPollingDelay: Long,
-    private val blockHeightWindow: Long,
+    private val txObserverConfig: TxObserverConfig,
     private val txExecutor: TxExecutor,
 ) {
 
@@ -26,6 +25,8 @@ open class ScheduledBlockInfoSynchronizer(
 
     @SchedulerLock(
         name = "syncNodeBlockInfo_task",
+        lockAtLeastFor = "\${tx-observer.lock-at-least:PT0S}",
+        lockAtMostFor = "\${tx-observer.lock-at-most:PT1M}",
     )
     open fun syncNodeBlockInfo() {
         if (pauseSyncRequired()) {
@@ -41,7 +42,7 @@ open class ScheduledBlockInfoSynchronizer(
     }
 
     private fun pauseSyncRequired(): Boolean =
-        enqueuedTxJpaRepository.countByStatus(EnqueuedTxStatus.NEW) >= pauseSyncAtQueueSize
+        enqueuedTxJpaRepository.countByStatus(EnqueuedTxStatus.NEW) >= txObserverConfig.pauseSyncAtQueueSize
 
     private fun stableNodeHeight(nodeHeight: Long) =
         nodeHeight - 1
@@ -67,7 +68,7 @@ open class ScheduledBlockInfoSynchronizer(
 
     private fun sync(observerHeight: Long, nodeHeight: Long): Long {
         val syncToHeight = min(
-            observerHeight + blockHeightWindow,
+            observerHeight + txObserverConfig.blockHeightWindow,
             nodeHeight + OFFSET
         )
         logger.debug("Syncing to height $syncToHeight")
@@ -80,7 +81,7 @@ open class ScheduledBlockInfoSynchronizer(
             }
         }
         if (newHeight == observerHeight) {
-            runBlocking { delay(liquidBlockPollingDelay) }
+            runBlocking { delay(txObserverConfig.liquidBlockPollingDelay) }
         }
         return newHeight
     }
