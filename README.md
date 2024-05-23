@@ -6,7 +6,7 @@ The transactions are further passed to handlers configured in the application.
 
 _**Note:** Only [PostgreSQL](https://www.postgresql.org/) is supported as the underlying database._
 
-## Modules
+## Modules.
 ### [we-tx-observer-module](we-tx-observer-module)
 The module consists of submodules:
 * **api** - contains abstractions to be used in client code;
