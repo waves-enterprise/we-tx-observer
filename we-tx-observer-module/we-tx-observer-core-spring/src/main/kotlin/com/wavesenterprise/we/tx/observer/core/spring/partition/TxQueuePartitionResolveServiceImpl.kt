@@ -6,7 +6,6 @@ import com.wavesenterprise.we.tx.observer.domain.TxQueuePartition
 import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.data.repository.findByIdOrNull
 
 open class TxQueuePartitionResolveServiceImpl(
     val txQueuePartitionJpaRepository: TxQueuePartitionJpaRepository,
@@ -18,7 +17,7 @@ open class TxQueuePartitionResolveServiceImpl(
 
     override fun resolveTxQueuePartition(tx: Tx, resetLastReadTxId: Boolean): TxQueuePartition =
         (partitionResolver.resolvePartitionId(tx) ?: defaultPartitionId).let { partitionId ->
-            txQueuePartitionJpaRepository.findByIdOrNull(partitionId)
+            txQueuePartitionJpaRepository.findAndLockById(partitionId)
                 ?: txQueuePartitionJpaRepository.save(
                     TxQueuePartition(
                         id = partitionId,

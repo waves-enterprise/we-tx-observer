@@ -7,6 +7,7 @@ import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.sdk.node.test.data.Util.Companion.randomBytesFromUUID
 import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
 import com.wavesenterprise.we.tx.observer.common.jpa.util.TX_OBSERVER_SCHEMA_NAME
+import com.wavesenterprise.we.tx.observer.common.tx.executor.TxExecutor
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTx
 import com.wavesenterprise.we.tx.observer.domain.TxQueuePartition
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
@@ -20,6 +21,7 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -34,6 +36,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.util.concurrent.CountDownLatch
 import java.util.stream.Stream
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -60,6 +63,9 @@ internal class TxQueuePartitionJpaRepositoryTest {
 
     @Autowired
     lateinit var txQueuePartitionJpaRepository: TxQueuePartitionJpaRepository
+
+    @Autowired
+    lateinit var txExecutor: TxExecutor
 
     @Test
     fun `should find one stuck partitions`() {
@@ -198,6 +204,30 @@ internal class TxQueuePartitionJpaRepositoryTest {
                 assertEquals(secondTxQueuePartition.first.id, it)
             }
         }
+    }
+
+    @Test
+    fun `shouldn't delete empty partition when it locked`() {
+        val txQueuePartition = txExecutor.requiresNew {
+            txQueuePartitionJpaRepository.save(mockPartition)
+        }
+        flushAndClear()
+
+        val latch = CountDownLatch(1)
+        val lockThread = Thread {
+            txExecutor.requiresNew {
+                txQueuePartitionJpaRepository.findAndLockById(txQueuePartition.id)
+                latch.countDown()
+                Thread.sleep(1000)
+            }
+        }
+        lockThread.start()
+        latch.await()
+        val deletedCount = txExecutor.requiresNew {
+            txQueuePartitionJpaRepository.deleteEmptyPartitions(1)
+        }
+        lockThread.join()
+        assertTrue(0 == deletedCount)
     }
 
     @ParameterizedTest

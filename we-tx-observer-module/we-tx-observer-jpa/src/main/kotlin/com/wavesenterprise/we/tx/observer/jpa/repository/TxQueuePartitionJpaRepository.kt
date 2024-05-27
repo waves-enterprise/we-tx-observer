@@ -16,6 +16,16 @@ interface TxQueuePartitionJpaRepository :
 
     @Query(
         """
+            select tqp.* from $TX_OBSERVER_SCHEMA_NAME.tx_queue_partition tqp
+            where tqp.id = :id
+            for update
+        """,
+        nativeQuery = true,
+    )
+    fun findAndLockById(id: String): TxQueuePartition?
+
+    @Query(
+        """
             select tqp.id from $TX_OBSERVER_SCHEMA_NAME.tx_queue_partition tqp
                 join $TX_OBSERVER_SCHEMA_NAME.enqueued_tx etx on etx.partition_id = tqp.id and etx.status = 'NEW'
                     where tqp.paused_on_tx_id is null
@@ -148,7 +158,7 @@ interface TxQueuePartitionJpaRepository :
                     from tx_observer.enqueued_tx etx
                     where etx.partition_id = tqp.id
                 )
-                limit :limit
+                limit :limit for update of tqp skip locked
             )
             delete
             from tx_observer.tx_queue_partition tqp
