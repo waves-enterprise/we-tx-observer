@@ -16,17 +16,19 @@ import com.wavesenterprise.we.tx.observer.core.spring.partition.TxQueuePartition
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTx
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
+import org.springframework.transaction.annotation.Transactional
 
-class EnqueueingBlockSubscriber(
+open class EnqueueingBlockSubscriber(
     val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     val txQueuePartitionResolveService: TxQueuePartitionResolveService,
     val txEnqueuePredicate: TxEnqueuePredicate,
     val totalTxMetricsContainer: AddableLongMetricsContainer,
     val filteredTxMetricContainer: AddableLongMetricsContainer,
     val totalLogicalTxMetricsContainer: AddableLongMetricsContainer,
-    val objectMapper: ObjectMapper = jacksonObjectMapper()
+    val objectMapper: ObjectMapper = jacksonObjectMapper(),
 ) : BlockSubscriber {
 
+    @Transactional
     override fun subscribe(weBlockInfo: WeBlockInfo) {
         if (weBlockInfo.txCount == 0L) return
         totalTxMetricsContainer.add(weBlockInfo.txCount)
