@@ -17,5 +17,5 @@ interface SyncInfoService {
         syncedBlocks: List<SyncedBlockInfo> = emptyList(),
     )
 
-    fun resetTo(height: Long, prevBlockSignature: String? = null)
+    fun resetHeightIfNeeded()
 }

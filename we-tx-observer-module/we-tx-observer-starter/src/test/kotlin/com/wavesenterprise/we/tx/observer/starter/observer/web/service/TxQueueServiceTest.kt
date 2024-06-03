@@ -4,12 +4,12 @@ import com.wavesenterprise.sdk.node.client.http.tx.CreateContractTxDto.Companion
 import com.wavesenterprise.sdk.node.domain.TxId
 import com.wavesenterprise.sdk.node.test.data.TestDataFactory
 import com.wavesenterprise.we.flyway.starter.FlywaySchemaConfiguration
-import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoService
 import com.wavesenterprise.we.tx.observer.core.spring.web.service.TxQueueService
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
 import com.wavesenterprise.we.tx.observer.domain.TxQueuePartition
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
 import com.wavesenterprise.we.tx.observer.jpa.config.TxObserverJpaConfig
+import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHeightResetRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepository
 import com.wavesenterprise.we.tx.observer.starter.TxObserverStarterConfig
@@ -22,13 +22,11 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TestTransaction
@@ -58,8 +56,8 @@ internal class TxQueueServiceTest(
     @Autowired
     lateinit var enqueuedTxJpaRepository: EnqueuedTxJpaRepository
 
-    @MockBean
-    lateinit var syncInfoService: SyncInfoService
+    @Autowired
+    lateinit var blockHeightResetRepository: BlockHeightResetRepository
 
     @Autowired
     lateinit var txQueuePartitionJpaRepository: TxQueuePartitionJpaRepository
@@ -70,43 +68,15 @@ internal class TxQueueServiceTest(
     }
 
     @Test
-    fun `should downgrade height and remove some tx-items`() {
-        // ARRANGE
-        val oldBlockHeight = 100L
-        val txCountOnOldHeight = 4
-        repeat(txCountOnOldHeight) {
-            enqueuedTxJpaRepository.save(
-                enqueuedTx(
-                    tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("id_old_$it".toByteArray())).toDto(),
-                    positionInBlock = it,
-                    blockHeight = oldBlockHeight,
-                    partition = mockPartition
-                )
-            )
-        }
-        val txCountOnNewHeight = 6
-        val downgradedBlockHeight = oldBlockHeight - 20
-        repeat(txCountOnNewHeight) {
-            enqueuedTxJpaRepository.save(
-                enqueuedTx(
-                    tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("id_new_$it".toByteArray())).toDto(),
-                    positionInBlock = it,
-                    blockHeight = downgradedBlockHeight,
-                    partition = mockPartition
-                )
-            )
-        }
-        val resetToHeight = downgradedBlockHeight + 1
+    fun `should save block height reset row`() {
+        val resetToHeight = 100L
 
-        // ACT
-        val removedTxCount = txQueueService.resetToHeightAndReturnDeletedTxCount(resetToHeight)
+        txQueueService.resetToHeightAsynchronously(resetToHeight)
         TestTransaction.flagForCommit()
         TestTransaction.end()
 
-        // ASSERT
-        verify(syncInfoService).resetTo(resetToHeight)
-        assertEquals(txCountOnOldHeight, removedTxCount)
-        assertEquals(txCountOnNewHeight, enqueuedTxJpaRepository.findAll().count())
+        val savedResetHeight = blockHeightResetRepository.findAll().first()
+        assertEquals(resetToHeight, savedResetHeight.heightToReset)
     }
 
     @Test

@@ -13,8 +13,10 @@ import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfo
 import com.wavesenterprise.we.tx.observer.core.spring.web.dto.PatchTxApiDto
 import com.wavesenterprise.we.tx.observer.core.spring.web.dto.PrivacyStatusApiDto
 import com.wavesenterprise.we.tx.observer.core.spring.web.dto.QueueStatusApiDto
+import com.wavesenterprise.we.tx.observer.domain.BlockHeightReset
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTx
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
+import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHeightResetRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -25,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException
 
 open class TxQueueStatusServiceImpl(
     val nodeBlockingServiceFactory: NodeBlockingServiceFactory,
+    val blockHeightResetRepository: BlockHeightResetRepository,
     private val syncInfoService: SyncInfoService,
     val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     val enqueueingBlockSubscriber: BlockSubscriber,
@@ -104,9 +107,8 @@ open class TxQueueStatusServiceImpl(
     }
 
     @Transactional
-    override fun resetToHeightAndReturnDeletedTxCount(blockHeight: Long): Int {
-        syncInfoService.resetTo(blockHeight)
-        return enqueuedTxJpaRepository.deleteAllWithBlockHeightMoreThan(blockHeight)
+    override fun resetToHeightAsynchronously(blockHeight: Long) {
+        blockHeightResetRepository.save(BlockHeightReset(heightToReset = blockHeight))
     }
 
     @Transactional

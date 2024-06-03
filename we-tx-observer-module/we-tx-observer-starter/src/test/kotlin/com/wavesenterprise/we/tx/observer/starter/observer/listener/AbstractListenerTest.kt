@@ -17,6 +17,7 @@ import com.wavesenterprise.we.tx.observer.core.spring.partition.PollingTxSubscri
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTx
 import com.wavesenterprise.we.tx.observer.domain.EnqueuedTxStatus
 import com.wavesenterprise.we.tx.observer.jpa.TxObserverJpaAutoConfig
+import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHeightResetRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepository
 import com.wavesenterprise.we.tx.observer.starter.TxObserverStarterConfig
@@ -79,6 +80,9 @@ abstract class AbstractListenerTest {
 
     @MockkBean(relaxed = true)
     lateinit var enqueuedTxJpaRepository: EnqueuedTxJpaRepository
+
+    @MockkBean(relaxed = true)
+    lateinit var blockHeightResetRepository: BlockHeightResetRepository
 
     lateinit var enqueuedTxList: MutableList<EnqueuedTx>
     val mockPartitionId = "partId"

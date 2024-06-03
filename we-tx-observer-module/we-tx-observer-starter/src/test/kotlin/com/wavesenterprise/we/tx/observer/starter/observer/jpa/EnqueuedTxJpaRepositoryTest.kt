@@ -80,7 +80,7 @@ internal class EnqueuedTxJpaRepositoryTest {
         TestTransaction.flagForCommit()
 
         // ACT
-        val removedTxCount = enqueuedTxJpaRepository.deleteAllWithBlockHeightMoreThan(newHeight)
+        val removedTxCount = enqueuedTxJpaRepository.cleanAllWithBlockHeightMoreThan(newHeight)
         TestTransaction.flagForCommit()
         TestTransaction.end()
 

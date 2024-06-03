@@ -8,6 +8,8 @@ import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.BlockSea
 import com.wavesenterprise.we.tx.observer.core.spring.metrics.MetricsContainer
 import com.wavesenterprise.we.tx.observer.domain.BlockHeightInfo
 import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHeightJpaRepository
+import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHeightResetRepository
+import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import org.slf4j.debug
 import org.slf4j.info
 import org.slf4j.lazyLogger
@@ -16,6 +18,8 @@ import java.lang.Long.max
 
 class SyncInfoServiceImpl(
     private val blockHeightJpaRepository: BlockHeightJpaRepository,
+    private val blockHeightResetRepository: BlockHeightResetRepository,
+    private val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     private val blockHistoryService: BlockHistoryService,
     private val blocksService: BlocksService,
     private val syncHistory: SyncHistoryProperties,
@@ -48,6 +52,7 @@ class SyncInfoServiceImpl(
         observerHeight
 
     override fun syncInfo(): SyncInfo {
+        resetHeightIfNeeded()
         val nodeHeight = blocksService.blockHeight()
         val blockInfo = blockInfoSingleRecord.updated(nodeHeight)
         log.debug {
@@ -157,7 +162,7 @@ class SyncInfoServiceImpl(
     private fun prevBlockSignatureFromNode(height: Long) =
         blocksService.blockAtHeight(height - 1).signature
 
-    private fun setBlockInfo(height: Long, prevBlockSignature: String?): BlockHeightInfo =
+    private fun setBlockInfo(height: Long, prevBlockSignature: String? = null): BlockHeightInfo =
         blockHeightJpaRepository.save(
             blockInfoSingleRecord.apply {
                 this.currentHeight = height
@@ -219,15 +224,20 @@ class SyncInfoServiceImpl(
         )
     }
 
-    override fun resetTo(height: Long, prevBlockSignature: String?) {
-        checkHeight(height)
-        log.info { "Resetting [height = '$height', prevBlockSignature = '$prevBlockSignature']" }
-        setBlockInfo(height, prevBlockSignature)
-        blockHistoryService.clean(height)
+    override fun resetHeightIfNeeded() {
+        val blockHeightReset = blockHeightResetRepository.findAll().firstOrNull()
+            ?: return
+        checkHeight(blockHeightReset.heightToReset)
+        log.info { "Resetting [height = '${blockHeightReset.heightToReset}']" }
+        enqueuedTxJpaRepository.cleanAllWithBlockHeightMoreThan(blockHeightReset.heightToReset)
+        setBlockInfo(blockHeightReset.heightToReset)
+        blockHistoryService.clean(blockHeightReset.heightToReset)
+        blockHeightResetRepository.delete(blockHeightReset)
         updateMetrics(
             nodeHeight = blocksService.blockHeight(),
-            observerHeight = Height.fromLong(height),
+            observerHeight = Height.fromLong(blockHeightReset.heightToReset),
         )
+        log.info { "Resetted [height = '${blockHeightReset.heightToReset}']" }
     }
 
     private class SyncInfoAdapter(

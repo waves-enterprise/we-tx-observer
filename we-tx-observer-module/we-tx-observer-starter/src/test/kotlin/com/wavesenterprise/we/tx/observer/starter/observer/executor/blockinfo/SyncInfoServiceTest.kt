@@ -9,13 +9,21 @@ import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfo
 import com.wavesenterprise.we.tx.observer.core.spring.executor.syncinfo.SyncInfoServiceImpl
 import com.wavesenterprise.we.tx.observer.core.spring.metrics.MetricsContainer
 import com.wavesenterprise.we.tx.observer.domain.BlockHeightInfo
+import com.wavesenterprise.we.tx.observer.domain.BlockHeightReset
 import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHeightJpaRepository
+import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHeightResetRepository
+import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.starter.observer.util.ModelFactory.blockAtHeight
+import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.just
+import io.mockk.slot
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -27,6 +35,12 @@ class SyncInfoServiceTest {
     @MockK
     lateinit var blockHeightJpaRepository: BlockHeightJpaRepository
 
+    @MockK
+    lateinit var blockHeightResetRepository: BlockHeightResetRepository
+
+    @MockK
+    lateinit var enqueuedTxJpaRepository: EnqueuedTxJpaRepository
+
     @RelaxedMockK
     lateinit var blockHistoryService: BlockHistoryService
 
@@ -35,6 +49,12 @@ class SyncInfoServiceTest {
 
     @RelaxedMockK
     lateinit var observerHeightMetric: MetricsContainer
+
+    @BeforeEach
+    fun setUp() {
+        every { blockHeightResetRepository.findAll() } returns listOf()
+        every { enqueuedTxJpaRepository.cleanAllWithBlockHeightMoreThan(any()) } returns 1
+    }
 
     @Test
     fun `should start with activation height if enabled and observer height = activation height`() {
@@ -49,6 +69,31 @@ class SyncInfoServiceTest {
 
         assertThat(syncInfo.observerHeight.value).isEqualTo(activationHeight)
         assertThat(syncInfo.prevBlockSignature).isEqualTo(signature)
+    }
+
+    @Test
+    fun `should reset block height if needed`() {
+        val nodeHeight = 57L
+        val blockHeightReset = BlockHeightReset(heightToReset = 1L)
+        val blockHeightInfoSlot = slot<BlockHeightInfo>()
+        val blockHeightInfo = BlockHeightInfo(
+            currentHeight = nodeHeight,
+            prevBlockSignature = "yDgpD7gu",
+        )
+        blockHeightResetRepository.also {
+            every { it.findAll() } returns listOf(blockHeightReset)
+            every { it.delete(any()) } just Runs
+        }
+        blockHeightJpaRepository.also {
+            every { it.findAll() } returns listOf(blockHeightInfo)
+            every { it.save(capture(blockHeightInfoSlot)) } returns blockHeightInfo
+        }
+
+        syncInfo(nodeHeight = nodeHeight, autoResetHeight = true)
+
+        verify { blockHeightResetRepository.delete(blockHeightReset) }
+        verify { blockHeightJpaRepository.save(any()) }
+        verify { blockHistoryService.clean(blockHeightReset.heightToReset) }
     }
 
     @Test
@@ -116,6 +161,8 @@ class SyncInfoServiceTest {
         forkNotResolvedHeightDrop: Long,
     ): SyncInfoService = SyncInfoServiceImpl(
         blockHeightJpaRepository = blockHeightJpaRepository,
+        blockHeightResetRepository = blockHeightResetRepository,
+        enqueuedTxJpaRepository = enqueuedTxJpaRepository,
         blockHistoryService = blockHistoryService,
         blocksService = blocksService,
         syncHistory = SyncInfoServiceImpl.SyncHistoryProperties(
