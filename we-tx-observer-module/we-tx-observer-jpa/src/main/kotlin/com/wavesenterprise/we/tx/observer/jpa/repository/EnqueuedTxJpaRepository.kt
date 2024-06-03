@@ -128,7 +128,7 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
 
     @Query("""delete from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx where block_height >= :blockHeight""", nativeQuery = true)
     @Modifying
-    fun deleteAllWithBlockHeightMoreThan(blockHeight: Long): Int
+    fun cleanAllWithBlockHeightMoreThan(blockHeight: Long): Int
 
     @Modifying
     fun deleteByStatus(enqueuedTxStatus: EnqueuedTxStatus): Int

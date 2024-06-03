@@ -15,6 +15,7 @@ import com.wavesenterprise.we.tx.observer.core.spring.web.WebControllers
 import com.wavesenterprise.we.tx.observer.core.spring.web.service.TxQueueService
 import com.wavesenterprise.we.tx.observer.core.spring.web.service.TxQueueStatusServiceImpl
 import com.wavesenterprise.we.tx.observer.jpa.config.TxObserverJpaConfig
+import com.wavesenterprise.we.tx.observer.jpa.repository.BlockHeightResetRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import com.wavesenterprise.we.tx.observer.jpa.repository.TxQueuePartitionJpaRepository
 import com.wavesenterprise.we.tx.observer.starter.properties.QueueCleanerProperties
@@ -58,6 +59,7 @@ class TxQueueConfig {
     fun txQueueService(
         syncInfoService: SyncInfoService,
         enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
+        blockHeightResetRepository: BlockHeightResetRepository,
         txQueuePartitionResolveService: TxQueuePartitionResolveService,
         @Qualifier("enqueueingBlockSubscriber")
         enqueueingBlockSubscriber: BlockSubscriber,
@@ -66,6 +68,7 @@ class TxQueueConfig {
         nodeBlockingServiceFactory = nodeBlockingServiceFactory,
         syncInfoService = syncInfoService,
         enqueuedTxJpaRepository = enqueuedTxJpaRepository,
+        blockHeightResetRepository = blockHeightResetRepository,
         enqueueingBlockSubscriber = enqueueingBlockSubscriber,
         errorPriorityOffset = txObserverProperties.errorPriorityOffset,
     )

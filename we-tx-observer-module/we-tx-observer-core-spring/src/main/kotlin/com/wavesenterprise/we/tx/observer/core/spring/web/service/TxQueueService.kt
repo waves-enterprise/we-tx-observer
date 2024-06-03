@@ -12,6 +12,6 @@ interface TxQueueService {
     fun deleteTxFromQueue(txId: String)
     fun deleteForked(): Int
     fun getTxById(txId: TxId): EnqueuedTx
-    fun resetToHeightAndReturnDeletedTxCount(blockHeight: Long): Int
+    fun resetToHeightAsynchronously(blockHeight: Long)
     fun postponeErrors(): Int
 }
