@@ -188,7 +188,7 @@ class UserPartitionResolver implements TxQueuePartitionResolver {
 ### TxObserverConfigurer
 Configurer for basic observer components. Allows you to define all bean-components through one bean: 
 - TxQueuePartitionResolver;
-- TxEnqueuePredicate (default implementation is `com.wavesenterprise.we.tx.observer.starter.TxObserverEnablerConfig.TxEnqueuePredicateConfigurerImpl`);
+- TxEnqueuePredicate (default implementation is `com.wavesenterprise.sdk.tx.observer.starter.TxObserverEnablerConfig.TxEnqueuePredicateConfigurerImpl`);
 - ObjectMapper;
 - PrivateContentResolver;  
 
