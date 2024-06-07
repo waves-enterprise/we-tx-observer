@@ -22,6 +22,7 @@ import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.lessThan
 import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
@@ -61,6 +62,18 @@ internal class TxQueuePartitionControllerTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc
+
+    @BeforeEach
+    fun setUp() {
+        enqueuedTxJpaRepository.deleteAll()
+        txQueuePartitionJpaRepository.deleteAll()
+    }
+
+    @AfterEach
+    fun tearDown() {
+        enqueuedTxJpaRepository.deleteAll()
+        txQueuePartitionJpaRepository.deleteAll()
+    }
 
     @Test
     fun `get partitions should return filtered by priority equals`() {
@@ -252,6 +265,7 @@ internal class TxQueuePartitionControllerTest {
         val errorPriority = -1
         val errorPartitionCount = 8
         val totalPartitionCount = 10
+
         (0 until totalPartitionCount).map {
             txQueuePartitionJpaRepository.save(
                 TxQueuePartition(
@@ -273,11 +287,5 @@ internal class TxQueuePartitionControllerTest {
             content { contentType(MediaType.APPLICATION_JSON) }
             content { json("{\"errorPartitionCount\":$errorPartitionCount,\"totalPartitionCount\":$totalPartitionCount}") }
         }
-    }
-
-    @AfterEach
-    fun setUp() {
-        enqueuedTxJpaRepository.deleteAll()
-        txQueuePartitionJpaRepository.deleteAll()
     }
 }
