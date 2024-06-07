@@ -23,6 +23,7 @@ import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingS
 import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration.Companion.sampleCreateContractTx
 import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration.Companion.sampleExecutedContractTx
 import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 object ModelFactory {
@@ -107,7 +108,7 @@ object ModelFactory {
     fun blockHistory(
         signature: String = UUID.randomUUID().toString(),
         height: Long = FIRST_BLOCK_HEIGHT,
-        timestamp: OffsetDateTime = OffsetDateTime.now()
+        timestamp: OffsetDateTime = OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS)
     ): BlockHistory =
         BlockHistory(
             signature = signature,

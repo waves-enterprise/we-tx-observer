@@ -64,7 +64,14 @@ internal class TxQueueServiceTest(
 
     @BeforeEach
     fun setUp() {
+        enqueuedTxJpaRepository.deleteAll()
+        txQueuePartitionJpaRepository.deleteAll()
         txQueuePartitionJpaRepository.saveAndFlush(mockPartition)
+    }
+    @AfterEach
+    fun tearDown() {
+        enqueuedTxJpaRepository.deleteAll()
+        txQueuePartitionJpaRepository.deleteAll()
     }
 
     @Test
@@ -120,11 +127,5 @@ internal class TxQueueServiceTest(
                 }
             )
         )
-    }
-
-    @AfterEach
-    fun cleanup() {
-        enqueuedTxJpaRepository.deleteAll()
-        txQueuePartitionJpaRepository.deleteAll()
     }
 }
