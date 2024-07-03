@@ -8,7 +8,6 @@ val kotlinVersion: String by project
 val kotlinCoroutinesVersion: String by project
 val reactorVersion: String by project
 val springBootVersion: String by project
-val springCloudVersion: String by project
 val jacocoToolVersion: String by project
 val logbackVersion: String by project
 val javaxAnnotationApiVersion: String by project
@@ -37,7 +36,6 @@ val sonaTypeBasePath: String by project
 val gitHubProject: String by project
 val githubUrl: String by project
 
-val feignVersion: String by project
 val jacksonModuleKotlin: String by project
 val weNodeClientVersion: String by project
 val weSdkSpringVersion: String by project
@@ -273,8 +271,6 @@ configure(
 
     the<DependencyManagementExtension>().apply {
         imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
-            mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
             mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion") {
                 bomProperty("kotlin.version", kotlinVersion)
             }
@@ -291,7 +287,7 @@ configure(
             dependency("io.micrometer:micrometer-core:$micrometerCoreVersion")
             dependency("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
             dependency("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-            dependency("com.vladmihalcea:hibernate-types-52:$hibernateTypesVersion")
+            dependency("io.hypersistence:hypersistence-utils-hibernate-63:$hibernateTypesVersion")
             dependency("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
             dependency("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")

@@ -18,6 +18,8 @@ import com.wavesenterprise.sdk.tx.observer.starter.observer.config.ObjectMapperC
 import com.wavesenterprise.sdk.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
 import io.mockk.every
 import io.mockk.verify
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
@@ -31,8 +33,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TestTransaction
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @DataJpaTest(properties = ["tx-observer.default-partition-id = thatDefaultPartitionId"])
 @ActiveProfiles("test")

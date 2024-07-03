@@ -15,11 +15,11 @@ import com.wavesenterprise.sdk.tx.observer.domain.EnqueuedTx_
 import com.wavesenterprise.sdk.tx.observer.domain.RollbackInfo
 import com.wavesenterprise.sdk.tx.observer.domain.TxQueuePartition
 import com.wavesenterprise.sdk.tx.observer.domain.TxQueuePartition_
+import jakarta.persistence.criteria.CriteriaBuilder
+import jakarta.persistence.criteria.CriteriaQuery
+import jakarta.persistence.criteria.Predicate
+import jakarta.persistence.criteria.Root
 import org.springframework.data.jpa.domain.Specification
-import javax.persistence.criteria.CriteriaBuilder
-import javax.persistence.criteria.CriteriaQuery
-import javax.persistence.criteria.Predicate
-import javax.persistence.criteria.Root
 
 fun EnqueuedTx.toApiDto(): EnqueuedTxApiDto = EnqueuedTxApiDto(
     id = id,

@@ -34,7 +34,7 @@ class TxTrackerSchedulerConfig {
                             scheduledTxTracker,
                             ScheduledTxTracker::trackPendingTx
                         ),
-                        PeriodicTrigger(txTrackerProperties.fixedDelay.toMillis()),
+                        PeriodicTrigger(txTrackerProperties.fixedDelay),
                     )
                 }
             }

@@ -19,6 +19,8 @@ import com.wavesenterprise.sdk.tx.tracker.jpa.TxTrackerJpaAutoConfig
 import com.wavesenterprise.sdk.tx.tracker.jpa.repository.BusinessObjectInfoJpaRepository
 import com.wavesenterprise.sdk.tx.tracker.jpa.repository.SmartContractInfoJpaRepository
 import com.wavesenterprise.sdk.tx.tracker.jpa.repository.TxTrackerJpaRepository
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -30,8 +32,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TestTransaction
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @DataJpaTest(
     properties = [

@@ -2,14 +2,12 @@ package com.wavesenterprise.sdk.tx.tracker.starter.properties
 
 import com.wavesenterprise.sdk.tx.tracker.core.spring.properties.TxTrackerProps
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.boot.context.properties.bind.DefaultValue
 import org.springframework.boot.convert.DurationUnit
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 
 @ConfigurationProperties("tx-tracker")
-@ConstructorBinding
 data class TxTrackerProperties(
     @DefaultValue("false")
     override var enabled: Boolean,

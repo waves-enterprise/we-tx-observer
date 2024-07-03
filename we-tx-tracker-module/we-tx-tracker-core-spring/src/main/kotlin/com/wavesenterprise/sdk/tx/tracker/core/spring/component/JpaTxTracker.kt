@@ -127,7 +127,7 @@ open class JpaTxTracker(
     ): Optional<TxTrackInfo> =
         txTrackerJpaRepository.findFirstByStatusNotAndBusinessObjectInfosContainsOrderByModifiedDesc(
             status = TxTrackStatus.SUCCESS,
-            businessObjectInfos = businessObjectInfoJpaRepository.getById(businessObjectId),
+            businessObjectInfos = businessObjectInfoJpaRepository.getReferenceById(businessObjectId),
         )
 
     override fun getLastTrackedTxForBusinessObjectWithStatus(
@@ -136,7 +136,7 @@ open class JpaTxTracker(
     ): Optional<TxTrackInfo> =
         txTrackerJpaRepository.findFirstByStatusAndBusinessObjectInfosContainsOrderByModifiedDesc(
             status = status,
-            businessObjectInfos = businessObjectInfoJpaRepository.getById(businessObjectId),
+            businessObjectInfos = businessObjectInfoJpaRepository.getReferenceById(businessObjectId),
         )
 
     @Transactional

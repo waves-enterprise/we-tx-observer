@@ -16,7 +16,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.fasterxml.jackson.core:jackson-databind")
-    implementation("com.vladmihalcea:hibernate-types-52")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-63")
 
     testImplementation("org.postgresql:postgresql")
     testImplementation("org.testcontainers:postgresql")
@@ -24,5 +24,5 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.wavesenterprise:we-node-domain-test")
 
-    kapt("org.hibernate:hibernate-jpamodelgen") // Generate JPA Static Metamodel
+    kapt("org.hibernate.orm:hibernate-jpamodelgen") // Generate JPA Static Metamodel
 }

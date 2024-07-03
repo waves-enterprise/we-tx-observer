@@ -16,9 +16,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("com.vladmihalcea:hibernate-types-52:$hibernateTypesVersion")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-63")
     implementation("com.github.ben-manes.caffeine:caffeine")
-    kapt("org.hibernate:hibernate-jpamodelgen")
+    kapt("org.hibernate.orm:hibernate-jpamodelgen")
 
     implementation("com.frimastudio:slf4j-kotlin-extensions")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")

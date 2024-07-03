@@ -1,10 +1,10 @@
 package com.wavesenterprise.sdk.tx.tracker.domain
 
 import com.wavesenterprise.sdk.tx.observer.common.jpa.util.TX_TRACKER_SCHEMA_NAME
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.hibernate.annotations.SQLInsert
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
 
 @Entity
 @Table(schema = TX_TRACKER_SCHEMA_NAME)

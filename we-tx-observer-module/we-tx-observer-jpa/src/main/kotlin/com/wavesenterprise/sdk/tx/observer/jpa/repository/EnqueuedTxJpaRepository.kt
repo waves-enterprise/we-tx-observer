@@ -3,6 +3,7 @@ package com.wavesenterprise.sdk.tx.observer.jpa.repository
 import com.wavesenterprise.sdk.tx.observer.common.jpa.util.TX_OBSERVER_SCHEMA_NAME
 import com.wavesenterprise.sdk.tx.observer.domain.EnqueuedTx
 import com.wavesenterprise.sdk.tx.observer.domain.EnqueuedTxStatus
+import jakarta.persistence.LockModeType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
@@ -14,7 +15,6 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import javax.persistence.LockModeType
 
 @Repository
 interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecificationExecutor<EnqueuedTx> {

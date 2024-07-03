@@ -10,7 +10,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.fasterxml.jackson.core:jackson-databind")
-    implementation("com.vladmihalcea:hibernate-types-52")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-63")
 
-    kapt("org.hibernate:hibernate-jpamodelgen")
+    kapt("org.hibernate.orm:hibernate-jpamodelgen")
 }

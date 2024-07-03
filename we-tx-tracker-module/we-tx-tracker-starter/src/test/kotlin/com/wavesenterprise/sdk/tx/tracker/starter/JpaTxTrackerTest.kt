@@ -35,6 +35,8 @@ import com.wavesenterprise.sdk.tx.tracker.jpa.repository.SmartContractInfoJpaRep
 import com.wavesenterprise.sdk.tx.tracker.jpa.repository.TxTrackerJpaRepository
 import io.mockk.every
 import io.mockk.mockk
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -59,8 +61,6 @@ import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.support.TransactionTemplate
 import java.util.Optional
 import java.util.concurrent.CountDownLatch
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @DataJpaTest(properties = ["tx-tracker.enabled = true"])
 @ActiveProfiles("test")

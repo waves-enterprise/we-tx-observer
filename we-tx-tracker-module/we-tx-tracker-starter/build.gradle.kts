@@ -13,6 +13,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
 
     implementation("com.wavesenterprise:we-flyway-starter")
     implementation("com.wavesenterprise:we-node-client-blocking-client")
@@ -35,7 +37,6 @@ dependencies {
     testImplementation("org.postgresql:postgresql")
     testImplementation("org.testcontainers:postgresql")
 
-    testImplementation("org.flywaydb:flyway-core")
     testImplementation("com.wavesenterprise:we-node-domain-test")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

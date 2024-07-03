@@ -17,6 +17,8 @@ import com.wavesenterprise.sdk.tx.observer.jpa.repository.TxQueuePartitionJpaRep
 import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration
 import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration.Companion.mockPartition
 import com.wavesenterprise.sdk.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -38,8 +40,6 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.concurrent.CountDownLatch
 import java.util.stream.Stream
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @DataJpaTest
 @ActiveProfiles("test")

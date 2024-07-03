@@ -15,6 +15,7 @@ import com.wavesenterprise.sdk.tx.observer.jpa.repository.TxQueuePartitionJpaRep
 import com.wavesenterprise.sdk.tx.observer.starter.TxObserverStarterConfig
 import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration
 import com.wavesenterprise.sdk.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
+import jakarta.persistence.EntityManager
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,7 +30,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import javax.persistence.EntityManager
 
 @WebMvcTest(controllers = [EnqueuedTxController::class])
 @ActiveProfiles("test")
