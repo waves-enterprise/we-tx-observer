@@ -162,13 +162,12 @@ configure(
         detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion")
     }
 
-    val jacocoCoverageFile = "$buildDir/jacocoReports/test/jacocoTestReport.xml"
-
+    val jacocoCoverageFile = layout.buildDirectory.file("jacocoReports/test/jacocoTestReport.xml").get().asFile
     tasks.withType<JacocoReport> {
         reports {
             xml.apply {
                 required.set(true)
-                outputLocation.set(file(jacocoCoverageFile))
+                outputLocation.set(jacocoCoverageFile)
             }
         }
     }
@@ -325,6 +324,6 @@ configure(
 
     jacoco {
         toolVersion = jacocoToolVersion
-        reportsDirectory.set(file("$buildDir/jacocoReports"))
+        reportsDirectory.set(layout.buildDirectory.dir("jacocoReports").get().asFile)
     }
 }
