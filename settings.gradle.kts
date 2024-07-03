@@ -7,7 +7,7 @@ pluginManagement {
     val palantirGitVersion: String by settings
     val jGitVerVersion: String by settings
     val dokkaVersion: String by settings
-    val nexusStagingVersion: String by settings
+    val nexusPublishVersion: String by settings
 
     plugins {
         kotlin("jvm") version kotlinVersion apply false
@@ -22,7 +22,7 @@ pluginManagement {
         id("jacoco")
         id("fr.brouillard.oss.gradle.jgitver") version jGitVerVersion
         id("org.jetbrains.dokka") version dokkaVersion
-        id("io.codearte.nexus-staging") version nexusStagingVersion
+        id("io.github.gradle-nexus.publish-plugin") version nexusPublishVersion
     }
 
     repositories {
