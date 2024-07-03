@@ -40,8 +40,7 @@ val jacksonModuleKotlin: String by project
 val weNodeClientVersion: String by project
 val weSdkSpringVersion: String by project
 
-val shedlockProviderJdbcTemplateVersion: String by project
-val shedlockSpringVersion: String by project
+val shedlockVersion: String by project
 val micrometerCoreVersion: String by project
 val testContainersVersion: String by project
 val postgresVersion: String by project
@@ -274,6 +273,7 @@ configure(
             mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion") {
                 bomProperty("kotlin.version", kotlinVersion)
             }
+            mavenBom("net.javacrumbs.shedlock:shedlock-bom:$shedlockVersion")
             mavenBom("com.wavesenterprise:we-node-client-bom:$weNodeClientVersion")
             mavenBom("com.wavesenterprise:we-sdk-spring-bom:$weSdkSpringVersion")
             mavenBom("org.jetbrains.kotlinx:kotlinx-coroutines-bom:$kotlinCoroutinesVersion")
@@ -282,8 +282,6 @@ configure(
             dependency("com.wavesenterprise:we-flyway-starter:$weFlywayStarterVersion")
 
             dependency("com.frimastudio:slf4j-kotlin-extensions:$sl4jKotlinExtVersion")
-            dependency("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:$shedlockProviderJdbcTemplateVersion")
-            dependency("net.javacrumbs.shedlock:shedlock-spring:$shedlockSpringVersion")
             dependency("io.micrometer:micrometer-core:$micrometerCoreVersion")
             dependency("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
             dependency("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
