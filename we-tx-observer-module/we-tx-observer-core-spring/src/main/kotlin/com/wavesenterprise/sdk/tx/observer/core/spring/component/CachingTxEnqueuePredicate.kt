@@ -15,7 +15,7 @@ class CachingTxEnqueuePredicate(
     private val predicateTtlCache = CaffeineLoadingCache<TxId, Boolean>(
         Caffeine.newBuilder()
             .expireAfterWrite(cacheDuration)
-            .build()
+            .build(),
     )
 
     override fun isEnqueued(tx: Tx): Boolean =

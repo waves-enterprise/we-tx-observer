@@ -31,10 +31,10 @@ import org.springframework.context.annotation.Configuration
 @ConditionalOnProperty(
     prefix = "tx-observer",
     name = [BLOCK_SOURCE_MODE],
-    havingValue = "subscriber"
+    havingValue = "subscriber",
 )
 @EnableConfigurationProperties(
-    SubscriberProperties::class
+    SubscriberProperties::class,
 )
 @AutoConfigureAfter(NodeBlockingServiceFactoryAutoConfiguration::class)
 class SubscriberBlockSourceConfiguration(
@@ -49,7 +49,7 @@ class SubscriberBlockSourceConfiguration(
 ) {
     @Bean
     fun eventSubscriber(
-        eventHandlingStrategyFactory: EventHandlingStrategyFactory
+        eventHandlingStrategyFactory: EventHandlingStrategyFactory,
     ): EventSubscriber =
         EventSubscriber(
             syncInfoService = syncInfoService,
@@ -63,7 +63,7 @@ class SubscriberBlockSourceConfiguration(
                         port = grpc.port,
                         keepAliveTime = grpc.keepAliveTime,
                         keepAliveWithoutCalls = grpc.keepAliveWithoutCalls,
-                    )
+                    ),
                 ).blockchainEventsService()
             },
             eventHandlingStrategyFactory = eventHandlingStrategyFactory,

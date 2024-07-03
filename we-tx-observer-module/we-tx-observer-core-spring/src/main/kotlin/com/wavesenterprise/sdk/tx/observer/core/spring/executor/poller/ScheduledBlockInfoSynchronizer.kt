@@ -53,14 +53,14 @@ open class ScheduledBlockInfoSynchronizer(
             try {
                 syncedToHeight = sync(
                     syncedToHeight,
-                    nodeHeight
+                    nodeHeight,
                 )
                 logger.debug("Synced to height $syncedToHeight")
             } catch (ex: ObjectOptimisticLockingFailureException) {
                 logger.debug(
                     "Sync failed [startHeight = '$startHeight', " +
                         "nodeHeight = '$nodeHeight']",
-                    ex
+                    ex,
                 )
             }
         }
@@ -69,13 +69,13 @@ open class ScheduledBlockInfoSynchronizer(
     private fun sync(observerHeight: Long, nodeHeight: Long): Long {
         val syncToHeight = min(
             observerHeight + txObserverConfig.blockHeightWindow,
-            nodeHeight + OFFSET
+            nodeHeight + OFFSET,
         )
         logger.debug("Syncing to height $syncToHeight")
         val newHeight = txExecutor.requiresNew {
             sourceExecutor.execute(
                 blockHeightLowerBound = observerHeight,
-                blockHeightUpperBound = syncToHeight
+                blockHeightUpperBound = syncToHeight,
             ).also { newHeight ->
                 syncInfoService.syncedTo(newHeight)
             }

@@ -22,7 +22,7 @@ open class TxQueuePartitionResolveServiceImpl(
                     TxQueuePartition(
                         id = partitionId,
                         priority = 0,
-                    )
+                    ),
                 )
         }.also {
             logger.debug("Resolved partitionId = ${it.id} for TX with ID = ${tx.id}")

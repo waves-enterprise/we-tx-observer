@@ -10,5 +10,5 @@ fun AppendedBlockHistoryBuffer.clearAndBuildHandleBlocks(): HandleBlocks =
 fun List<BlockchainEvent.AppendedBlockHistory>.toHandleBlocks(): HandleBlocks =
     HandleBlocks(
         weBlockInfos = map { it.toWeBlockInfo() },
-        syncedBlockInfos = map { it.toSyncedBlockInfo() }
+        syncedBlockInfos = map { it.toSyncedBlockInfo() },
     )

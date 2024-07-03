@@ -40,7 +40,7 @@ class PartitionHandlerConfig {
     ): PartitionHandler = MetricPartitionHandler(
         partitionHandlerJpa,
         handledTxMetricsContainer,
-        partitionFailureMetricsContainer
+        partitionFailureMetricsContainer,
     )
 
     @Bean

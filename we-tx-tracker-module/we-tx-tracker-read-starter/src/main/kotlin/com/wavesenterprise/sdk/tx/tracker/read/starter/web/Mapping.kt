@@ -36,7 +36,7 @@ fun TxTrackInfoListRequest.toSpecification(): Specification<TxTrackInfo> =
         contractId?.let {
             predicates += cb.equal(
                 root.join(TxTrackInfo_.smartContractInfo).get(SmartContractInfo_.id),
-                it
+                it,
             )
         }
         status?.let {

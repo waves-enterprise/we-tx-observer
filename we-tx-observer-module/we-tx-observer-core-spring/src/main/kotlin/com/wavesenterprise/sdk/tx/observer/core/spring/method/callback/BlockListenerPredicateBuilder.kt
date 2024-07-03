@@ -68,7 +68,7 @@ class BlockListenerPredicateBuilder(
             PrivateDataEvent::class.java.isAssignableFrom(methodArgType) -> buildDataEventPredicate(method)
             Tx::class.java.isAssignableFrom(methodArgType) -> getTxTypePredicate(methodArgType)
             else -> throw IllegalArgumentException(
-                "TxListener annotated method can have arguments only of type Tx, KeyEvent or PrivateDataEvent"
+                "TxListener annotated method can have arguments only of type Tx, KeyEvent or PrivateDataEvent",
             )
         }
         val expressionPredicate = buildExpressionPredicate(annotation)

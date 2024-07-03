@@ -6,7 +6,7 @@ package com.wavesenterprise.sdk.tx.observer.api.privacy
  * @see com.wavesenterprise.sdk.tx.observer.api.privacy.MessageFilter
  */
 annotation class MessageFilters(
-    vararg val filters: MessageFilter = []
+    vararg val filters: MessageFilter = [],
 )
 
 /**

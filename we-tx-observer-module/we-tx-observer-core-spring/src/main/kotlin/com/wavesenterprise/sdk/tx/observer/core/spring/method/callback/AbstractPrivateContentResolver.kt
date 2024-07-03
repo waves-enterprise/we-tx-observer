@@ -35,8 +35,8 @@ abstract class AbstractPrivateContentResolver(
                 PolicyItemRequest(
                     policyId = tx.policyId,
                     dataHash = tx.dataHash,
-                )
-            ).orElseGet(null)
+                ),
+            ).orElseGet(null),
         ) {
             "No info about item with policyId=${tx.policyId} and dataHash=${tx.dataHash} in privacy"
         }
@@ -47,8 +47,8 @@ abstract class AbstractPrivateContentResolver(
                 PolicyItemRequest(
                     policyId = tx.policyId,
                     dataHash = tx.dataHash,
-                )
-            ).orElseGet(null)
+                ),
+            ).orElseGet(null),
         ) {
             "No data for item with policyId=${tx.policyId} and dataHash=${tx.dataHash} in privacy"
         }

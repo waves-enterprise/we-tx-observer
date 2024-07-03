@@ -17,7 +17,7 @@ interface BlockHeightJpaRepository : JpaRepository<BlockHeightInfo, String> {
         where
             id = :id
             and currentHeight = :expectedCurrentHeight
-    """
+    """,
     )
     @Modifying
     fun update(id: String, currentHeight: Long, prevBlockSignature: String?, expectedCurrentHeight: Long): Int

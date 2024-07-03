@@ -28,7 +28,7 @@ open class ScheduledTxQueueCleaner(
             val deletedCount =
                 enqueuedTxJpaRepository.deleteAllReadWithBlockHeightBefore(
                     blockHeight = blockHeightLimit,
-                    limit = queueCleanerConfig.deleteBatchSize
+                    limit = queueCleanerConfig.deleteBatchSize,
                 )
             totalDeleted += deletedCount
         } while (deletedCount > 0)

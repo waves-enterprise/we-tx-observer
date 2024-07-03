@@ -96,7 +96,7 @@ class BlockListenerHandlerBuilder(
     private fun wrapSingleTxInvocation(
         method: Method,
         methodInvocation: () -> Unit,
-        tx: Tx
+        tx: Tx,
     ) = try {
         methodInvocation.invoke()
     } catch (ex: ReflectiveOperationException) {

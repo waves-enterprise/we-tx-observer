@@ -20,7 +20,7 @@ import java.time.OffsetDateTime
     insert into $TX_OBSERVER_SCHEMA_NAME.block_height_info 
         (created_timestamp, current_height, prev_block_signature, update_timestamp, version, id) values
         (?, ?, ?, ?, ?, ?) on conflict do nothing
-"""
+""",
 )
 data class BlockHeightInfo(
     @Id

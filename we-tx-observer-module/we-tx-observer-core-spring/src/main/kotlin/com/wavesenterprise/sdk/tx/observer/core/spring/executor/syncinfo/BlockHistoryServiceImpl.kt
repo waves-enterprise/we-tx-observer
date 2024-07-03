@@ -31,10 +31,11 @@ open class BlockHistoryServiceImpl(
 
     override fun saveBlocks(blocks: List<SyncedBlockInfo>) {
         val relevantSyncedBlockInfos =
-            if (blocks.size <= historyDepth)
+            if (blocks.size <= historyDepth) {
                 blocks
-            else
+            } else {
                 blocks.sortedBy { it.height.value }.takeLast(historyDepth)
+            }
         blockHistoryRepository.saveAll(
             relevantSyncedBlockInfos.map { syncedBlockInfo ->
                 with(syncedBlockInfo) {
@@ -44,14 +45,14 @@ open class BlockHistoryServiceImpl(
                         timestamp = timestamp.toDateTimeFromUTCBlockChain(),
                     )
                 }
-            }
+            },
         )
     }
 
     override fun list(pageable: Pageable): Page<BlockHistory> =
         blockHistoryRepository.findAll(
             { _, _, _ -> null },
-            pageable
+            pageable,
         )
 
     override fun clean(observerHeight: Long) {
@@ -79,13 +80,16 @@ open class BlockHistoryServiceImpl(
                             BlockHistory::height,
                             mapping(
                                 BlockHistory::signature,
-                                toSet<String>()
-                            )
-                        )
+                                toSet<String>(),
+                            ),
+                        ),
                     )
                 }
-        return if (blockSignaturesFromRepoByHeight.isEmpty()) BlockSearchResult.NotFound(lastCheckedHeight = observerHeight)
-        else {
+        return if (blockSignaturesFromRepoByHeight.isEmpty()) {
+            BlockSearchResult.NotFound(
+                lastCheckedHeight = observerHeight,
+            )
+        } else {
             val blockSignaturesFromNode = BlockSignaturesFromNode(
                 fromHeight = heights.last,
                 toHeight = heights.first,
@@ -101,8 +105,9 @@ open class BlockHistoryServiceImpl(
                         signature in repoSignatures
                     } ?: false
                 }
-            if (firstCommonBlockInfo == null) BlockSearchResult.NotFound(Height.fromLong(heights.last))
-            else {
+            if (firstCommonBlockInfo == null) {
+                BlockSearchResult.NotFound(Height.fromLong(heights.last))
+            } else {
                 val (signature, height) = firstCommonBlockInfo
                 BlockSearchResult.Found(
                     signature = Signature.fromBase58(signature),

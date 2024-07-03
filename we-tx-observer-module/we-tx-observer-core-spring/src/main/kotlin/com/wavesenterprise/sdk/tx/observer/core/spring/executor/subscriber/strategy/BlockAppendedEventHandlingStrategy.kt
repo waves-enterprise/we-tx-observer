@@ -31,10 +31,11 @@ class BlockAppendedEventHandlingStrategy(
     override fun actionsOn(event: BlockchainEvent): List<Action> =
         when (event) {
             is BlockchainEvent.AppendedBlockHistory -> {
-                if (appendedBlockHistoryBuffer.store(event))
+                if (appendedBlockHistoryBuffer.store(event)) {
                     emptyList()
-                else
+                } else {
                     listOf((appendedBlockHistoryBuffer.clear() + event).toHandleBlocks())
+                }
             }
             is BlockchainEvent.BlockAppended -> {
                 val blockAppendedWeBlockInfo = event.toWeBlockInfo(txsFromMicroBlocks)
@@ -44,8 +45,8 @@ class BlockAppendedEventHandlingStrategy(
                 listOf(
                     HandleBlocks(
                         weBlockInfos = appendedBlockHistoryList.map { it.toWeBlockInfo() } + blockAppendedWeBlockInfo,
-                        syncedBlockInfos = appendedBlockHistoryList.map { it.toSyncedBlockInfo() } + event.toSyncedBlockInfo()
-                    )
+                        syncedBlockInfos = appendedBlockHistoryList.map { it.toSyncedBlockInfo() } + event.toSyncedBlockInfo(),
+                    ),
                 )
             }
             is BlockchainEvent.MicroBlockAppended -> {
@@ -61,7 +62,7 @@ class BlockAppendedEventHandlingStrategy(
                 clearTxsFromMicroBlocks()
                 listOf(
                     appendedBlockHistoryBuffer.clearAndBuildHandleBlocks(),
-                    handleRollbackFactory.create(event)
+                    handleRollbackFactory.create(event),
                 )
             }
         }
@@ -78,11 +79,12 @@ class BlockAppendedEventHandlingStrategy(
                 blockAppended.txIds.asSequence()
                     .mapNotNull { id ->
                         txsFromMicroBlocks[id.asBase58String()].also { tx: Tx? ->
-                            if (tx == null)
+                            if (tx == null) {
                                 log.warn {
                                     "Tx with id $id was not received in MicroBlock" +
                                         ", BlockAppended [signature = '$signature', height = '$height']"
                                 }
+                            }
                         }
                     }
                     .map { tx ->

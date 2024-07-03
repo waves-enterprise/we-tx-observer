@@ -33,10 +33,11 @@ class MicroBlockEventHandlingStrategy(
         when (event) {
             is BlockchainEvent.AppendedBlockHistory -> {
                 height = event.height.value + 1
-                if (appendedBlockHistoryBuffer.store(event))
+                if (appendedBlockHistoryBuffer.store(event)) {
                     emptyList()
-                else
+                } else {
                     listOf((appendedBlockHistoryBuffer.clear() + event).toHandleBlocks())
+                }
             }
             is BlockchainEvent.BlockAppended -> {
                 height = event.height.value + 1
@@ -47,7 +48,7 @@ class MicroBlockEventHandlingStrategy(
                     HandleBlocks(
                         weBlockInfos = appendedBlockHistoryList.map { it.toWeBlockInfo() },
                         syncedBlockInfos = appendedBlockHistoryList.map { it.toSyncedBlockInfo() } + event.toSyncedBlockInfo(),
-                    )
+                    ),
                 )
             }
             is BlockchainEvent.MicroBlockAppended -> {
@@ -62,15 +63,15 @@ class MicroBlockEventHandlingStrategy(
                                 }
                             }
                         },
-                        syncedBlockInfos = appendedBlockHistoryList.map { it.toSyncedBlockInfo() }
-                    )
+                        syncedBlockInfos = appendedBlockHistoryList.map { it.toSyncedBlockInfo() },
+                    ),
                 )
             }
             is BlockchainEvent.RollbackCompleted -> listOf(
                 appendedBlockHistoryBuffer.clearAndBuildHandleBlocks(),
                 handleRollbackFactory.create(event).also {
                     height = it.weRollbackInfo.toHeight.value
-                }
+                },
             )
         }
 

@@ -31,7 +31,7 @@ import java.time.OffsetDateTime
     insert into $TX_TRACKER_SCHEMA_NAME.tx_track_info 
         (body, created, errors, meta, modified, contract_id, status, type, user_id, id) values
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict do nothing
-"""
+""",
 )
 data class TxTrackInfo(
     @Id
@@ -69,14 +69,14 @@ data class TxTrackInfo(
             CascadeType.PERSIST,
             CascadeType.MERGE,
             CascadeType.REFRESH,
-            CascadeType.DETACH
-        ]
+            CascadeType.DETACH,
+        ],
     )
     @JoinTable(
         schema = TX_TRACKER_SCHEMA_NAME,
         name = "track_info_business_object_info",
         joinColumns = [JoinColumn(name = "track_info_id", nullable = false)],
-        inverseJoinColumns = [JoinColumn(name = "business_object_info_id", nullable = false)]
+        inverseJoinColumns = [JoinColumn(name = "business_object_info_id", nullable = false)],
     )
     @SQLInsert(
         sql = """
@@ -86,7 +86,7 @@ data class TxTrackInfo(
             (track_info_id, business_object_info_id) 
         values
             (?, ?) on conflict do nothing
-    """
+    """,
     )
     val businessObjectInfos: List<TxTrackBusinessObjectInfo> = listOf(),
 )

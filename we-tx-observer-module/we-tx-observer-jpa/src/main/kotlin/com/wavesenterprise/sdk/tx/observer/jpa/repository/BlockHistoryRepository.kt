@@ -26,7 +26,7 @@ interface BlockHistoryRepository : CrudRepository<BlockHistory, String>, JpaSpec
             delete from $TX_OBSERVER_SCHEMA_NAME.block_history
             where deleted = true
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     @Transactional
     @Modifying

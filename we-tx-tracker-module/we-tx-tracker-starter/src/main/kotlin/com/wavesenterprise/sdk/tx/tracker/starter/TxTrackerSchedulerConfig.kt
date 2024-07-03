@@ -21,7 +21,7 @@ class TxTrackerSchedulerConfig {
 
     @Bean
     fun txTrackerScheduler(
-        txTrackerProperties: TxTrackerProperties
+        txTrackerProperties: TxTrackerProperties,
     ) =
         ThreadPoolTaskScheduler().apply {
             scheduledTxTracker.let { scheduledTxTracker ->
@@ -32,7 +32,7 @@ class TxTrackerSchedulerConfig {
                     schedule(
                         scheduledMethodRunnable(
                             scheduledTxTracker,
-                            ScheduledTxTracker::trackPendingTx
+                            ScheduledTxTracker::trackPendingTx,
                         ),
                         PeriodicTrigger(txTrackerProperties.fixedDelay),
                     )

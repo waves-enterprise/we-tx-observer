@@ -19,7 +19,7 @@ interface LockRepository : SpringDataRepository<Lock, String> {
             (:name)
         on conflict do nothing
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     @Modifying
     fun create(name: String): Int
@@ -30,7 +30,7 @@ interface LockRepository : SpringDataRepository<Lock, String> {
         where name = :name
         for update skip locked
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun acquire(name: String): Lock?
 }

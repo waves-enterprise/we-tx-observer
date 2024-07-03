@@ -24,7 +24,7 @@ data class PrivateDataEvent<T> private constructor(
         meta: JsonNode?,
         policyName: String,
         createPolicyTx: CreatePolicyTx,
-        policyDataHashTx: PolicyDataHashTx
+        policyDataHashTx: PolicyDataHashTx,
     ) : this(
         payloadInitializer = { throw NoPayloadException() },
         meta = meta,

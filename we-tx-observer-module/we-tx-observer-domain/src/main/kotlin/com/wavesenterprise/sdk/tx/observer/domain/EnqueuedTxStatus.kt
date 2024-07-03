@@ -5,5 +5,4 @@ enum class EnqueuedTxStatus {
     READ,
     POSTPONED,
     CANCELLED_FORKED,
-    ;
 }
