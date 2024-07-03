@@ -10,6 +10,9 @@ import com.wavesenterprise.sdk.tx.tracker.domain.TxTrackInfo
 import com.wavesenterprise.sdk.tx.tracker.domain.TxTrackStatus
 import com.wavesenterprise.sdk.tx.tracker.jpa.TxTrackerJpaAutoConfig
 import com.wavesenterprise.sdk.tx.tracker.jpa.repository.TxTrackerJpaRepository
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
+import jakarta.persistence.PersistenceException
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.hibernate.exception.ConstraintViolationException
@@ -23,9 +26,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import java.util.UUID
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
-import javax.persistence.PersistenceException
 
 @DataJpaTest(properties = ["tx-tracker.enabled = true"])
 @ActiveProfiles("test")
@@ -61,7 +61,7 @@ class TxTrackerJpaRepositoryTest {
             txTrackerJpaRepository.save(buildTxTrackInfo(type = type))
             em.flushAndClear()
         }.apply {
-            assertThat((cause as ConstraintViolationException).constraintName, `is`("contract_id_null_check"))
+            assertThat((this as ConstraintViolationException).constraintName, `is`("contract_id_null_check"))
         }
     }
 

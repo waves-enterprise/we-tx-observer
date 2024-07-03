@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.wavesenterprise.sdk.tx.observer.starter.TxObserverStarterConfig,\
-  com.wavesenterprise.sdk.tx.observer.starter.metrics.TxObserverMetricsAutoConfig

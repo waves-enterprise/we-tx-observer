@@ -1,36 +1,30 @@
 package com.wavesenterprise.sdk.tx.observer.domain
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType
-import com.wavesenterprise.sdk.tx.observer.common.jpa.util.JSONB_TYPE
 import com.wavesenterprise.sdk.tx.observer.common.jpa.util.TX_OBSERVER_SCHEMA_NAME
+import io.hypersistence.utils.hibernate.type.json.JsonType
+import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
 import org.hibernate.annotations.Type
-import org.hibernate.annotations.TypeDef
-import org.hibernate.annotations.TypeDefs
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.OffsetDateTime
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.Table
 
 @Entity
 @Table(schema = TX_OBSERVER_SCHEMA_NAME)
 @EntityListeners(AuditingEntityListener::class)
-@TypeDefs(
-    TypeDef(name = JSONB_TYPE, typeClass = JsonBinaryType::class)
-)
 data class EnqueuedTx(
     @Id
     var id: String,
 
-    @Type(type = JSONB_TYPE)
+    @Type(JsonType::class)
     var body: JsonNode,
 
     val txType: Int,

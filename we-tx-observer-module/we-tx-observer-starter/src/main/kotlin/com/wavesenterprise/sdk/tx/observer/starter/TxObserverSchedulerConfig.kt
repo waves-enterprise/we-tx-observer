@@ -143,7 +143,7 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
                     scheduledMetricsCollector,
                     ScheduledMetricsCollector::metricsCollector
                 ),
-                metricsCollectorProperties.fixedDelay.toMillis()
+                metricsCollectorProperties.fixedDelay
             )
     }
 
@@ -165,7 +165,7 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
                     scheduledForkResolver,
                     ScheduledForkResolver::resolveForkedTx
                 ),
-                forkResolverProperties.fixedDelay.toMillis()
+                forkResolverProperties.fixedDelay
             )
     }
 
@@ -176,7 +176,7 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
                     blockHistoryCleaner,
                     BlockHistoryCleaner::clean
                 ),
-                txObserverProperties.blockHistoryCleanDelay.toMillis()
+                txObserverProperties.blockHistoryCleanDelay
             )
     }
 
@@ -188,7 +188,7 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
                         eventSubscriber,
                         EventSubscriber::subscribe
                     ),
-                    txObserverProperties.fixedDelay.toMillis()
+                    txObserverProperties.fixedDelay
                 )
         }
     }
@@ -200,7 +200,7 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
                     scheduledBlockInfoSynchronizer,
                     ScheduledBlockInfoSynchronizer::syncNodeBlockInfo
                 ),
-                txObserverProperties.fixedDelay.toMillis()
+                txObserverProperties.fixedDelay
             )
         }
     }
@@ -212,7 +212,7 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
                     scheduledPrivacyChecker,
                     ScheduledPrivacyChecker::checkPrivacyAvailabilityWhileTheyExist
                 ),
-                privacyAvailabilityCheckProperties.fixedDelay.toMillis()
+                privacyAvailabilityCheckProperties.fixedDelay
             )
         }
     }
@@ -224,7 +224,7 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
                     scheduledPartitionPoller,
                     ScheduledPartitionPoller::pollWhileHavingActivePartitions
                 ),
-                partitionPollerProperties.fixedDelay.toMillis()
+                partitionPollerProperties.fixedDelay
             )
         }
     }
@@ -236,7 +236,7 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
                     scheduledPartitionPausedOnTxIdCleaner,
                     ScheduledPartitionPausedOnTxIdCleaner::clear
                 ),
-                partitionPausedOnTxIdCleanerProperties.fixedDelay.toMillis()
+                partitionPausedOnTxIdCleanerProperties.fixedDelay
             )
         }
     }
@@ -248,7 +248,7 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
                     scheduledPartitionCleaner,
                     ScheduledPartitionCleaner::cleanEmptyPartitions
                 ),
-                partitionCleanerProperties.fixedDelay.toMillis()
+                partitionCleanerProperties.fixedDelay
             )
         }
     }

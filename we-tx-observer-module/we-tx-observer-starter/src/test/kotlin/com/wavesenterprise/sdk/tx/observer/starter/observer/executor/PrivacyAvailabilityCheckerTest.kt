@@ -24,6 +24,8 @@ import com.wavesenterprise.sdk.tx.observer.starter.observer.config.ObjectMapperC
 import com.wavesenterprise.sdk.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
 import io.mockk.every
 import io.mockk.verify
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.awaitility.Awaitility.await
 import org.awaitility.Duration
 import org.junit.jupiter.api.AfterEach
@@ -40,8 +42,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TestTransaction
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @DataJpaTest(
     properties = [

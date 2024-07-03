@@ -1,6 +1,6 @@
 package com.wavesenterprise.sdk.tx.observer.core.spring.executor.syncinfo
 
-import javax.persistence.OptimisticLockException
+import jakarta.persistence.OptimisticLockException
 
 class ExpectedHeightMismatchException(
     expectedCurrentHeight: Long

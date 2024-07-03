@@ -60,6 +60,6 @@ class BlockHistoryRepositoryTest {
             blockHistoryRepository.save(blockHistory(signature = signature))
             first
         }
-        assertThat(blockHistoryRepository.findAll()).containsExactly(expectedSavedEntity)
+        assertThat(blockHistoryRepository.findAll()).containsOnly(expectedSavedEntity)
     }
 }
