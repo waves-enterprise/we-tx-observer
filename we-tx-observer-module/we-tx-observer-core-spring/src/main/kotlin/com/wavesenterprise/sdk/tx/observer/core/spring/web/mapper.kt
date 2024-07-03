@@ -35,8 +35,9 @@ fun EnqueuedTx.toApiDto(): EnqueuedTxApiDto = EnqueuedTxApiDto(
 
 fun EnqueuedTxSearchRequest.toSpecification() =
     Specification { root: Root<EnqueuedTx>,
-        _: CriteriaQuery<*>,
-        cb: CriteriaBuilder ->
+                    _: CriteriaQuery<*>,
+                    cb: CriteriaBuilder,
+        ->
 
         val predicates = mutableListOf<Predicate>()
         status?.let {
@@ -48,7 +49,7 @@ fun EnqueuedTxSearchRequest.toSpecification() =
         partitionId?.let {
             predicates += cb.equal(
                 root.join(EnqueuedTx_.partition).get(TxQueuePartition_.id),
-                it
+                it,
             )
         }
         available?.let {
@@ -76,8 +77,9 @@ fun TxQueuePartition.toApiDto(): TxQueuePartitionApiDto = TxQueuePartitionApiDto
 
 fun TxQueuePartitionSearchRequest.toSpecification() =
     Specification { root: Root<TxQueuePartition>,
-        cq: CriteriaQuery<*>,
-        cb: CriteriaBuilder ->
+                    cq: CriteriaQuery<*>,
+                    cb: CriteriaBuilder,
+        ->
 
         val predicates = mutableListOf<Predicate>()
         priority?.let {
@@ -102,7 +104,7 @@ fun TxQueuePartitionSearchRequest.toSpecification() =
 
             subQuery.select(subRoot).where(
                 joinPredicate,
-                cb.equal(subRoot.get(EnqueuedTx_.status), EnqueuedTxStatus.NEW)
+                cb.equal(subRoot.get(EnqueuedTx_.status), EnqueuedTxStatus.NEW),
             )
             val newEnqueuedTxExist = cb.exists(subQuery)
             predicates += if (it) {

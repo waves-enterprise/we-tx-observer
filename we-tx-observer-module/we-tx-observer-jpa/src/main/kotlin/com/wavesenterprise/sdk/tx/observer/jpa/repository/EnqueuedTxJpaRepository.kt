@@ -23,7 +23,7 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
         value = """
             select count(*) from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx tx where tx.status = :#{#enqueuedTxStatus.name()}
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun countByStatus(enqueuedTxStatus: EnqueuedTxStatus): Long
 
@@ -42,12 +42,12 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
             where tx.status = :#{#enqueuedTxStatus.name()} and tx.partition_id = :partitionId
             order by tx.block_height, tx.position_in_block, tx.position_in_atomic for update skip locked
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun findActualEnqueuedTxForPartition(
         enqueuedTxStatus: EnqueuedTxStatus,
         partitionId: String,
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<EnqueuedTx>
 
     fun findAllByStatusAndBlockHeightBeforeOrderByBlockHeight(
@@ -75,7 +75,7 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
             order by tx.tx_timestamp
             limit :limit for update skip locked
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun findOldCheckPrivacyAvailabilityCandidates(
         offset: Int,
@@ -102,7 +102,7 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
             order by tx.tx_timestamp desc
             offset :offset limit :limit for update skip locked
     """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun findRecentCheckPrivacyAvailabilityCandidates(
         alreadySelectedIds: Set<String>,
@@ -117,7 +117,7 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
     @Query(
         """delete from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx where id in
         (select id from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx where status = :enqueuedTxStatus and block_height < :blockHeight limit :limit)""",
-        nativeQuery = true
+        nativeQuery = true,
     )
     @Modifying
     fun deleteAllReadWithBlockHeightBefore(
@@ -126,7 +126,10 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
         limit: Long,
     ): Int
 
-    @Query("""delete from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx where block_height >= :blockHeight""", nativeQuery = true)
+    @Query(
+        """delete from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx where block_height >= :blockHeight""",
+        nativeQuery = true,
+    )
     @Modifying
     fun cleanAllWithBlockHeightMoreThan(blockHeight: Long): Int
 
@@ -135,7 +138,7 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
 
     @Query(
         """update EnqueuedTx set status = :newStatus where status = :oldStatus
-        and partition.id in (select p.id from TxQueuePartition p where p.priority < :priority)"""
+        and partition.id in (select p.id from TxQueuePartition p where p.priority < :priority)""",
     )
     @Modifying
     fun setStatusForTxWithStatusEqualsAndPartitionPriorityLowerThan(

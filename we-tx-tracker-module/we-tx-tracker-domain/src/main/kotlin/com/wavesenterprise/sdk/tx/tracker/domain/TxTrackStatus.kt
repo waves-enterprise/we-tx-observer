@@ -5,5 +5,4 @@ enum class TxTrackStatus {
     SUCCESS,
     ERROR,
     FAILURE,
-    ;
 }

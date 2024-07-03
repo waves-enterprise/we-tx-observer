@@ -42,7 +42,7 @@ class TxObserverEnablerConfig {
                 txEnqueuePredicates.add(
                     object : TxEnqueuePredicate {
                         override fun isEnqueued(tx: Tx): Boolean = predicate(tx)
-                    }
+                    },
                 )
             }
 
@@ -78,7 +78,7 @@ class TxObserverEnablerConfig {
                 val predicates = predicateConfigurer.predicates
                 val types = predicateConfigurer.types
                 AndTxEnqueuePredicate(
-                    predicates + typeEnqueuedPredicate(types, txEnqueuedPredicateProperties)
+                    predicates + typeEnqueuedPredicate(types, txEnqueuedPredicateProperties),
                 )
             }
 
@@ -88,13 +88,13 @@ class TxObserverEnablerConfig {
     ) = when {
         configuredTypes.isNotEmpty() -> {
             listOf(
-                TxTypeEnqueuedPredicate(configuredTypes)
+                TxTypeEnqueuedPredicate(configuredTypes),
             )
         }
         txEnqueuedPredicateProperties.txTypes.isNotEmpty() -> listOf(
             TxTypeEnqueuedPredicate(
-                txEnqueuedPredicateProperties.txTypes.map { TxType.fromInt(it) }
-            )
+                txEnqueuedPredicateProperties.txTypes.map { TxType.fromInt(it) },
+            ),
         )
         else -> emptyList()
     }
@@ -118,6 +118,6 @@ class TxObserverEnablerConfig {
             nodeBlockingServiceFactory = nodeBlockingServiceFactory,
             objectMapper = txObserverConfigurer?.objectMapper()
                 ?: objectMapper
-                ?: error("Object mapper must be configured or be present in spring context")
+                ?: error("Object mapper must be configured or be present in spring context"),
         )
 }

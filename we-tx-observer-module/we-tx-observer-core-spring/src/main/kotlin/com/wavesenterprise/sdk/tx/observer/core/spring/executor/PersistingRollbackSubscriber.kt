@@ -12,8 +12,8 @@ class PersistingRollbackSubscriber(
         rollbackInfoRepository.save(
             RollbackInfo(
                 toHeight = weRollbackInfo.toHeight.value,
-                toBlockSignature = weRollbackInfo.toBlockSignature.asBase58String()
-            )
+                toBlockSignature = weRollbackInfo.toBlockSignature.asBase58String(),
+            ),
         )
     }
 }

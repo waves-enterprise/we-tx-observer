@@ -28,6 +28,6 @@ class TxQueuePartitionController(
     @GetMapping("/status")
     fun status() = TxQueuePartitionStatusApiDto(
         txQueuePartitionJpaRepository.countErrorPartitions(),
-        txQueuePartitionJpaRepository.count()
+        txQueuePartitionJpaRepository.count(),
     )
 }

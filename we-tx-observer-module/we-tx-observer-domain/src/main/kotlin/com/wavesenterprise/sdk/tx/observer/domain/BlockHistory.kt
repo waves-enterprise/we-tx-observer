@@ -22,7 +22,7 @@ import java.util.UUID
     insert into $TX_OBSERVER_SCHEMA_NAME.block_history
         (created_timestamp, deleted, height, signature, timestamp, id) values
         (?, ?, ?, ?, ?, ?) on conflict do nothing
-"""
+""",
 )
 @SQLDelete(sql = "update $TX_OBSERVER_SCHEMA_NAME.block_history set deleted = true where id=?")
 @SQLRestriction("deleted = false")

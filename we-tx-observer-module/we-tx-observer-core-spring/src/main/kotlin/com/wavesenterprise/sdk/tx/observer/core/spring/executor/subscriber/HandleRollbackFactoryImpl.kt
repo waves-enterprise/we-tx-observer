@@ -21,8 +21,8 @@ class HandleRollbackFactoryImpl(
             height = blocksService.blockById(event.returnToBlockSignature).height.value
             HandleRollback(
                 event.toWeRollbackInfo(
-                    toHeight = Height(height)
-                )
+                    toHeight = Height(height),
+                ),
             )
         } finally {
             log.warn { "Rollback event signature = ${event.returnToBlockSignature}, height: $height" }

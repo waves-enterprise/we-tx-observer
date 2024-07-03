@@ -12,5 +12,5 @@ data class PartitionPausedOnTxIdCleanerProperties(
     @DefaultValue("true")
     override var enabled: Boolean,
     @DurationUnit(ChronoUnit.MILLIS) @DefaultValue("5m")
-    override var fixedDelay: Duration
+    override var fixedDelay: Duration,
 ) : PartitionPausedOnTxIdCleanerConfig

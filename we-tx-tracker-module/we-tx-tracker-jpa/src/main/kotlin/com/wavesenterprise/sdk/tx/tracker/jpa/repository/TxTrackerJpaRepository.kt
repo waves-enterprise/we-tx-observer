@@ -21,7 +21,7 @@ interface TxTrackerJpaRepository : JpaRepository<TxTrackInfo, String> {
         value = """SELECT tti.id FROM TxTrackInfo tti
         WHERE tti.status = :status
         AND tti.type IN :types
-        ORDER BY tti.created """
+        ORDER BY tti.created """,
     )
     fun findLastIdsByStatusAndTypeIn(
         @Param("status") txTrackerStatus: TxTrackStatus,
@@ -32,7 +32,7 @@ interface TxTrackerJpaRepository : JpaRepository<TxTrackInfo, String> {
     @Query(
         value = """SELECT tti.body FROM TxTrackInfo tti
         WHERE tti.status = :status
-        ORDER BY tti.created """
+        ORDER BY tti.created """,
     )
     fun findLastBodiesByStatus(
         @Param("status") txTrackerStatus: TxTrackStatus,

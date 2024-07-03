@@ -52,7 +52,7 @@ open class JpaTxTracker(
         tx: Tx,
         meta: Map<String, Any>,
         businessObjectInfos: List<TxTrackBusinessObjectInfo>,
-        userId: String?
+        userId: String?,
     ): TxTrackInfo =
         when (tx) {
             is CreateContractTx -> smartContractInfoJpaRepository.save(
@@ -63,7 +63,7 @@ open class JpaTxTracker(
                     imageHash = tx.imageHash.value,
                     contractName = tx.contractName.value,
                     version = tx.version.value,
-                )
+                ),
             )
             is CallContractTx -> getSmartContractInfo(tx.contractId, tx.javaClass.simpleName)
             is DisableContractTx -> getSmartContractInfo(tx.contractId, tx.javaClass.simpleName)
@@ -78,8 +78,8 @@ open class JpaTxTracker(
                     smartContractInfo = smartContractInfo,
                     meta = meta,
                     businessObjectInfos = businessObjectInfos,
-                    userId = userId
-                )
+                    userId = userId,
+                ),
             )
         }
 
@@ -110,14 +110,17 @@ open class JpaTxTracker(
         types: List<Int>,
         pageRequest: PageRequest,
     ): List<TxId> = txTrackerJpaRepository.findLastIdsByStatusAndTypeIn(
-        txTrackerStatus, types, pageRequest
+        txTrackerStatus,
+        types,
+        pageRequest,
     ).map { TxId.fromBase58(it) }
 
     override fun getTrackedTxsWithStatus(
         txTrackerStatus: TxTrackStatus,
         pageRequest: PageRequest,
     ): List<Tx> = txTrackerJpaRepository.findLastBodiesByStatus(
-        txTrackerStatus, pageRequest
+        txTrackerStatus,
+        pageRequest,
     ).mapNotNull { body: JsonNode? ->
         body?.let { objectMapper.convertValue<TxDto>(it).toDomain() }
     }
@@ -186,7 +189,7 @@ open class JpaTxTracker(
                     imageHash = it.imageHash.value,
                     contractName = it.contractName.value,
                     version = it.version.value,
-                )
+                ),
             )
         }
 }

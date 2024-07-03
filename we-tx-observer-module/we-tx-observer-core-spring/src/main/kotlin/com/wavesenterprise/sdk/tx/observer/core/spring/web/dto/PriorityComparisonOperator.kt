@@ -7,5 +7,4 @@ enum class PriorityComparisonOperator {
     LE,
     GT,
     GE,
-    ;
 }

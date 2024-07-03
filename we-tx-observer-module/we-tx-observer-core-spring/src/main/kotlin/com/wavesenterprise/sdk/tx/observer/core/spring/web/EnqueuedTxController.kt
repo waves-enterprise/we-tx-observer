@@ -46,7 +46,7 @@ class EnqueuedTxController(
     @PatchMapping("/{txId}")
     fun patchTxInQueue(
         @PathVariable txId: String,
-        @RequestBody patchTxApiDto: PatchTxApiDto
+        @RequestBody patchTxApiDto: PatchTxApiDto,
     ): EnqueuedTxApiDto = txQueueService.changeTxStatusInQueue(txId, patchTxApiDto).toApiDto()
 
     @DeleteMapping("/{txId}")

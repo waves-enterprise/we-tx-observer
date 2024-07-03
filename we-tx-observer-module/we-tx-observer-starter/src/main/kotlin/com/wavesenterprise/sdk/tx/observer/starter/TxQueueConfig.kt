@@ -43,9 +43,9 @@ import org.springframework.context.annotation.Import
                 EnqueuedTxController::class,
                 ObserverController::class,
                 TxQueuePartitionController::class,
-            ]
-        )
-    ]
+            ],
+        ),
+    ],
 )
 @EnableConfigurationProperties(
     TxObserverProperties::class,

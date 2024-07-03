@@ -39,7 +39,7 @@ open class BlocksLoaderImpl(
             blocksService.blockSequence(fromHeight, lastBlock.height.value).also {
                 logger.debug("Blocks from height $fromHeight to ${lastBlock.height} downloaded")
             },
-            hasMoreBlocks || iterator.hasNext()
+            hasMoreBlocks || iterator.hasNext(),
         )
     }
 }

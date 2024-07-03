@@ -11,7 +11,7 @@ import org.hibernate.annotations.SQLInsert
 @SQLInsert(
     sql = """
     insert into $TX_TRACKER_SCHEMA_NAME.tx_track_business_object_info (type, id) values (?, ?) on conflict do nothing
-"""
+""",
 )
 data class TxTrackBusinessObjectInfo(
     @Id

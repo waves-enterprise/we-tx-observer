@@ -74,7 +74,7 @@ internal class TxEnqueuePredicateContextImpl : TxEnqueuePredicateContext {
             object : TxEnqueuePredicate {
                 override fun isEnqueued(tx: Tx): Boolean =
                     predicate(tx)
-            }
+            },
         )
     }
 

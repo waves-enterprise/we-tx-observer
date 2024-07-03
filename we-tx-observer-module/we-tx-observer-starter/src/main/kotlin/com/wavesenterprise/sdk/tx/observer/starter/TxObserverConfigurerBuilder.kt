@@ -63,7 +63,7 @@ class TxObserverConfigurerBuilder {
 
     class TxEnqueuePredicatesHolder(
         private val txEnqueuePredicates: MutableList<TxEnqueuePredicate> = mutableListOf(),
-        private val txTypes: MutableSet<TxType> = mutableSetOf()
+        private val txTypes: MutableSet<TxType> = mutableSetOf(),
     ) {
         val predicates: List<TxEnqueuePredicate>
             get() = txEnqueuePredicates
@@ -79,7 +79,7 @@ class TxObserverConfigurerBuilder {
                 object : TxEnqueuePredicate {
                     override fun isEnqueued(tx: Tx): Boolean =
                         predicate(tx)
-                }
+                },
             )
         }
 
