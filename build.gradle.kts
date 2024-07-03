@@ -20,7 +20,6 @@ val protobufVersion: String by project
 val junitPlatformLauncherVersion: String by project
 val mockkVersion: String by project
 val springMockkVersion: String by project
-val wireMockVersion: String by project
 
 val ktorVersion: String by project
 
