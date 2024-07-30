@@ -38,7 +38,7 @@ class NoValuePrivateDataEventBlockListenerTest : AbstractPrivateEventBlockListen
     interface NothingPrivateDataEventListener {
         @TxListener
         fun handleEvent(
-            privateDataEvent: PrivateDataEvent<Nothing>
+            privateDataEvent: PrivateDataEvent<Nothing>,
         )
     }
 

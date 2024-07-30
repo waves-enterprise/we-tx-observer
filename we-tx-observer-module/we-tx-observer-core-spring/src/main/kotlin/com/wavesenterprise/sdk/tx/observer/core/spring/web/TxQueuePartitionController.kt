@@ -23,7 +23,10 @@ class TxQueuePartitionController(
 
     @GetMapping("/{partitionId}")
     fun getPartitionById(@PathVariable partitionId: String) = txQueuePartitionJpaRepository.findByIdOrNull(partitionId)
-        ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Partition with ID = $partitionId not found in tx-observer queue")
+        ?: throw ResponseStatusException(
+            HttpStatus.NOT_FOUND,
+            "Partition with ID = $partitionId not found in tx-observer queue",
+        )
 
     @GetMapping("/status")
     fun status() = TxQueuePartitionStatusApiDto(

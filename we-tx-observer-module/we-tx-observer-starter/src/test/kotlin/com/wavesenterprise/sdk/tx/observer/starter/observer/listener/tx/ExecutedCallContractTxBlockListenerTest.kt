@@ -31,7 +31,7 @@ class ExecutedCallContractTxBlockListenerTest : AbstractListenerTest() {
         enqueue(
             callContractTxSimple,
             callContractTxDifferentValueTypes,
-            callContractTxSeveralMatchingKeys
+            callContractTxSeveralMatchingKeys,
         )
 
         pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(mockPartitionId)
@@ -45,8 +45,8 @@ class ExecutedCallContractTxBlockListenerTest : AbstractListenerTest() {
             containsInAnyOrder(
                 callContractTxSimple,
                 callContractTxDifferentValueTypes,
-                callContractTxSeveralMatchingKeys
-            )
+                callContractTxSeveralMatchingKeys,
+            ),
         )
     }
 

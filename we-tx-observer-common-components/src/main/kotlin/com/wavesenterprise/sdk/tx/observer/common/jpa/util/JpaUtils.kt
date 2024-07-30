@@ -9,6 +9,7 @@ const val TX_OBSERVER_SCHEMA_NAME = "tx_observer"
 const val TX_TRACKER_SCHEMA_NAME = "tx_tracker"
 const val JSONB_TYPE: String = "jsonb"
 
+@Suppress("VariableNaming")
 fun <R, T> Collection<T>.toIn(
     root: Root<R>,
     cb: CriteriaBuilder,

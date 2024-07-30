@@ -35,7 +35,7 @@ class FilteredByMultipleMetaKeysPrivateDataEventBlockListenerTest : AbstractPriv
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(
             privacyInfoResponse.copy(
@@ -45,12 +45,12 @@ class FilteredByMultipleMetaKeysPrivateDataEventBlockListenerTest : AbstractPriv
                             mapOf(
                                 "filter_key_one" to "desired_value_one",
                                 "filter_key_two" to "desired_value_two",
-                                "filter_key_three" to "desired_value_three"
-                            )
-                        )
-                    )
-                )
-            )
+                                "filter_key_three" to "desired_value_three",
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         )
         enqueue(samplePolicyDataHashTx)
 
@@ -69,7 +69,7 @@ class FilteredByMultipleMetaKeysPrivateDataEventBlockListenerTest : AbstractPriv
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(
             privacyInfoResponse.copy(
@@ -79,12 +79,12 @@ class FilteredByMultipleMetaKeysPrivateDataEventBlockListenerTest : AbstractPriv
                             mapOf(
                                 "filter_key_one" to "not_desired_value_one",
                                 "filter_key_two" to "not_desired_value_two",
-                                "filter_key_three" to "not_desired_value_three"
-                            )
-                        )
-                    )
-                )
-            )
+                                "filter_key_three" to "not_desired_value_three",
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         )
         enqueue(samplePolicyDataHashTx)
 
@@ -98,10 +98,10 @@ class FilteredByMultipleMetaKeysPrivateDataEventBlockListenerTest : AbstractPriv
         fun handleEvent(
             @MessageFilters(
                 MessageFilter(metaKey = "filter_key_one", metaKeyValue = "desired_value_one"),
-                MessageFilter(metaKey = "filter_key_two", metaKeyValue = "desired_value_two")
+                MessageFilter(metaKey = "filter_key_two", metaKeyValue = "desired_value_two"),
             )
             @MessageFilter(metaKey = "filter_key_three", metaKeyValue = "desired_value_three")
-            privateDataEvent: PrivateDataEvent<Nothing>
+            privateDataEvent: PrivateDataEvent<Nothing>,
         )
     }
 

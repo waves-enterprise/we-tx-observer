@@ -18,7 +18,7 @@ class TxTypeEnqueuedPredicateTest {
         assertTrue(
             predicate.isEnqueued(
                 tx = TestDataFactory.createContractTx(),
-            )
+            ),
         )
     }
 
@@ -31,7 +31,7 @@ class TxTypeEnqueuedPredicateTest {
         assertTrue(
             predicate.isEnqueued(
                 tx = TestDataFactory.createContractTx(),
-            )
+            ),
         )
     }
 
@@ -44,7 +44,7 @@ class TxTypeEnqueuedPredicateTest {
         assertFalse(
             predicate.isEnqueued(
                 tx = TestDataFactory.createContractTx(),
-            )
+            ),
         )
     }
 }

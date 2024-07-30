@@ -33,6 +33,7 @@ import org.springframework.scheduling.support.ScheduledMethodRunnable
 import kotlin.reflect.KFunction
 import kotlin.reflect.jvm.javaMethod
 
+@Suppress("TooManyFunctions")
 @Configuration
 @Profile("!test")
 @Import(

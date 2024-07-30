@@ -16,6 +16,7 @@ import org.slf4j.lazyLogger
 import org.slf4j.warn
 import java.lang.Long.max
 
+@Suppress("LongParameterList", "TooManyFunctions")
 class SyncInfoServiceImpl(
     private val blockHeightJpaRepository: BlockHeightJpaRepository,
     private val blockHeightResetRepository: BlockHeightResetRepository,

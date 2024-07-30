@@ -71,7 +71,7 @@ import java.util.concurrent.CountDownLatch
         TxTrackerConfig::class,
         FlywaySchemaConfiguration::class,
         TxTrackerJpaConfig::class,
-    ]
+    ],
 )
 // fixme should work without DataSourceAutoConfiguration (has in wired starters)
 // but fails on dataSource bean condition (consider ordering)
@@ -216,14 +216,14 @@ internal class JpaTxTrackerTest {
         val businessObjectInfos = listOf(TxTrackBusinessObjectInfo("id", "OBJECT"))
         val txTrackInfoFirstInvocation = txTracker.trackTx(
             tx = txToBeTracked,
-            businessObjectInfos = businessObjectInfos
+            businessObjectInfos = businessObjectInfos,
         )
 
         em.flushAndClear()
 
         val trackTxInfoSecondInvocation = txTracker.trackTx(
             tx = txToBeTracked,
-            businessObjectInfos = businessObjectInfos
+            businessObjectInfos = businessObjectInfos,
         )
         em.flush()
 
@@ -247,7 +247,7 @@ internal class JpaTxTrackerTest {
                 val txTrackInfo = transactionTemplate.execute {
                     txTracker.trackTx(
                         tx = txToBeTracked,
-                        businessObjectInfos = businessObjectInfos
+                        businessObjectInfos = businessObjectInfos,
                     ).also {
                         em.flushAndClear()
 
@@ -276,7 +276,7 @@ internal class JpaTxTrackerTest {
         val contractId = "some_not_existent_id"
         assertThrows<IllegalArgumentException>(
             "No smartContractInfo for tracked CallContractTx " +
-                "(contractId = $contractId)"
+                "(contractId = $contractId)",
         ) {
             txTracker.trackTx(callContractTx.copy(contractId = ContractId.fromByteArray(contractId.toByteArray())))
         }
@@ -288,7 +288,7 @@ internal class JpaTxTrackerTest {
         val contractId = ContractId(TxId(randomBytesFromUUID()))
         val tx = callContractTx.copy(
             id = TxId(randomBytesFromUUID()),
-            contractId = contractId
+            contractId = contractId,
         )
         every {
             txService.txInfo(contractId.txId)
@@ -296,7 +296,7 @@ internal class JpaTxTrackerTest {
             TxInfo(
                 height = mockk(),
                 tx = createContractTx.copy(id = contractId.txId),
-            )
+            ),
         )
 
         txTracker.trackTx(tx)
@@ -387,7 +387,7 @@ internal class JpaTxTrackerTest {
             txId = txId,
             message = "ddd",
             timestamp = Timestamp(1),
-            signature = Signature.fromByteArray("sign".toByteArray())
+            signature = Signature.fromByteArray("sign".toByteArray()),
         )
         val contractTxStatusList = (1..3)
             .map { contractTxStatusDto.copy(txId = TxId.fromByteArray("id$it".toByteArray())) }
@@ -403,11 +403,12 @@ internal class JpaTxTrackerTest {
         assertEquals(TxTrackStatus.FAILURE, txTrackInfoForTx.status)
         assertNotNull(txTrackInfoForTx.errors)
         val jacksonJavaType = objectMapper.typeFactory.constructType(
-            object : TypeReference<List<ContractTxStatus>>() {}
+            object : TypeReference<List<ContractTxStatus>>() {},
         )
 
         val actualSavedTxStatusDtoList = objectMapper.readValue<List<ContractTxStatus>>(
-            objectMapper.treeAsTokens(txTrackInfoForTx.errors!!), jacksonJavaType
+            objectMapper.treeAsTokens(txTrackInfoForTx.errors!!),
+            jacksonJavaType,
         )
         assertEquals(expectedTxStatusDtoMap.size, actualSavedTxStatusDtoList.size)
         actualSavedTxStatusDtoList.forEach {
@@ -428,13 +429,13 @@ internal class JpaTxTrackerTest {
             txId = txId,
             message = "ddd",
             timestamp = Timestamp(1),
-            signature = Signature.fromByteArray("sign".toByteArray())
+            signature = Signature.fromByteArray("sign".toByteArray()),
         )
         val contractTxStatusDtoList = (1..4)
             .map {
                 contractTxStatusDto.copy(
                     txId = TxId.fromByteArray("id$it".toByteArray()),
-                    status = if (it == 4) TxStatus.SUCCESS else TxStatus.ERROR
+                    status = if (it == 4) TxStatus.SUCCESS else TxStatus.ERROR,
                 )
             }
             .toList()
@@ -460,13 +461,13 @@ internal class JpaTxTrackerTest {
             txId = txId,
             message = "ddd",
             timestamp = Timestamp(1),
-            signature = Signature.fromByteArray("sign".toByteArray())
+            signature = Signature.fromByteArray("sign".toByteArray()),
         )
         val contractTxStatusDtoList = (1..2)
             .map {
                 contractTxStatusDto.copy(
                     txId = TxId.fromByteArray("id$it".toByteArray()),
-                    status = if (it == 1) TxStatus.ERROR else TxStatus.FAILURE
+                    status = if (it == 1) TxStatus.ERROR else TxStatus.FAILURE,
                 )
             }
             .toList()
@@ -491,7 +492,7 @@ internal class JpaTxTrackerTest {
         val result = txTracker.getTrackedTxIdsWithStatusAndTypes(
             txTrackerStatus = TxTrackStatus.PENDING,
             types = listOf(TxType.CALL_CONTRACT.code, TxType.CREATE_CONTRACT.code),
-            pageRequest = PageRequest.of(0, 1000)
+            pageRequest = PageRequest.of(0, 1000),
         )
 
         val txTrackInfoForCreate = em.find(TxTrackInfo::class.java, createContractTx.id.asBase58String())
@@ -520,7 +521,7 @@ internal class JpaTxTrackerTest {
 
         txTracker.trackTx(
             tx = createContractTx.copy(id = expectedTxId),
-            businessObjectInfos = listOf(businessObjectInfo)
+            businessObjectInfos = listOf(businessObjectInfo),
         )
         em.flushAndClear()
 

@@ -34,7 +34,7 @@ class IntValueKeyEventBlockListenerTest : AbstractListenerTest() {
         assertEquals(callContractTxDifferentValueTypes, intKeyEventCaptor.captured.tx)
         assertEquals(
             (callContractTxDifferentValueTypes.tx as CallContractTx).contractId.asBase58String(),
-            intKeyEventCaptor.captured.contractId
+            intKeyEventCaptor.captured.contractId,
         )
         assertEquals("my_fav_key_int_", intKeyEventCaptor.captured.key)
     }
@@ -43,7 +43,7 @@ class IntValueKeyEventBlockListenerTest : AbstractListenerTest() {
         @TxListener
         fun handleEvent(
             @KeyFilter(keyPrefix = "my_fav_key_int_")
-            keyEvent: KeyEvent<Int>
+            keyEvent: KeyEvent<Int>,
         )
     }
 

@@ -12,6 +12,7 @@ import java.util.Optional
 /**
  * Service for tracking, managing and obtaining up-to-date information about necessary transactions.
  */
+@Suppress("TooManyFunctions")
 interface TxTracker {
 
     /**

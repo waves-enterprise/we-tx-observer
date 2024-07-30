@@ -33,6 +33,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
 
+@Suppress("TooManyFunctions")
 open class JpaTxTracker(
     val txTrackerJpaRepository: TxTrackerJpaRepository,
     val smartContractInfoJpaRepository: SmartContractInfoJpaRepository,
@@ -65,6 +66,7 @@ open class JpaTxTracker(
                     version = tx.version.value,
                 ),
             )
+
             is CallContractTx -> getSmartContractInfo(tx.contractId, tx.javaClass.simpleName)
             is DisableContractTx -> getSmartContractInfo(tx.contractId, tx.javaClass.simpleName)
             is UpdateContractTx -> getSmartContractInfo(tx.contractId, tx.javaClass.simpleName)

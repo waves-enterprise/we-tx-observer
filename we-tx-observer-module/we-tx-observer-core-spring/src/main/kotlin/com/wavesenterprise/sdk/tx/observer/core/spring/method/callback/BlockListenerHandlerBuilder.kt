@@ -104,7 +104,6 @@ class BlockListenerHandlerBuilder(
         val methodName = method.toGenericString()
         logger.error("Error invoking handler for method $methodName on TX with ID = '${tx.id}'", causeException)
         throw BlockListenerSingleTxHandlerException(
-            txId = tx.id.asBase58String(),
             message = "Error invoking handler for method $methodName",
             cause = causeException,
         )
@@ -131,18 +130,6 @@ class BlockListenerHandlerBuilder(
             is DataValue.BooleanDataValue -> value
             is DataValue.BinaryDataValue -> value
             is DataValue.StringDataValue -> value
-        }
-
-    private fun test(dataValue: DataValue, type: Type): Any =
-        when (dataValue) {
-            is DataValue.IntegerDataValue -> dataValue.value
-            is DataValue.BooleanDataValue -> dataValue.value
-            is DataValue.BinaryDataValue -> dataValue.value
-            is DataValue.StringDataValue -> {
-                val typeFactory: TypeFactory = objectMapper.typeFactory
-                val javaType: JavaType = typeFactory.constructType(type)
-                objectMapper.readValue(dataValue.value, javaType)
-            }
         }
 
     private fun ExecutedContractTx.contractId(): String =

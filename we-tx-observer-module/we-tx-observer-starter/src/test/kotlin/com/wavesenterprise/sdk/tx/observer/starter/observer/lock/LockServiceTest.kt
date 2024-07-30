@@ -25,7 +25,7 @@ import java.util.concurrent.ForkJoinPool
         TxObserverJpaAutoConfig::class,
         LockConfig::class,
         FlywaySchemaConfiguration::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class LockServiceTest {

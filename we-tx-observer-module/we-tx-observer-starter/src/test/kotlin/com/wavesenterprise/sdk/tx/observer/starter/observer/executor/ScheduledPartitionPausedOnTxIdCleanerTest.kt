@@ -37,7 +37,7 @@ import org.springframework.test.context.ContextConfiguration
         TxObserverStarterConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ScheduledPartitionPausedOnTxIdCleanerTest {

@@ -34,14 +34,14 @@ class FilteredByMetaPrivateDataEventBlockListenerTest : AbstractPrivateEventBloc
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(
             privacyInfoResponse.copy(
                 info = fileInfo.copy(
-                    comment = DataComment(objectMapper.writeValueAsString(mapOf("filter_key" to "desired_value")))
-                )
-            )
+                    comment = DataComment(objectMapper.writeValueAsString(mapOf("filter_key" to "desired_value"))),
+                ),
+            ),
         )
         enqueue(samplePolicyDataHashTx)
 
@@ -60,14 +60,14 @@ class FilteredByMetaPrivateDataEventBlockListenerTest : AbstractPrivateEventBloc
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(
             privacyInfoResponse.copy(
                 info = fileInfo.copy(
-                    comment = DataComment(objectMapper.writeValueAsString(mapOf("filter_key" to "not_desired_value")))
-                )
-            )
+                    comment = DataComment(objectMapper.writeValueAsString(mapOf("filter_key" to "not_desired_value"))),
+                ),
+            ),
         )
         enqueue(samplePolicyDataHashTx)
 
@@ -84,7 +84,7 @@ class FilteredByMetaPrivateDataEventBlockListenerTest : AbstractPrivateEventBloc
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(privacyInfoResponse)
 
@@ -99,7 +99,7 @@ class FilteredByMetaPrivateDataEventBlockListenerTest : AbstractPrivateEventBloc
         @TxListener
         fun handleEvent(
             @MessageFilter(metaKey = "filter_key", metaKeyValue = "desired_value")
-            privateDataEvent: PrivateDataEvent<Nothing>
+            privateDataEvent: PrivateDataEvent<Nothing>,
         )
     }
 

@@ -39,14 +39,14 @@ class ByteArrayPrivateDataEventBlockListenerTest : AbstractPrivateEventBlockList
             32, -48, -70, -47, -126,
             -48, -66, 32, -48, -67,
             -48, -80, -48, -71, -48,
-            -76, -47, -111, -47, -126
+            -76, -47, -111, -47, -126,
         )
         every {
             privacyService.data(
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(Data(Base64.getEncoder().encode(randomBytes)))
 
@@ -64,7 +64,7 @@ class ByteArrayPrivateDataEventBlockListenerTest : AbstractPrivateEventBlockList
     interface ByteArrayPrivateDataEventListener {
         @TxListener
         fun handleEvent(
-            privateDataEvent: PrivateDataEvent<ByteArray>
+            privateDataEvent: PrivateDataEvent<ByteArray>,
         )
     }
 

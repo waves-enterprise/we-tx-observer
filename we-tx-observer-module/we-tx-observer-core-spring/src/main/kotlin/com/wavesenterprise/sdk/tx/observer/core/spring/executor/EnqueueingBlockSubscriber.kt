@@ -18,6 +18,7 @@ import com.wavesenterprise.sdk.tx.observer.domain.EnqueuedTxStatus
 import com.wavesenterprise.sdk.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import org.springframework.transaction.annotation.Transactional
 
+@Suppress("LongParameterList")
 open class EnqueueingBlockSubscriber(
     val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     val txQueuePartitionResolveService: TxQueuePartitionResolveService,

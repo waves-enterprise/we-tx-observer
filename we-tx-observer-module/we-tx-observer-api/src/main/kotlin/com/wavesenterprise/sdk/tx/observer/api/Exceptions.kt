@@ -5,7 +5,6 @@ open class BlockListenerException(message: String, cause: Throwable) : RuntimeEx
 class BlockListenerHandlerException(message: String, cause: Throwable) : BlockListenerException(message, cause)
 
 class BlockListenerSingleTxHandlerException(
-    txId: String,
     message: String,
     cause: Throwable,
 ) : BlockListenerException(message, cause)

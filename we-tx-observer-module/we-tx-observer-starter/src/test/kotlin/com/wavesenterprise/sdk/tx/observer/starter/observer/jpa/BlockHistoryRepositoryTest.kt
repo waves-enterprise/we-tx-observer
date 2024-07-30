@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration
         TxObserverJpaConfig::class,
         TxObserverJpaAutoConfig::class,
         FlywaySchemaConfiguration::class,
-    ]
+    ],
 )
 @EntityScan("com.wavesenterprise.sdk.tx.observer")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -40,10 +40,10 @@ class BlockHistoryRepositoryTest {
     fun `should delete blocks before given height`() {
         val threshold = 100L
         blockHistoryRepository.saveAll(
-            (90L until threshold).map { height -> blockHistory(height = height) }
+            (90L until threshold).map { height -> blockHistory(height = height) },
         )
         val blocksToIgnore = blockHistoryRepository.saveAll(
-            (threshold..110L).map { height -> blockHistory(height = height) }
+            (threshold..110L).map { height -> blockHistory(height = height) },
         )
 
         blockHistoryRepository.deleteAllByHeightBefore(threshold)

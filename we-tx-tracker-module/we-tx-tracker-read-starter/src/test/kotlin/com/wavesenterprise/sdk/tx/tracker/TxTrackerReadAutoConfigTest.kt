@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(
-    properties = ["tx-tracker.enabled = true"]
+    properties = ["tx-tracker.enabled = true"],
 )
 @ActiveProfiles("test")
 class TxTrackerReadAutoConfigTest {

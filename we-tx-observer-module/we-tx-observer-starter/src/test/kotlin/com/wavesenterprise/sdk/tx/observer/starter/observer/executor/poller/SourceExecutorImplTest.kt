@@ -61,18 +61,18 @@ class SourceExecutorImplTest {
 
         val executor = SourceExecutorImpl(
             blockSubscribers = listOf(mockSubscriber),
-            blocksLoader = blocksLoader
+            blocksLoader = blocksLoader,
         )
         val newCurrentHeight = executor.execute(
             blockHeightLowerBound = currentBlockHeight,
-            blockHeightUpperBound = blockHeightWindow + currentBlockHeight
+            blockHeightUpperBound = blockHeightWindow + currentBlockHeight,
         )
 
         assertEquals(currentBlockHeight + blockHeightWindow - 1, newCurrentHeight)
         verify(exactly = 1) {
             blocksLoader.download(
                 fromHeight = currentBlockHeight,
-                tryToHeight = currentBlockHeight + blockHeightWindow
+                tryToHeight = currentBlockHeight + blockHeightWindow,
             )
         }
 
@@ -91,7 +91,7 @@ class SourceExecutorImplTest {
 
         val executor = SourceExecutorImpl(
             blockSubscribers = listOf(mockSubscriber),
-            blocksLoader = blocksLoader
+            blocksLoader = blocksLoader,
         )
         val upperBound = toBlock + 5
         val newHeight = executor.execute(fromBlock, upperBound)
@@ -109,15 +109,15 @@ class SourceExecutorImplTest {
                 signature = Signature.fromByteArray("signature_$height".toByteArray()),
                 height = Height(height),
                 transactions = listOf(
-                    sampleCallContractTx.copy(id = TxId.fromByteArray("id_$height".toByteArray()))
-                )
+                    sampleCallContractTx.copy(id = TxId.fromByteArray("id_$height".toByteArray())),
+                ),
             )
         }.toList()
         every { blocksLoader.download(any(), any()) } returns BlocksDownloadResult(blockHeightRange, false)
         val blockSubscriber: BlockSubscriber = mockk(relaxed = true)
         val executor = SourceExecutorImpl(
             blockSubscribers = listOf(blockSubscriber),
-            blocksLoader = blocksLoader
+            blocksLoader = blocksLoader,
         )
         val newHeight = executor.execute(fromBlock, upperBound)
         assertEquals(upperBound, newHeight)
@@ -139,7 +139,7 @@ class SourceExecutorImplTest {
         mockTxListForBlocksWithHeightRange(1, 1)
         val executor = SourceExecutorImpl(
             blockSubscribers = listOf(mockSubscriber),
-            blocksLoader = blocksLoader
+            blocksLoader = blocksLoader,
         )
         executor.execute(1, 1)
 

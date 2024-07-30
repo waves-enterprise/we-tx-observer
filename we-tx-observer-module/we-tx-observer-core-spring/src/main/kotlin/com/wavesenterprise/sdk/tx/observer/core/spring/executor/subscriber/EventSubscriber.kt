@@ -25,6 +25,7 @@ import org.slf4j.info
 import org.slf4j.lazyLogger
 import org.slf4j.warn
 
+@Suppress("LongParameterList")
 class EventSubscriber(
     private val syncInfoService: SyncInfoService,
     private val weBlockchainEventServices: List<BlockchainEventsService>,

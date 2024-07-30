@@ -34,7 +34,7 @@ import org.springframework.test.context.transaction.TestTransaction
         NodeBlockingServiceFactoryMockConfiguration::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 internal class EnqueuedTxJpaRepositoryTest {
@@ -61,8 +61,8 @@ internal class EnqueuedTxJpaRepositoryTest {
                     tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("id_old_$it".toByteArray())).toDto(),
                     positionInBlock = it,
                     blockHeight = oldHeight,
-                    partition = mockPartition
-                )
+                    partition = mockPartition,
+                ),
             )
         }
         val newHeight = oldHeight + 1
@@ -73,8 +73,8 @@ internal class EnqueuedTxJpaRepositoryTest {
                     tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("id_new_$it".toByteArray())).toDto(),
                     positionInBlock = it,
                     blockHeight = newHeight,
-                    partition = mockPartition
-                )
+                    partition = mockPartition,
+                ),
             )
         }
         TestTransaction.flagForCommit()

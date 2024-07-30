@@ -103,7 +103,7 @@ internal class DefaultTxPartitionPollerTest {
     @ParameterizedTest
     @MethodSource("exceptions")
     fun `should wrap with PartitionHandlingException for partitions with Exceptions`(
-        exception: Exception
+        exception: Exception,
     ) {
         val partitionId = "partId"
         every { txQueuePartitionJpaRepository.findAndLockLatestPartition() } returns partitionId
@@ -148,7 +148,7 @@ internal class DefaultTxPartitionPollerTest {
         @JvmStatic
         fun exceptions() = setOf(
             BlockListenerException("bla bla", Exception()),
-            IllegalArgumentException()
+            IllegalArgumentException(),
         ).map { Arguments.of(it) }.stream()
     }
 }

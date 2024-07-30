@@ -58,7 +58,7 @@ import java.util.Optional
         BlockInfoSynchronizerConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class TxQueueStatusServiceImplTest {
@@ -89,7 +89,7 @@ internal class TxQueueStatusServiceImplTest {
 
     private val samplePartition = TxQueuePartition(
         id = "partitionId",
-        priority = 0
+        priority = 0,
     )
 
     @BeforeEach
@@ -103,26 +103,26 @@ internal class TxQueueStatusServiceImplTest {
         listOf(
             enqueuedTx(
                 tx = sampleCreateContractTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
-                partition = samplePartition
+                partition = samplePartition,
             ),
             enqueuedTx(
                 tx = sampleCreateContractTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
-                partition = samplePartition
-            ),
-            enqueuedTx(
-                tx = samplePolicyDataHashTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
-                partition = samplePartition
+                partition = samplePartition,
             ),
             enqueuedTx(
                 tx = samplePolicyDataHashTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
                 partition = samplePartition,
-                available = false
             ),
             enqueuedTx(
                 tx = samplePolicyDataHashTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
                 partition = samplePartition,
-                available = false
-            )
+                available = false,
+            ),
+            enqueuedTx(
+                tx = samplePolicyDataHashTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
+                partition = samplePartition,
+                available = false,
+            ),
         ).also {
             enqueuedTxJpaRepository.saveAll(it)
         }

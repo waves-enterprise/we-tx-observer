@@ -62,7 +62,7 @@ class SyncInfoServiceTest {
         val signature = Signature.fromByteArray("VJFGHc".toByteArray())
         every { blockHeightJpaRepository.findAll() } returns emptyList()
         every { blocksService.blockAtHeight(activationHeight - 1) } returns blockAtHeight(
-            signature = signature
+            signature = signature,
         )
 
         val syncInfo = syncInfo(activationHeight = activationHeight)
@@ -103,11 +103,11 @@ class SyncInfoServiceTest {
         every { blockHeightJpaRepository.findAll() } returns listOf(
             BlockHeightInfo(
                 currentHeight = nodeHeight + 1,
-                prevBlockSignature = "yDgpD7gu"
-            )
+                prevBlockSignature = "yDgpD7gu",
+            ),
         )
         every { blocksService.blockAtHeight(nodeHeight - 1) } returns blockAtHeight(
-            signature = signature
+            signature = signature,
         )
 
         val syncInfo = syncInfo(nodeHeight = nodeHeight, autoResetHeight = true)
@@ -124,8 +124,8 @@ class SyncInfoServiceTest {
         every { blockHeightJpaRepository.findAll() } returns listOf(
             BlockHeightInfo(
                 currentHeight = observerHeight,
-                prevBlockSignature = signature.asBase58String()
-            )
+                prevBlockSignature = signature.asBase58String(),
+            ),
         )
         every { blocksService.blockAtHeight(nodeHeight) } returns blockAtHeight()
 
@@ -167,11 +167,11 @@ class SyncInfoServiceTest {
         blocksService = blocksService,
         syncHistory = SyncInfoServiceImpl.SyncHistoryProperties(
             enabled = syncHistory,
-            fromHeight = activationHeight
+            fromHeight = activationHeight,
         ),
         autoResetHeight = autoResetHeight,
         forkNotResolvedHeightDrop = forkNotResolvedHeightDrop,
         nodeHeightMetric = nodeHeightMetric,
-        observerHeightMetric = observerHeightMetric
+        observerHeightMetric = observerHeightMetric,
     )
 }

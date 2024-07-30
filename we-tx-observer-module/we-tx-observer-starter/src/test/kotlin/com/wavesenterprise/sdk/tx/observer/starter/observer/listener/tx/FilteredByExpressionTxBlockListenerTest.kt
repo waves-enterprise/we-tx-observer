@@ -51,7 +51,7 @@ class FilteredByExpressionTxBlockListenerTest : AbstractListenerTest() {
                 " T(com.wavesenterprise.sdk.node.domain.tx.Tx).type(#this).code " +
                 "&& T(com.wavesenterprise.sdk.node.domain.TxType).CREATE_CONTRACT.code ==" +
                 " T(com.wavesenterprise.sdk.node.domain.tx.Tx).type(#this.tx).code " +
-                "&& 'image_to_filter' == tx.image.value"
+                "&& 'image_to_filter' == tx.image.value",
         )
         fun handleTx(tx: Tx)
     }

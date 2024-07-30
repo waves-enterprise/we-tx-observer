@@ -36,7 +36,7 @@ class WildcardExecutedContractTxBlockListenerTest : AbstractListenerTest() {
             createContractTxWithImageToFilter,
             callContractTxSimple,
             callContractTxDifferentValueTypes,
-            callContractTxSeveralMatchingKeys
+            callContractTxSeveralMatchingKeys,
         )
 
         pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(mockPartitionId)
@@ -51,8 +51,8 @@ class WildcardExecutedContractTxBlockListenerTest : AbstractListenerTest() {
                 createContractTxWithImageToFilter,
                 callContractTxSimple,
                 callContractTxDifferentValueTypes,
-                callContractTxSeveralMatchingKeys
-            )
+                callContractTxSeveralMatchingKeys,
+            ),
         )
     }
 
@@ -66,7 +66,7 @@ class WildcardExecutedContractTxBlockListenerTest : AbstractListenerTest() {
                 createContractTxWithImageToFilter -
                 callContractTxSimple -
                 callContractTxDifferentValueTypes -
-                callContractTxSeveralMatchingKeys
+                callContractTxSeveralMatchingKeys,
         )
 
         pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(mockPartitionId)

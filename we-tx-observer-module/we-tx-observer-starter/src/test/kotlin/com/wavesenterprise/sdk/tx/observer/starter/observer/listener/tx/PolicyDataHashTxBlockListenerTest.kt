@@ -27,7 +27,7 @@ class PolicyDataHashTxBlockListenerTest : AbstractListenerTest() {
     fun `should handle PolicyDataHashTx`() {
         enqueue(
             sampleAtomicTx,
-            samplePolicyDataHashTx
+            samplePolicyDataHashTx,
         )
 
         pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(mockPartitionId)

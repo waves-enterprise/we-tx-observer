@@ -34,8 +34,8 @@ import org.springframework.test.context.transaction.TestTransaction
     properties = [
         "tx-observer.queue-cleaner.archive-height-window = 50",
         "tx-observer.queue-cleaner.delete-batch-size = 1",
-        "tx-observer.queue-cleaner.cleanCronExpression = 0 0 0 * * ?"
-    ]
+        "tx-observer.queue-cleaner.cleanCronExpression = 0 0 0 * * ?",
+    ],
 )
 @ActiveProfiles("test")
 @ContextConfiguration(
@@ -46,7 +46,7 @@ import org.springframework.test.context.transaction.TestTransaction
         NodeBlockingServiceFactoryMockConfiguration::class,
         TxObserverStarterConfig::class,
         FlywaySchemaConfiguration::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class ScheduledTxQueueCleanerTest {
@@ -94,11 +94,11 @@ internal class ScheduledTxQueueCleanerTest {
         assertEquals(leftReadCount + leftNewCount, leftEnqueuedTx.size)
         assertEquals(
             leftReadCount,
-            leftEnqueuedTx.count { it.blockHeight == blockHeightToLeave && it.status == EnqueuedTxStatus.READ }
+            leftEnqueuedTx.count { it.blockHeight == blockHeightToLeave && it.status == EnqueuedTxStatus.READ },
         )
         assertEquals(
             leftNewCount,
-            leftEnqueuedTx.count { it.status == EnqueuedTxStatus.NEW }
+            leftEnqueuedTx.count { it.status == EnqueuedTxStatus.NEW },
         )
     }
 
@@ -114,8 +114,8 @@ internal class ScheduledTxQueueCleanerTest {
                 tx = TestDataFactory.callContractTx(id = TxId.fromByteArray(Util.randomBytesFromUUID())).toDto(),
                 status = status,
                 partition = mockPartition,
-                blockHeight = blockHeight
-            )
+                blockHeight = blockHeight,
+            ),
         )
     }
 }

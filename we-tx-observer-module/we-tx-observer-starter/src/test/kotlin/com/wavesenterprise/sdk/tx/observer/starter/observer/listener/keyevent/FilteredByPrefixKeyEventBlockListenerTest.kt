@@ -37,13 +37,13 @@ class FilteredByPrefixKeyEventBlockListenerTest : AbstractListenerTest() {
         stringKeyEventCaptor.forEachIndexed { idx, keyEvent ->
             assertEquals(
                 (callContractTxSeveralMatchingKeys.results[idx].value as DataValue.StringDataValue).value,
-                keyEvent.payload
+                keyEvent.payload,
             )
             assertEquals(callContractTxSeveralMatchingKeys, keyEvent.tx)
             assertEquals(callContractTxSeveralMatchingKeys.results[idx].key.value, keyEvent.key)
             assertEquals(
                 (callContractTxSeveralMatchingKeys.tx as CallContractTx).contractId.asBase58String(),
-                keyEvent.contractId
+                keyEvent.contractId,
             )
         }
     }
@@ -62,7 +62,7 @@ class FilteredByPrefixKeyEventBlockListenerTest : AbstractListenerTest() {
         @TxListener
         fun handleEvent(
             @KeyFilter(keyPrefix = "my_fav_multi_key_string_")
-            keyEvent: KeyEvent<String>
+            keyEvent: KeyEvent<String>,
         )
     }
 

@@ -27,6 +27,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
+@Suppress("LongParameterList")
 @Configuration
 @ConditionalOnProperty(
     prefix = "tx-observer",

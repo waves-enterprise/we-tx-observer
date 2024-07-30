@@ -29,18 +29,18 @@ class MapPrivateDataEventBlockListenerTest : AbstractPrivateEventBlockListenerTe
         val randomMap = mapOf(
             "key_list" to listOf(
                 mapOf("key_int_1" to 1),
-                mapOf("key_int_2" to 2)
-            )
+                mapOf("key_int_2" to 2),
+            ),
         )
         every {
             privacyService.data(
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(
-            Data.fromByteArray(Base64.getEncoder().encode(objectMapper.writeValueAsBytes(randomMap)))
+            Data.fromByteArray(Base64.getEncoder().encode(objectMapper.writeValueAsBytes(randomMap))),
         )
         enqueue(samplePolicyDataHashTx)
 
@@ -55,7 +55,7 @@ class MapPrivateDataEventBlockListenerTest : AbstractPrivateEventBlockListenerTe
     interface MapPrivateDataEventListener {
         @TxListener
         fun handleEvent(
-            privateDataEvent: PrivateDataEvent<Map<String, List<Map<String, Int>>>>
+            privateDataEvent: PrivateDataEvent<Map<String, List<Map<String, Int>>>>,
         )
     }
 
