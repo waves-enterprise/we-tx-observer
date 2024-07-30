@@ -34,7 +34,7 @@ import java.util.UUID
         DataSourceAutoConfiguration::class,
         TxTrackerJpaAutoConfig::class,
         FlywaySchemaConfiguration::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TxTrackerJpaRepositoryTest {
@@ -54,7 +54,7 @@ class TxTrackerJpaRepositoryTest {
     @EnumSource(
         value = TxType::class,
         names = ["CREATE_CONTRACT", "CALL_CONTRACT", "DISABLE_CONTRACT", "UPDATE_CONTRACT"],
-        mode = EnumSource.Mode.INCLUDE
+        mode = EnumSource.Mode.INCLUDE,
     )
     fun `should throw sql constraint violation when tx type is one of contract modification`(type: TxType) {
         assertThrows<PersistenceException> {
@@ -69,7 +69,7 @@ class TxTrackerJpaRepositoryTest {
     @EnumSource(
         value = TxType::class,
         names = ["CREATE_CONTRACT", "CALL_CONTRACT", "DISABLE_CONTRACT", "UPDATE_CONTRACT"],
-        mode = EnumSource.Mode.EXCLUDE
+        mode = EnumSource.Mode.EXCLUDE,
     )
     fun `should doesn't throw exception when tx type is not contract modification`(type: TxType) {
         txTrackerJpaRepository.save(buildTxTrackInfo(type = type))

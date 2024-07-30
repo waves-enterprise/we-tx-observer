@@ -35,15 +35,15 @@ class FilteredByPolicyPrivateDataEventBlockListenerTest : AbstractPrivateEventBl
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(privacyInfoResponse)
         every {
             txService.txInfo(samplePolicyDataHashTx.policyId.txId)
         } returns Optional.of(
             txInfo(
-                tx = sampleCreatePolicyTx.copy(policyName = PolicyName("policy_name_prefix_in_policy_name"))
-            )
+                tx = sampleCreatePolicyTx.copy(policyName = PolicyName("policy_name_prefix_in_policy_name")),
+            ),
         )
         enqueue(samplePolicyDataHashTx)
 
@@ -62,7 +62,7 @@ class FilteredByPolicyPrivateDataEventBlockListenerTest : AbstractPrivateEventBl
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(privacyInfoResponse)
         enqueue(samplePolicyDataHashTx)
@@ -76,7 +76,7 @@ class FilteredByPolicyPrivateDataEventBlockListenerTest : AbstractPrivateEventBl
         @TxListener
         fun handleEvent(
             @PolicyFilter(namePrefix = "policy_name_prefix")
-            privateDataEvent: PrivateDataEvent<Nothing>
+            privateDataEvent: PrivateDataEvent<Nothing>,
         )
     }
 

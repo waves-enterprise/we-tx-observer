@@ -122,7 +122,11 @@ fun TxQueuePartitionSearchRequest.toSpecification() =
         }
     }
 
-fun PriorityComparisonOperator.toPredicate(root: Root<TxQueuePartition>, cb: CriteriaBuilder, priority: Int): Predicate {
+fun PriorityComparisonOperator.toPredicate(
+    root: Root<TxQueuePartition>,
+    cb: CriteriaBuilder,
+    priority: Int,
+): Predicate {
     return when (this) {
         PriorityComparisonOperator.EQ -> cb.equal(root.get(TxQueuePartition_.priority), priority)
         PriorityComparisonOperator.NE -> cb.notEqual(root.get(TxQueuePartition_.priority), priority)

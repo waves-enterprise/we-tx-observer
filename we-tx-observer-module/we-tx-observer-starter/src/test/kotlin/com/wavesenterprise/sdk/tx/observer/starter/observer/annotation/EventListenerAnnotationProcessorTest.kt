@@ -19,8 +19,8 @@ import org.springframework.test.context.ActiveProfiles
     classes = [
         TxObserverStarterConfig::class,
         BlockListenerTestContextConfiguration::class,
-        NodeBlockingServiceFactoryMockConfiguration::class
-    ]
+        NodeBlockingServiceFactoryMockConfiguration::class,
+    ],
 )
 // todo implement test slice
 @ActiveProfiles("test")

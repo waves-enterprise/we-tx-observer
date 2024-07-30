@@ -42,8 +42,8 @@ class PersistingRollbackTxSubscriberTest {
             rollbackInfoRepository.save(
                 RollbackInfo(
                     toHeight = height,
-                    toBlockSignature = signature
-                )
+                    toBlockSignature = signature,
+                ),
             )
         }
         confirmVerified(weRollbackInfo, rollbackInfoRepository)

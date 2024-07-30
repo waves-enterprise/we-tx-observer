@@ -33,12 +33,12 @@ class ObjectValueKeyEventBlockListenerTest : AbstractListenerTest() {
         verify { keyEventListener.handleEvent(keyEvent = capture(objectKeyEventCaptor)) }
         assertEquals(
             SimpleDataObject("string", 10, mapOf(Pair("key", 1))),
-            objectKeyEventCaptor.captured.payload
+            objectKeyEventCaptor.captured.payload,
         )
         assertEquals(callContractTxDifferentValueTypes, objectKeyEventCaptor.captured.tx)
         assertEquals(
             (callContractTxDifferentValueTypes.tx as CallContractTx).contractId.asBase58String(),
-            objectKeyEventCaptor.captured.contractId
+            objectKeyEventCaptor.captured.contractId,
         )
         assertEquals("my_fav_object_object_", objectKeyEventCaptor.captured.key)
     }
@@ -47,7 +47,7 @@ class ObjectValueKeyEventBlockListenerTest : AbstractListenerTest() {
         @TxListener
         fun handleEvent(
             @KeyFilter(keyPrefix = "my_fav_object_object_")
-            keyEvent: KeyEvent<SimpleDataObject>
+            keyEvent: KeyEvent<SimpleDataObject>,
         )
     }
 

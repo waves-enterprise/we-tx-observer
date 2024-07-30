@@ -41,7 +41,7 @@ import org.springframework.test.web.servlet.get
         TxObserverStarterConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureDataJpa
@@ -72,32 +72,32 @@ internal class EnqueuedTxControllerTest {
         val partition = txQueuePartitionJpaRepository.save(
             TxQueuePartition(
                 id = partitionId,
-                priority = 0
-            )
+                priority = 0,
+            ),
         )
         var i = 0
         listOf(
             enqueuedTx(
                 tx = TestDataFactory.policyDataHashTx(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
-                partition = partition
-            ),
-            enqueuedTx(
-                tx = TestDataFactory.policyDataHashTx(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
-                partition = partition
+                partition = partition,
             ),
             enqueuedTx(
                 tx = TestDataFactory.policyDataHashTx(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
                 partition = partition,
-                available = false
+            ),
+            enqueuedTx(
+                tx = TestDataFactory.policyDataHashTx(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
+                partition = partition,
+                available = false,
             ),
             enqueuedTx(
                 tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
-                partition = partition
+                partition = partition,
             ),
             enqueuedTx(
                 tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("$i".toByteArray())).toDto(),
-                partition = partition
-            )
+                partition = partition,
+            ),
         ).onEach {
             enqueuedTxJpaRepository.save(it)
         }
@@ -118,14 +118,14 @@ internal class EnqueuedTxControllerTest {
         val partition = txQueuePartitionJpaRepository.save(
             TxQueuePartition(
                 id = partitionId,
-                priority = 0
-            )
+                priority = 0,
+            ),
         )
         val anotherPartition = txQueuePartitionJpaRepository.save(
             TxQueuePartition(
                 id = "another_partition_id",
-                priority = 0
-            )
+                priority = 0,
+            ),
         )
 
         val enqueuedTxInPartitionCount = 4
@@ -135,8 +135,8 @@ internal class EnqueuedTxControllerTest {
                     tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("id_$it".toByteArray())).toDto(),
                     positionInBlock = it,
                     blockHeight = 100,
-                    partition = if (it < enqueuedTxInPartitionCount) partition else anotherPartition
-                )
+                    partition = if (it < enqueuedTxInPartitionCount) partition else anotherPartition,
+                ),
             )
         }
 

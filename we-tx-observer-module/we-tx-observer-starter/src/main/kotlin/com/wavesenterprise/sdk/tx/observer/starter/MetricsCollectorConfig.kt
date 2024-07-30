@@ -38,6 +38,7 @@ class MetricsCollectorConfig {
     fun totalPartitionCountMetric() =
         MetricContainerData(metricName = TOTAL_PARTITION_COUNT)
 
+    @Suppress("LongParameterList")
     @Bean
     fun metricsCollector(
         enqueuedTxJpaRepository: EnqueuedTxJpaRepository,

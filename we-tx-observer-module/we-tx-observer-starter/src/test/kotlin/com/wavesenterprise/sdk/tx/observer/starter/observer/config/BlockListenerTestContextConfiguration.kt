@@ -24,7 +24,7 @@ class BlockListenerTestContextConfiguration {
             BlockHeightInfo(
                 currentHeight = 1L,
                 prevBlockSignature = null,
-            )
+            ),
         )
     }
 

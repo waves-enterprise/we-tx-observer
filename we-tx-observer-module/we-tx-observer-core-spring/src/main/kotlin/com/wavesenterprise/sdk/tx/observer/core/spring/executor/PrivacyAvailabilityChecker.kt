@@ -16,6 +16,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 
+@Suppress("LongParameterList")
 open class PrivacyAvailabilityChecker(
     val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     val privateContentResolver: PrivateContentResolver,

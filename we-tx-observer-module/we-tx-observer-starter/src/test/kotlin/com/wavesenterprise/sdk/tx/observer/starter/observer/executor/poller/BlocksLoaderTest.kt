@@ -79,9 +79,9 @@ class BlocksLoaderTest {
                 (from until to + 1).map {
                     blockHeaders(
                         blockSize = blockSize,
-                        height = Height.fromLong(it)
+                        height = Height.fromLong(it),
                     )
-                }
+                },
             )
     }
 
@@ -90,9 +90,9 @@ class BlocksLoaderTest {
             .thenReturn(
                 (from until to + 1).map {
                     blockAtHeight(
-                        height = Height.fromLong(it)
+                        height = Height.fromLong(it),
                     )
-                }
+                },
             )
     }
 }

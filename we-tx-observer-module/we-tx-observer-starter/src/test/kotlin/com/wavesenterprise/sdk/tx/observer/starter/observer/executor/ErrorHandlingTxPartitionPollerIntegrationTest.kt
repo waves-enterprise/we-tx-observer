@@ -45,7 +45,7 @@ import org.springframework.test.context.transaction.TestTransaction
         TxObserverStarterConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class ErrorHandlingTxPartitionPollerIntegrationTest {
@@ -70,28 +70,28 @@ internal class ErrorHandlingTxPartitionPollerIntegrationTest {
     fun `should decrement priority of a partition with error`(ex: Exception) {
         val firstErrorPartition = TxQueuePartition(
             id = "firstErrorPartitionId",
-            priority = 0
+            priority = 0,
         )
         val secondOkPartition = firstErrorPartition.copy(id = "secondOkPartitionId")
         val thirdErrorPartition = firstErrorPartition.copy(id = "thirdErrorPartitionId")
         val partitions = listOf(
             firstErrorPartition,
             secondOkPartition,
-            thirdErrorPartition
+            thirdErrorPartition,
         )
         txQueuePartitionJpaRepository.saveAll(
-            partitions
+            partitions,
         )
         partitions.map {
             enqueuedTx(
                 tx = TestDataFactory.createContractTx().toDto(),
-                partition = it
+                partition = it,
             )
         }.also { enqueuedTxJpaRepository.saveAll(it) }
 
         val errorPartitions = listOf(
             firstErrorPartition,
-            thirdErrorPartition
+            thirdErrorPartition,
         )
         errorPartitions.forEach {
             every { pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(partitionId = it.id) } throws ex
@@ -132,7 +132,7 @@ internal class ErrorHandlingTxPartitionPollerIntegrationTest {
         @JvmStatic
         fun exceptions() = setOf(
             BlockListenerException("bla bla", Exception()),
-            IllegalArgumentException()
+            IllegalArgumentException(),
         ).map { Arguments.of(it) }.stream()
     }
 }

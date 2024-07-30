@@ -45,7 +45,8 @@ class BlockAppendedEventHandlingStrategy(
                 listOf(
                     HandleBlocks(
                         weBlockInfos = appendedBlockHistoryList.map { it.toWeBlockInfo() } + blockAppendedWeBlockInfo,
-                        syncedBlockInfos = appendedBlockHistoryList.map { it.toSyncedBlockInfo() } + event.toSyncedBlockInfo(),
+                        syncedBlockInfos =
+                        appendedBlockHistoryList.map { it.toSyncedBlockInfo() } + event.toSyncedBlockInfo(),
                     ),
                 )
             }
@@ -99,7 +100,8 @@ class BlockAppendedEventHandlingStrategy(
                 get() = blockAppended.signature
         }
 
-        private fun BlockchainEvent.BlockAppended.toWeBlockInfo(txsFromMicroBlocks: MutableMap<String, Tx>): WeBlockInfo =
-            BlockAppendedWeBlockInfo(this, txsFromMicroBlocks)
+        private fun BlockchainEvent.BlockAppended.toWeBlockInfo(
+            txsFromMicroBlocks: MutableMap<String, Tx>,
+        ): WeBlockInfo = BlockAppendedWeBlockInfo(this, txsFromMicroBlocks)
     }
 }

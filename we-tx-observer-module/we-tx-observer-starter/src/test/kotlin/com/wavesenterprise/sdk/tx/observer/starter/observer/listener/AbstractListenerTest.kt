@@ -42,7 +42,7 @@ import org.springframework.test.context.ActiveProfiles
         TxObserverJpaAutoConfig::class,
         TxObserverStarterConfig::class,
     ],
-    properties = ["tx-observer.tx-poller.size = 100"]
+    properties = ["tx-observer.tx-poller.size = 100"],
 )
 @ActiveProfiles("test")
 @MockBean(TransactionalRunner::class, PartitionHandler::class)
@@ -95,7 +95,7 @@ abstract class AbstractListenerTest {
             enqueuedTxJpaRepository.findActualEnqueuedTxForPartition(
                 enqueuedTxStatus = EnqueuedTxStatus.NEW,
                 partitionId = mockPartitionId,
-                pageable = PageRequest.of(0, 100)
+                pageable = PageRequest.of(0, 100),
             )
         } answers { PageImpl(enqueuedTxList) }
     }
@@ -107,7 +107,7 @@ abstract class AbstractListenerTest {
         txs.map {
             enqueuedTx(
                 tx = mapDto(it),
-                partition = NodeBlockingServiceFactoryMockConfiguration.mockPartition
+                partition = NodeBlockingServiceFactoryMockConfiguration.mockPartition,
             )
         }.also {
             enqueuedTxList.addAll(it)

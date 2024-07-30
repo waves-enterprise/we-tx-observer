@@ -38,8 +38,8 @@ import org.springframework.test.context.transaction.TestTransaction
         "tx-tracker.enabled = true",
         "tx-tracker.min-contract-tx-error-count = 2",
         "tx-tracker.min-contract-tx-failure-count = 2",
-        "tx-tracker.fail-on-recoverable-contract-tx-error = false"
-    ]
+        "tx-tracker.fail-on-recoverable-contract-tx-error = false",
+    ],
 )
 @ActiveProfiles("test")
 @ContextConfiguration(
@@ -48,7 +48,7 @@ import org.springframework.test.context.transaction.TestTransaction
         TxTrackerJpaAutoConfig::class,
         TxTrackerConfig::class,
         FlywaySchemaConfiguration::class,
-    ]
+    ],
 )
 // fixme should work without DataSourceAutoConfiguration (has in wired starters)
 // but fails on dataSource bean condition (consider ordering)
@@ -105,7 +105,7 @@ internal class JpaTxTrackerContractTxStatusTest {
             contractTxStatus.copy(
                 txId = txId,
                 status = TxStatus.ERROR,
-                code = if (i <= 2) null else RECOVERABLE_ERROR_CODE
+                code = if (i <= 2) null else RECOVERABLE_ERROR_CODE,
             )
         }
 
@@ -126,7 +126,7 @@ internal class JpaTxTrackerContractTxStatusTest {
         val tx: Tx = createContractTx.copy(id = txId)
         val contractTxStatusList = listOf(
             contractTxStatus.copy(txId = txId, status = TxStatus.ERROR, code = FATAL_ERROR_CODE),
-            contractTxStatus.copy(txId = txId, status = TxStatus.FAILURE)
+            contractTxStatus.copy(txId = txId, status = TxStatus.FAILURE),
         )
 
         txTracker.trackTx(tx)

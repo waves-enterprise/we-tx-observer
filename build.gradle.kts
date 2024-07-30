@@ -211,7 +211,14 @@ configure(
         exclude("resources/")
         exclude("build/")
         config.setFrom(detektConfigFilePath)
-        setSource(files("src/main/java", "src/main/kotlin"))
+        setSource(
+            files(
+                "src/main/java",
+                "src/test/java",
+                "src/main/kotlin",
+                "src/test/kotlin",
+            )
+        )
     }
 
     val sourcesJar by tasks.creating(Jar::class) {

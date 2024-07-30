@@ -84,7 +84,7 @@ internal class ScheduledTxTrackerTest {
         val mockedErrorList = listOf(
             TestDataFactory.contractTxStatus(
                 status = TxStatus.FAILURE,
-            )
+            ),
         )
         mockTrackedTxs(txList)
         every { contractService.getContractTxStatus(any()) } returns mockedErrorList
@@ -116,14 +116,14 @@ internal class ScheduledTxTrackerTest {
     fun `should set tx status to success when transactionInfo is present`() {
         val tx = TestDataFactory.createContractTx(
             id = TxId.fromBase58("C2HM9q3QzGSBydnCA4GMcf3cFnTaSuwaWXVtsCSTSmZW"),
-            timestamp = Timestamp(Instant.now().minus(txTimeout + Duration.ofMinutes(1)).toEpochMilli())
+            timestamp = Timestamp(Instant.now().minus(txTimeout + Duration.ofMinutes(1)).toEpochMilli()),
         )
         mockTrackedTxs(listOf(tx))
         every { txService.txInfo(tx.id) } returns Optional.of(
             TxInfo(
                 height = mockk(),
                 tx = tx,
-            )
+            ),
         )
         scheduledTxTracker.trackPendingTx()
         verify { txService.utxInfo() }
@@ -147,7 +147,7 @@ internal class ScheduledTxTrackerTest {
     fun `should set tx status to failure when timeout reached and no transactionInfo`() {
         val tx = TestDataFactory.createContractTx(
             id = TxId.fromBase58("C2HM9q3QzGSBydnCA4GMcf3cFnTaSuwaWXVtsCSTSmZW"),
-            timestamp = Timestamp(Instant.now().minus(txTimeout + Duration.ofMinutes(1)).toEpochMilli())
+            timestamp = Timestamp(Instant.now().minus(txTimeout + Duration.ofMinutes(1)).toEpochMilli()),
         )
         mockTrackedTxs(listOf(tx))
 
@@ -174,7 +174,7 @@ internal class ScheduledTxTrackerTest {
     fun `should set tx status to success when timeout reached but transactionInfo is present`() {
         val tx = TestDataFactory.createContractTx(
             id = TxId.fromBase58("C2HM9q3QzGSBydnCA4GMcf3cFnTaSuwaWXVtsCSTSmZW"),
-            timestamp = Timestamp(Instant.now().minus(txTimeout + Duration.ofMinutes(1)).toEpochMilli())
+            timestamp = Timestamp(Instant.now().minus(txTimeout + Duration.ofMinutes(1)).toEpochMilli()),
         )
         mockTrackedTxs(listOf(tx))
 
@@ -182,7 +182,7 @@ internal class ScheduledTxTrackerTest {
             TxInfo(
                 height = mockk(),
                 tx = tx,
-            )
+            ),
         )
         scheduledTxTracker.trackPendingTx()
         verify { txService.utxInfo() }
@@ -220,7 +220,7 @@ internal class ScheduledTxTrackerTest {
     fun `should set status failure only for not contract tx when timeout reached`() {
         val tx = TestDataFactory.createPolicyTx(
             id = TxId.fromBase58("C2HM9q3QzGSBydnCA4GMcf3cFnTaSuwaWXVtsCSTSmZW"),
-            timestamp = Timestamp(Instant.now().minus(txTimeout + Duration.ofMinutes(1)).toEpochMilli())
+            timestamp = Timestamp(Instant.now().minus(txTimeout + Duration.ofMinutes(1)).toEpochMilli()),
         )
         mockTrackedTxs(listOf(tx))
         every { txService.txInfo(tx.id) } returns Optional.empty()
@@ -247,7 +247,7 @@ internal class ScheduledTxTrackerTest {
     fun `should not set status to tx in UTX atomic`() {
         val tx = TestDataFactory.createPolicyTx(
             id = TxId.fromBase58("C2HM9q3QzGSBydnCA4GMcf3cFnTaSuwaWXVtsCSTSmZW"),
-            timestamp = Timestamp(Instant.now().minus(txTimeout + Duration.ofMinutes(1)).toEpochMilli())
+            timestamp = Timestamp(Instant.now().minus(txTimeout + Duration.ofMinutes(1)).toEpochMilli()),
         )
         mockTrackedTxs(listOf(tx))
 
@@ -269,7 +269,7 @@ internal class ScheduledTxTrackerTest {
         every {
             txTracker.getTrackedTxsWithStatus(
                 TxTrackStatus.PENDING,
-                PageRequest.of(0, 1000)
+                PageRequest.of(0, 1000),
             )
         } returns txList
     }

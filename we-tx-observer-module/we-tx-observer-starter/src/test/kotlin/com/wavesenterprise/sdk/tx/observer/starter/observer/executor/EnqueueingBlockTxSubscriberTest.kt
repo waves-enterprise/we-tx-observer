@@ -63,7 +63,7 @@ import org.springframework.test.context.ContextConfiguration
         TxObserverStarterConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class EnqueueingBlockTxSubscriberTest {
@@ -103,8 +103,8 @@ internal class EnqueueingBlockTxSubscriberTest {
         txQueuePartitionJpaRepository.deleteAll()
     }
 
+    //    @Disabled
     @Test
-//    @Disabled
     fun `should handle txList by persisting not existent tx and resolving partitions`() {
         val first = samplePolicyDataHashTx.copy(id = TxId.fromByteArray("1_1".toByteArray()))
         val second = sampleCreateContractTx.copy(id = TxId.fromByteArray("1_2".toByteArray()))
@@ -116,7 +116,7 @@ internal class EnqueueingBlockTxSubscriberTest {
         val partSecondId = "part2"
         val existingPart = TxQueuePartition(
             id = "existingPart3",
-            priority = -1
+            priority = -1,
         )
         txQueuePartitionJpaRepository.saveAndFlush(existingPart)
         every { txQueuePartitionResolver.resolvePartitionId(first) } returns partFirstId
@@ -141,7 +141,7 @@ internal class EnqueueingBlockTxSubscriberTest {
         assertEquals(mockTxList.size - 1, allEnqueuedTxs.last().positionInBlock)
         assertEquals(
             mockTxList.first().timestamp.toDateTimeFromUTCBlockChain().nano,
-            allEnqueuedTxs.first().txTimestamp.nano
+            allEnqueuedTxs.first().txTimestamp.nano,
         )
 
         verify(exactly = mockTxList.size) { txEnqueuedPredicate.isEnqueued(any()) }
@@ -166,7 +166,7 @@ internal class EnqueueingBlockTxSubscriberTest {
     fun `should ignore existent txs`() {
         val mockTxList: List<Tx> = listOf(
             TestDataFactory.policyDataHashTx(id = TxId.fromByteArray("2_1".toByteArray())),
-            TestDataFactory.callContractTx(id = TxId.fromByteArray("2_2".toByteArray()))
+            TestDataFactory.callContractTx(id = TxId.fromByteArray("2_2".toByteArray())),
         )
         every { txEnqueuedPredicate.isEnqueued(any()) } returns true
 
@@ -215,6 +215,7 @@ internal class EnqueueingBlockTxSubscriberTest {
         assertEquals(defaultIdPartition, enqueuedTxWithDefaultPartition!!.partition)
     }
 
+    @Suppress("LongMethod")
     @Test
     fun `should handle atomic with flat mapping it and setting position in atomic`() {
         val commonSender = Address(randomBytesFromUUID())
@@ -283,7 +284,7 @@ internal class EnqueueingBlockTxSubscriberTest {
         assertEquals(mockTxList.size - 1, allEnqueuedTxs.last().positionInBlock)
         assertEquals(
             mockTxList.first().timestamp.toDateTimeFromUTCBlockChain().nano,
-            allEnqueuedTxs.first().txTimestamp.nano
+            allEnqueuedTxs.first().txTimestamp.nano,
         )
         val txById = allEnqueuedTxs.associateBy { TxId.fromBase58(it.id) }
         txById.apply {
@@ -325,6 +326,6 @@ internal class EnqueueingBlockTxSubscriberTest {
             transactions = txList,
             transactionCount = txList.size.toLong(),
             height = height,
-        )
+        ),
     )
 }

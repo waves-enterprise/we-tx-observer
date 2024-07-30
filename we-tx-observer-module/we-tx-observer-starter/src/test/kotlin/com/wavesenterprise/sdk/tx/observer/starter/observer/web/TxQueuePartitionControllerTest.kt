@@ -47,7 +47,7 @@ import java.util.UUID
         TxObserverStarterConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureDataJpa
@@ -83,8 +83,8 @@ internal class TxQueuePartitionControllerTest {
             txQueuePartitionJpaRepository.save(
                 TxQueuePartition(
                     id = "id_$it",
-                    priority = if (it < filterPartitionCount) filterPriority else 0
-                )
+                    priority = if (it < filterPartitionCount) filterPriority else 0,
+                ),
             )
         }
 
@@ -106,8 +106,8 @@ internal class TxQueuePartitionControllerTest {
             txQueuePartitionJpaRepository.save(
                 TxQueuePartition(
                     id = "id_$it",
-                    priority = if (it < filterPartitionCount) filterPriority - 1 else filterPriority + 1
-                )
+                    priority = if (it < filterPartitionCount) filterPriority - 1 else filterPriority + 1,
+                ),
             )
         }
 
@@ -130,8 +130,8 @@ internal class TxQueuePartitionControllerTest {
             txQueuePartitionJpaRepository.save(
                 TxQueuePartition(
                     id = "id_$it",
-                    priority = if (it < filterPartitionCount) filterPriority + 1 else filterPriority - 1
-                )
+                    priority = if (it < filterPartitionCount) filterPriority + 1 else filterPriority - 1,
+                ),
             )
         }
 
@@ -154,16 +154,16 @@ internal class TxQueuePartitionControllerTest {
             val partition = txQueuePartitionJpaRepository.save(
                 TxQueuePartition(
                     id = "id_part_$it",
-                    priority = 0
-                )
+                    priority = 0,
+                ),
             )
             enqueuedTxJpaRepository.save(
                 enqueuedTx(
                     tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("id_tx_$it".toByteArray())).toDto(),
                     status = if (it < filterPartitionCount) filterByStatus else EnqueuedTxStatus.NEW,
                     partition = partition,
-                    positionInBlock = 0
-                )
+                    positionInBlock = 0,
+                ),
             )
         }
 
@@ -183,14 +183,16 @@ internal class TxQueuePartitionControllerTest {
             txQueuePartitionJpaRepository.save(
                 TxQueuePartition(
                     id = "id_$num",
-                    priority = 0
-                )
+                    priority = 0,
+                ),
             ).takeIf { num < activePartitionCount }?.apply {
                 enqueuedTxJpaRepository.save(
                     enqueuedTx(
-                        tx = TestDataFactory.callContractTx(id = TxId.fromByteArray("${UUID.randomUUID()}".toByteArray())).toDto(),
-                        partition = this
-                    )
+                        tx = TestDataFactory.callContractTx(
+                            id = TxId.fromByteArray("${UUID.randomUUID()}".toByteArray()),
+                        ).toDto(),
+                        partition = this,
+                    ),
                 )
             }
         }
@@ -213,14 +215,16 @@ internal class TxQueuePartitionControllerTest {
             txQueuePartitionJpaRepository.save(
                 TxQueuePartition(
                     id = "id_$num",
-                    priority = 0
-                )
+                    priority = 0,
+                ),
             ).takeIf { num >= inactivePartitionCount }?.apply {
                 enqueuedTxJpaRepository.save(
                     enqueuedTx(
-                        tx = TestDataFactory.callContractTx(id = TxId.fromByteArray("${UUID.randomUUID()}".toByteArray())).toDto(),
-                        partition = this
-                    )
+                        tx = TestDataFactory.callContractTx(
+                            id = TxId.fromByteArray("${UUID.randomUUID()}".toByteArray()),
+                        ).toDto(),
+                        partition = this,
+                    ),
                 )
             }
         }
@@ -242,8 +246,8 @@ internal class TxQueuePartitionControllerTest {
         txQueuePartitionJpaRepository.save(
             TxQueuePartition(
                 id = partitionId,
-                priority = 0
-            )
+                priority = 0,
+            ),
         )
 
         mockMvc.get("/observer/partitions/{partitionId}", partitionId).andExpect {
@@ -270,14 +274,16 @@ internal class TxQueuePartitionControllerTest {
             txQueuePartitionJpaRepository.save(
                 TxQueuePartition(
                     id = "id_$it",
-                    priority = if (it < errorPartitionCount) errorPriority else 0
-                )
+                    priority = if (it < errorPartitionCount) errorPriority else 0,
+                ),
             ).apply {
                 enqueuedTxJpaRepository.save(
                     enqueuedTx(
-                        tx = TestDataFactory.callContractTx(id = TxId.fromByteArray("${UUID.randomUUID()}".toByteArray())).toDto(),
-                        partition = this
-                    )
+                        tx = TestDataFactory.callContractTx(
+                            id = TxId.fromByteArray("${UUID.randomUUID()}".toByteArray()),
+                        ).toDto(),
+                        partition = this,
+                    ),
                 )
             }
         }
@@ -285,7 +291,11 @@ internal class TxQueuePartitionControllerTest {
         mockMvc.get("/observer/partitions/status").andExpect {
             status { isOk() }
             content { contentType(MediaType.APPLICATION_JSON) }
-            content { json("{\"errorPartitionCount\":$errorPartitionCount,\"totalPartitionCount\":$totalPartitionCount}") }
+            content {
+                json(
+                    "{\"errorPartitionCount\":$errorPartitionCount,\"totalPartitionCount\":$totalPartitionCount}",
+                )
+            }
         }
     }
 }

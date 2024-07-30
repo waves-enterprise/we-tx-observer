@@ -34,7 +34,7 @@ class StringValueKeyEventBlockListenerTest : AbstractListenerTest() {
         assertEquals(callContractTxSimple, stringKeyEventCaptor.captured.tx)
         assertEquals(
             (callContractTxSimple.tx as CallContractTx).contractId.asBase58String(),
-            stringKeyEventCaptor.captured.contractId
+            stringKeyEventCaptor.captured.contractId,
         )
         assertEquals("my_fav_object_string_", stringKeyEventCaptor.captured.key)
     }
@@ -43,7 +43,7 @@ class StringValueKeyEventBlockListenerTest : AbstractListenerTest() {
         @TxListener
         fun handleEvent(
             @KeyFilter(keyPrefix = "my_fav_object_string_")
-            keyEvent: KeyEvent<String>
+            keyEvent: KeyEvent<String>,
         )
     }
 

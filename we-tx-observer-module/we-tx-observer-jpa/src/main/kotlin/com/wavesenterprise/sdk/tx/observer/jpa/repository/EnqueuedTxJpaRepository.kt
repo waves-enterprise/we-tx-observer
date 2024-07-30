@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
+@Suppress("TooManyFunctions")
 @Repository
 interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecificationExecutor<EnqueuedTx> {
 
@@ -115,8 +116,15 @@ interface EnqueuedTxJpaRepository : JpaRepository<EnqueuedTx, String>, JpaSpecif
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Query(
-        """delete from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx where id in
-        (select id from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx where status = :enqueuedTxStatus and block_height < :blockHeight limit :limit)""",
+        """
+            delete from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx 
+            where id in (
+                select id 
+                from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx 
+                where status = :enqueuedTxStatus 
+                and block_height < :blockHeight limit :limit
+            )
+        """,
         nativeQuery = true,
     )
     @Modifying

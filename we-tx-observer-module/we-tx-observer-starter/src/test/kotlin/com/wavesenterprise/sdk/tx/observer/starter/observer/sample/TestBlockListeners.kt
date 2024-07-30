@@ -12,7 +12,7 @@ import com.wavesenterprise.sdk.tx.observer.api.tx.TxListener
 import com.wavesenterprise.sdk.tx.observer.starter.observer.testObjects.SimpleDataObject
 
 class TestBlockListeners(
-    val mockedTestEventListeners: TestEventListeners
+    val mockedTestEventListeners: TestEventListeners,
 ) : TestEventListeners {
 
     @TxListener
@@ -27,65 +27,64 @@ class TestBlockListeners(
 
     @TxListener
     override fun handleBlockEventForCallContractTxByArgumentType(
-        callExecutedContractTx: ExecutedContractTx
+        callExecutedContractTx: ExecutedContractTx,
     ) {
         mockedTestEventListeners.handleBlockEventForCallContractTxByArgumentType(callExecutedContractTx)
     }
 
     @TxListener
     override fun handleBlockEventForCreateContractTxByArgumentType(
-        createExecutedContractTx: ExecutedContractTx
+        createExecutedContractTx: ExecutedContractTx,
     ) {
         mockedTestEventListeners.handleBlockEventForCreateContractTxByArgumentType(createExecutedContractTx)
     }
 
     @TxListener
     override fun handleKeyEventWithStringValue(
-        @KeyFilter(keyPrefix = "my_fav_object_string") keyEvent: KeyEvent<String>
+        @KeyFilter(keyPrefix = "my_fav_object_string") keyEvent: KeyEvent<String>,
     ) {
         mockedTestEventListeners.handleKeyEventWithStringValue(keyEvent)
     }
 
     @TxListener
     override fun handleMultiKeyEventWithStringValue(
-        @KeyFilter(keyPrefix = "my_fav_multi_key_string") keyEvent: KeyEvent<String>
+        @KeyFilter(keyPrefix = "my_fav_multi_key_string") keyEvent: KeyEvent<String>,
     ) {
         mockedTestEventListeners.handleMultiKeyEventWithStringValue(keyEvent)
     }
 
     @TxListener
     override fun handleKeyEventWithIntegerValue(
-        @KeyFilter(keyPrefix = "my_fav_key_int_") keyEvent: KeyEvent<Int>
+        @KeyFilter(keyPrefix = "my_fav_key_int_") keyEvent: KeyEvent<Int>,
     ) {
         mockedTestEventListeners.handleKeyEventWithIntegerValue(keyEvent)
     }
 
     @TxListener
     override fun handleKeyEventWithBooleanValue(
-        @KeyFilter(keyPrefix = "my_fav_object_bool_") keyEvent: KeyEvent<Boolean>
+        @KeyFilter(keyPrefix = "my_fav_object_bool_") keyEvent: KeyEvent<Boolean>,
     ) {
         mockedTestEventListeners.handleKeyEventWithBooleanValue(keyEvent)
     }
 
     @TxListener
     override fun handleKeyEventWithMapValue(
-        @KeyFilter(keyPrefix = "my_fav_object_map_") keyEvent: KeyEvent<Map<String, List<Map<String, Int>>>>
+        @KeyFilter(keyPrefix = "my_fav_object_map_") keyEvent: KeyEvent<Map<String, List<Map<String, Int>>>>,
     ) {
         mockedTestEventListeners.handleKeyEventWithMapValue(keyEvent)
     }
 
     @TxListener
     override fun handleKeyEventWithObjectValue(
-        @KeyFilter(keyPrefix = "my_fav_object_object_") keyEvent: KeyEvent<SimpleDataObject>
+        @KeyFilter(keyPrefix = "my_fav_object_object_") keyEvent: KeyEvent<SimpleDataObject>,
     ) {
         mockedTestEventListeners.handleKeyEventWithObjectValue(keyEvent)
     }
 
-    @TxListener
-    (
+    @TxListener(
         filterExpression = "T(com.wavesplatform.vst.node.dto.TransactionType).EXECUTED_CONTRACT.value == type " +
             "&& T(com.wavesplatform.vst.node.dto.TransactionType).CREATE_CONTRACT.value == tx.type " +
-            "&& 'image_to_filter' == tx.image"
+            "&& 'image_to_filter' == tx.image",
     )
     override fun handleBlockEventForTxFilteredBySpEl(tx: Tx) {
         mockedTestEventListeners.handleBlockEventForTxFilteredBySpEl(tx)

@@ -50,7 +50,7 @@ internal class ScheduledWeBlockInfoSynchronizerTest {
             syncInfoService = syncInfoService,
             enqueuedTxJpaRepository = enqueuedTxJpaRepository,
             txObserverConfig = txObserverProperties,
-            txExecutor = TxExecutorStub
+            txExecutor = TxExecutorStub,
         )
     }
 

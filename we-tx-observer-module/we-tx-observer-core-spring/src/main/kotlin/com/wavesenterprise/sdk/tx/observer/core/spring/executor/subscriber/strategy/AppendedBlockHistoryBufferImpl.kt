@@ -27,7 +27,8 @@ class AppendedBlockHistoryBufferImpl(
         }
 
     private fun canStore(appendedBlockHistory: BlockchainEvent.AppendedBlockHistory): Boolean =
-        buffer.size == 0 || buffer.size != maxCount && bytesSize + appendedBlockHistory.blockSize.bytesCount <= maxSizeBytes
+        buffer.size == 0 || buffer.size != maxCount &&
+            bytesSize + appendedBlockHistory.blockSize.bytesCount <= maxSizeBytes
 
     override fun clear(): List<BlockchainEvent.AppendedBlockHistory> =
         buffer.also {

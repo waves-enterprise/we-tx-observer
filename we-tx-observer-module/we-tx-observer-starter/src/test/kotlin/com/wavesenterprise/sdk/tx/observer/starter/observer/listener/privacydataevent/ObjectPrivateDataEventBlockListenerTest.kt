@@ -33,7 +33,7 @@ class ObjectPrivateDataEventBlockListenerTest : AbstractPrivateEventBlockListene
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(Base64.getEncoder().encode(objectMapper.writeValueAsBytes(randomObject)).data)
 
@@ -50,7 +50,7 @@ class ObjectPrivateDataEventBlockListenerTest : AbstractPrivateEventBlockListene
     interface ObjectPrivateDataEventListener {
         @TxListener
         fun handleEvent(
-            privateDataEvent: PrivateDataEvent<SimpleDataObject>
+            privateDataEvent: PrivateDataEvent<SimpleDataObject>,
         )
     }
 

@@ -50,7 +50,7 @@ import java.util.stream.Stream
         TxObserverJpaConfig::class,
         NodeBlockingServiceFactoryMockConfiguration::class,
         FlywaySchemaConfiguration::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class TxQueuePartitionJpaRepositoryTest {
@@ -76,14 +76,14 @@ internal class TxQueuePartitionJpaRepositoryTest {
         enqueuedTxJpaRepository.save(
             enqueuedTx(
                 tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("id_1".toByteArray())).toDto(),
-                partition = firstPartition
-            )
+                partition = firstPartition,
+            ),
         )
         enqueuedTxJpaRepository.save(
             enqueuedTx(
                 tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("id_2".toByteArray())).toDto(),
-                partition = secondPartition
-            )
+                partition = secondPartition,
+            ),
         )
         flushAndClear()
         assertThat(txQueuePartitionJpaRepository.countStuckPartitions(), `is`(1L))
@@ -98,14 +98,14 @@ internal class TxQueuePartitionJpaRepositoryTest {
         enqueuedTxJpaRepository.save(
             enqueuedTx(
                 tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("id_1".toByteArray())).toDto(),
-                partition = firstPartition
-            )
+                partition = firstPartition,
+            ),
         )
         enqueuedTxJpaRepository.save(
             enqueuedTx(
                 tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("id_2".toByteArray())).toDto(),
-                partition = secondPartition
-            )
+                partition = secondPartition,
+            ),
         )
         flushAndClear()
 
@@ -116,7 +116,7 @@ internal class TxQueuePartitionJpaRepositoryTest {
                         where p.paused_on_tx_id is null
                     order by p.priority desc, etx.tx_timestamp
             """,
-            TxQueuePartition::class.java
+            TxQueuePartition::class.java,
         )
         (findActualPartitionQuery.resultList as List<TxQueuePartition>).also { txQueuePartitionsList ->
             assertEquals(secondPartition.id, txQueuePartitionsList[0].id)
@@ -132,8 +132,8 @@ internal class TxQueuePartitionJpaRepositoryTest {
             enqueuedTxTimestamp = OffsetDateTime.of(
                 LocalDate.now(),
                 LocalTime.of(11, 0, 0),
-                ZoneOffset.UTC
-            )
+                ZoneOffset.UTC,
+            ),
         )
         val secondTxQueuePartition = partitionWithNewTx(
             id = "secondTxQueuePartitionId",
@@ -141,8 +141,8 @@ internal class TxQueuePartitionJpaRepositoryTest {
             enqueuedTxTimestamp = OffsetDateTime.of(
                 LocalDate.now(),
                 LocalTime.of(12, 0, 0),
-                ZoneOffset.UTC
-            )
+                ZoneOffset.UTC,
+            ),
         )
         val thirdTxQueuePartition = partitionWithNewTx(
             id = "thirdTxQueuePartitionId",
@@ -150,13 +150,13 @@ internal class TxQueuePartitionJpaRepositoryTest {
             enqueuedTxTimestamp = OffsetDateTime.of(
                 LocalDate.now(),
                 LocalTime.of(10, 0, 0),
-                ZoneOffset.UTC
-            )
+                ZoneOffset.UTC,
+            ),
         )
         setOf(
             firstTxQueuePartition,
             secondTxQueuePartition,
-            thirdTxQueuePartition
+            thirdTxQueuePartition,
         ).apply {
             map { it.first }.also { txQueuePartitionJpaRepository.saveAll(it) }
             map { it.second }.also { enqueuedTxJpaRepository.saveAll(it) }
@@ -176,8 +176,8 @@ internal class TxQueuePartitionJpaRepositoryTest {
             enqueuedTxTimestamp = OffsetDateTime.of(
                 LocalDate.now(),
                 LocalTime.of(11, 0, 0),
-                ZoneOffset.UTC
-            )
+                ZoneOffset.UTC,
+            ),
         )
         val secondTxQueuePartition = partitionWithNewTx(
             id = "secondTxQueuePartitionId",
@@ -185,8 +185,8 @@ internal class TxQueuePartitionJpaRepositoryTest {
             enqueuedTxTimestamp = OffsetDateTime.of(
                 LocalDate.now(),
                 LocalTime.of(12, 0, 0),
-                ZoneOffset.UTC
-            )
+                ZoneOffset.UTC,
+            ),
         )
         setOf(
             firstTxQueuePartition,
@@ -234,7 +234,7 @@ internal class TxQueuePartitionJpaRepositoryTest {
     @MethodSource("foundPartitions")
     fun `should find specified partitions`(
         partition: TxQueuePartition,
-        enqueuedTx: EnqueuedTx
+        enqueuedTx: EnqueuedTx,
     ) {
         txQueuePartitionJpaRepository.saveAndFlush(partition)
         enqueuedTxJpaRepository.saveAndFlush(enqueuedTx)
@@ -246,7 +246,7 @@ internal class TxQueuePartitionJpaRepositoryTest {
     @MethodSource("notFoundPartitions")
     fun `shouldn't find any of the specified partitions`(
         partition: TxQueuePartition,
-        enqueuedTx: EnqueuedTx?
+        enqueuedTx: EnqueuedTx?,
     ) {
         txQueuePartitionJpaRepository.saveAndFlush(partition)
         enqueuedTx?.also { enqueuedTxJpaRepository.saveAndFlush(enqueuedTx) }
@@ -256,6 +256,7 @@ internal class TxQueuePartitionJpaRepositoryTest {
 
     companion object {
 
+        @Suppress("UnusedPrivateMember")
         @JvmStatic
         private fun foundPartitions(): Stream<Arguments> =
             setOf(
@@ -265,8 +266,8 @@ internal class TxQueuePartitionJpaRepositoryTest {
                     enqueuedTxTimestamp = OffsetDateTime.of(
                         LocalDate.now(),
                         LocalTime.of(12, 0, 0),
-                        ZoneOffset.UTC
-                    )
+                        ZoneOffset.UTC,
+                    ),
                 ),
                 partitionWithNewTx(
                     id = "thirdTxQueuePartitionId",
@@ -274,8 +275,8 @@ internal class TxQueuePartitionJpaRepositoryTest {
                     enqueuedTxTimestamp = OffsetDateTime.of(
                         LocalDate.now(),
                         LocalTime.of(10, 0, 0),
-                        ZoneOffset.UTC
-                    )
+                        ZoneOffset.UTC,
+                    ),
                 ),
                 partitionWithNewTx(
                     id = "forthTxQueuePartitionId",
@@ -283,17 +284,18 @@ internal class TxQueuePartitionJpaRepositoryTest {
                     enqueuedTxTimestamp = OffsetDateTime.of(
                         LocalDate.now(),
                         LocalTime.of(14, 0, 0),
-                        ZoneOffset.UTC
-                    )
-                )
+                        ZoneOffset.UTC,
+                    ),
+                ),
             ).map { Arguments.of(it.first, it.second) }.stream()
 
+        @Suppress("UnusedPrivateMember")
         @JvmStatic
         private fun notFoundPartitions(): Stream<Arguments> =
             setOf(
                 TxQueuePartition(
                     id = "notFoundPartitionIdWithoutTx",
-                    priority = 0
+                    priority = 0,
                 ) to null,
                 partitionWithNewTx(
                     id = "actualButPausedPartitionId",
@@ -302,26 +304,26 @@ internal class TxQueuePartitionJpaRepositoryTest {
                     enqueuedTxTimestamp = OffsetDateTime.of(
                         LocalDate.now(),
                         LocalTime.of(11, 0, 0),
-                        ZoneOffset.UTC
-                    )
-                )
+                        ZoneOffset.UTC,
+                    ),
+                ),
             ).map { Arguments.of(it.first, it.second) }.stream()
 
         private fun partitionWithNewTx(
             id: String,
             priority: Int,
             pausedOnTxId: String? = null,
-            enqueuedTxTimestamp: OffsetDateTime
+            enqueuedTxTimestamp: OffsetDateTime,
         ): Pair<TxQueuePartition, EnqueuedTx> {
             val partition = TxQueuePartition(
                 id = id,
                 priority = priority,
-                pausedOnTxId = pausedOnTxId
+                pausedOnTxId = pausedOnTxId,
             )
             return partition to enqueuedTx(
                 tx = TestDataFactory.createContractTx(
                     id = TxId.fromByteArray(randomBytesFromUUID()),
-                    timestamp = Timestamp(enqueuedTxTimestamp.toInstant().toEpochMilli())
+                    timestamp = Timestamp(enqueuedTxTimestamp.toInstant().toEpochMilli()),
                 ).toDto(),
                 partition = partition,
             )

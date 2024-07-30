@@ -14,7 +14,7 @@ internal class SmartContractInfoTest {
             image = "image",
             version = 1,
             contractName = "bla",
-            sender = "123"
+            sender = "123",
         )
         val txTrackInfo = TxTrackInfo(
             id = "id1",
@@ -22,7 +22,7 @@ internal class SmartContractInfoTest {
             type = 1,
             body = TextNode("ff"),
             meta = mapOf(),
-            smartContractInfo = smartContractInfo
+            smartContractInfo = smartContractInfo,
         )
         smartContractInfo.txTrackInfos += txTrackInfo
         assertDoesNotThrow {
