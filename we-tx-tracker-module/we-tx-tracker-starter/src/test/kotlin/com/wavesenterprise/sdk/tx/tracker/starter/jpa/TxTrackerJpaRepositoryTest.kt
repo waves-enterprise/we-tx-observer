@@ -10,6 +10,9 @@ import com.wavesenterprise.sdk.tx.tracker.domain.TxTrackInfo
 import com.wavesenterprise.sdk.tx.tracker.domain.TxTrackStatus
 import com.wavesenterprise.sdk.tx.tracker.jpa.TxTrackerJpaAutoConfig
 import com.wavesenterprise.sdk.tx.tracker.jpa.repository.TxTrackerJpaRepository
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
+import jakarta.persistence.PersistenceException
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.hibernate.exception.ConstraintViolationException
@@ -23,9 +26,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import java.util.UUID
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
-import javax.persistence.PersistenceException
 
 @DataJpaTest(properties = ["tx-tracker.enabled = true"])
 @ActiveProfiles("test")
@@ -34,7 +34,7 @@ import javax.persistence.PersistenceException
         DataSourceAutoConfiguration::class,
         TxTrackerJpaAutoConfig::class,
         FlywaySchemaConfiguration::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TxTrackerJpaRepositoryTest {
@@ -54,14 +54,14 @@ class TxTrackerJpaRepositoryTest {
     @EnumSource(
         value = TxType::class,
         names = ["CREATE_CONTRACT", "CALL_CONTRACT", "DISABLE_CONTRACT", "UPDATE_CONTRACT"],
-        mode = EnumSource.Mode.INCLUDE
+        mode = EnumSource.Mode.INCLUDE,
     )
     fun `should throw sql constraint violation when tx type is one of contract modification`(type: TxType) {
         assertThrows<PersistenceException> {
             txTrackerJpaRepository.save(buildTxTrackInfo(type = type))
             em.flushAndClear()
         }.apply {
-            assertThat((cause as ConstraintViolationException).constraintName, `is`("contract_id_null_check"))
+            assertThat((this as ConstraintViolationException).constraintName, `is`("contract_id_null_check"))
         }
     }
 
@@ -69,7 +69,7 @@ class TxTrackerJpaRepositoryTest {
     @EnumSource(
         value = TxType::class,
         names = ["CREATE_CONTRACT", "CALL_CONTRACT", "DISABLE_CONTRACT", "UPDATE_CONTRACT"],
-        mode = EnumSource.Mode.EXCLUDE
+        mode = EnumSource.Mode.EXCLUDE,
     )
     fun `should doesn't throw exception when tx type is not contract modification`(type: TxType) {
         txTrackerJpaRepository.save(buildTxTrackInfo(type = type))

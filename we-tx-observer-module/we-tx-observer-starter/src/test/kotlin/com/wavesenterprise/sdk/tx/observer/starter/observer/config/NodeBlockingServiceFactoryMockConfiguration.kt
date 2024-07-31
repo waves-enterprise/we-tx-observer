@@ -91,8 +91,8 @@ class NodeBlockingServiceFactoryMockConfiguration {
                 DataEntry(
                     key = DataKey("some_key"),
                     value = DataValue.StringDataValue("fffff"),
-                )
-            )
+                ),
+            ),
         )
 
         val senderAddress = TestDataFactory.address()
@@ -132,7 +132,7 @@ class NodeBlockingServiceFactoryMockConfiguration {
                 samplePolicyDataHashTx,
                 sampleCreatePolicyTx,
                 createContractTxInAtomicTx,
-            )
+            ),
         )
 
         val fileInfo = TestDataFactory.policyItemFileInfo()
@@ -147,8 +147,8 @@ class NodeBlockingServiceFactoryMockConfiguration {
                 DataEntry(
                     key = DataKey("key1_adfdf"),
                     value = DataValue.StringDataValue("fffff"),
-                )
-            )
+                ),
+            ),
         )
 
         val createContractTxSimple = TestDataFactory.executedContractTx(
@@ -157,8 +157,8 @@ class NodeBlockingServiceFactoryMockConfiguration {
                 DataEntry(
                     key = DataKey("key2_adfdf"),
                     value = DataValue.StringDataValue("fffff"),
-                )
-            )
+                ),
+            ),
         )
 
         val callContractTxSimple = TestDataFactory.executedContractTx(
@@ -167,8 +167,8 @@ class NodeBlockingServiceFactoryMockConfiguration {
                 DataEntry(
                     key = DataKey("my_fav_object_string_"),
                     value = DataValue.StringDataValue("my fav object new value"),
-                )
-            )
+                ),
+            ),
         )
 
         val callContractTxDifferentValueTypes = TestDataFactory.executedContractTx(
@@ -177,11 +177,11 @@ class NodeBlockingServiceFactoryMockConfiguration {
             results = listOf(
                 DataEntry(
                     key = DataKey("my_fav_key_int_"),
-                    value = DataValue.IntegerDataValue(123123)
+                    value = DataValue.IntegerDataValue(123123),
                 ),
                 DataEntry(
                     key = DataKey("my_fav_object_bool_"),
-                    value = DataValue.BooleanDataValue(true)
+                    value = DataValue.BooleanDataValue(true),
                 ),
                 DataEntry(
                     key = DataKey("my_fav_object_map_"),
@@ -197,8 +197,8 @@ class NodeBlockingServiceFactoryMockConfiguration {
                                             }
                                         ]
                                     }
-                        """.trimIndent()
-                    )
+                        """.trimIndent(),
+                    ),
                 ),
                 DataEntry(
                     key = DataKey("my_fav_object_object_"),
@@ -211,10 +211,10 @@ class NodeBlockingServiceFactoryMockConfiguration {
                                             "key": 1
                                         }
                                     }
-                        """.trimIndent()
-                    )
+                        """.trimIndent(),
+                    ),
                 ),
-            )
+            ),
         )
 
         val callContractTxSeveralMatchingKeys = TestDataFactory.executedContractTx(
@@ -223,17 +223,17 @@ class NodeBlockingServiceFactoryMockConfiguration {
             results = listOf(
                 DataEntry(
                     key = DataKey("my_fav_multi_key_string_0"),
-                    value = DataValue.StringDataValue("123123")
+                    value = DataValue.StringDataValue("123123"),
                 ),
                 DataEntry(
                     key = DataKey("my_fav_multi_key_string_1"),
-                    value = DataValue.StringDataValue("123123")
+                    value = DataValue.StringDataValue("123123"),
                 ),
                 DataEntry(
                     key = DataKey("my_fav_multi_key_string_2"),
-                    value = DataValue.StringDataValue("123123")
+                    value = DataValue.StringDataValue("123123"),
                 ),
-            )
+            ),
         )
 
         val mockTxList = listOf(
@@ -246,7 +246,7 @@ class NodeBlockingServiceFactoryMockConfiguration {
             createContractTxSimple,
             callContractTxSimple,
             callContractTxDifferentValueTypes,
-            callContractTxSeveralMatchingKeys
+            callContractTxSeveralMatchingKeys,
         )
     }
 }

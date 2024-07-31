@@ -1,3 +1,5 @@
+@file:Suppress("LongParameterList")
+
 package com.wavesenterprise.sdk.tx.observer.starter.observer.util
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -23,6 +25,8 @@ import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingS
 import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration.Companion.sampleCreateContractTx
 import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration.Companion.sampleExecutedContractTx
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 object ModelFactory {
@@ -33,7 +37,7 @@ object ModelFactory {
         blockHeight: Long = 1,
         partition: TxQueuePartition,
         status: EnqueuedTxStatus = EnqueuedTxStatus.NEW,
-        available: Boolean = true
+        available: Boolean = true,
     ) = EnqueuedTx(
         id = tx.id,
         body = jacksonObjectMapper().valueToTree(tx),
@@ -45,7 +49,7 @@ object ModelFactory {
         partition = partition,
         available = available,
         positionInAtomic = 0,
-        atomicTxId = null
+        atomicTxId = null,
     )
 
     fun blockAtHeight(
@@ -75,7 +79,7 @@ object ModelFactory {
         poaConsensus = poaConsensus,
         posConsensus = posConsensus,
         timestamp = timestamp,
-        height = height
+        height = height,
     )
 
     fun blockHeaders(
@@ -101,18 +105,21 @@ object ModelFactory {
         poaConsensus = poaConsensus,
         posConsensus = posConsensus,
         timestamp = timestamp,
-        height = height
+        height = height,
     )
 
     fun blockHistory(
         signature: String = UUID.randomUUID().toString(),
         height: Long = FIRST_BLOCK_HEIGHT,
-        timestamp: OffsetDateTime = OffsetDateTime.now()
+        timestamp: OffsetDateTime = OffsetDateTime
+            .now()
+            .truncatedTo(ChronoUnit.MILLIS)
+            .withOffsetSameInstant(ZoneOffset.UTC),
     ): BlockHistory =
         BlockHistory(
             signature = signature,
             height = height,
-            timestamp = timestamp
+            timestamp = timestamp,
         )
 
     val txList: List<Tx> = listOf(
@@ -123,6 +130,6 @@ object ModelFactory {
         sampleExecutedContractTx.copy(
             id = TxId.fromByteArray("id1000".toByteArray()),
             tx = sampleCallContractTx.copy(id = TxId.fromByteArray("id1001".toByteArray())),
-        )
+        ),
     )
 }

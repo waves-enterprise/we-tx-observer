@@ -33,11 +33,13 @@ class MicroBlockEventHandlingStrategy(
         when (event) {
             is BlockchainEvent.AppendedBlockHistory -> {
                 height = event.height.value + 1
-                if (appendedBlockHistoryBuffer.store(event))
+                if (appendedBlockHistoryBuffer.store(event)) {
                     emptyList()
-                else
+                } else {
                     listOf((appendedBlockHistoryBuffer.clear() + event).toHandleBlocks())
+                }
             }
+
             is BlockchainEvent.BlockAppended -> {
                 height = event.height.value + 1
                 log.logIgnoredTxs(event.txIds.map { it.asBase58String() }, txsFromMicroBlocks)
@@ -46,31 +48,37 @@ class MicroBlockEventHandlingStrategy(
                 listOf(
                     HandleBlocks(
                         weBlockInfos = appendedBlockHistoryList.map { it.toWeBlockInfo() },
-                        syncedBlockInfos = appendedBlockHistoryList.map { it.toSyncedBlockInfo() } + event.toSyncedBlockInfo(),
-                    )
+                        syncedBlockInfos =
+                        appendedBlockHistoryList.map { it.toSyncedBlockInfo() } + event.toSyncedBlockInfo(),
+                    ),
                 )
             }
+
             is BlockchainEvent.MicroBlockAppended -> {
                 val appendedBlockHistoryList = appendedBlockHistoryBuffer.clear()
                 listOf(
                     HandleBlocks(
-                        weBlockInfos = appendedBlockHistoryList.map { it.toWeBlockInfo() } + event.toWeBlockInfo(Height(height)).also {
-                            event.txs.forEach { tx ->
-                                txsFromMicroBlocks.compute(tx.id.asBase58String()) { id, txInMap ->
-                                    if (txInMap != null) log.warn { "Got already received tx with id $id" }
-                                    tx
+                        weBlockInfos =
+                        appendedBlockHistoryList
+                            .map { it.toWeBlockInfo() } + event.toWeBlockInfo(Height(height))
+                            .also {
+                                event.txs.forEach { tx ->
+                                    txsFromMicroBlocks.compute(tx.id.asBase58String()) { id, txInMap ->
+                                        if (txInMap != null) log.warn { "Got already received tx with id $id" }
+                                        tx
+                                    }
                                 }
-                            }
-                        },
-                        syncedBlockInfos = appendedBlockHistoryList.map { it.toSyncedBlockInfo() }
-                    )
+                            },
+                        syncedBlockInfos = appendedBlockHistoryList.map { it.toSyncedBlockInfo() },
+                    ),
                 )
             }
+
             is BlockchainEvent.RollbackCompleted -> listOf(
                 appendedBlockHistoryBuffer.clearAndBuildHandleBlocks(),
                 handleRollbackFactory.create(event).also {
                     height = it.weRollbackInfo.toHeight.value
-                }
+                },
             )
         }
 

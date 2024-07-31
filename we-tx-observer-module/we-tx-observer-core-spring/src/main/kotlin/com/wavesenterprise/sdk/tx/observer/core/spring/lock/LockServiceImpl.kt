@@ -16,10 +16,11 @@ class LockServiceImpl(
         log.debug { "Trying to create row for lock: $key" }
         txExecutor.requiresNew {
             lockRepository.create(key).also { insertedCount ->
-                if (insertedCount > 0)
+                if (insertedCount > 0) {
                     log.info { "Lock row created for key: $key" }
-                else
+                } else {
                     log.debug { "Lock row already exists for key: $key" }
+                }
             }
         }
         log.debug { "Trying to acquire lock for key: $key" }

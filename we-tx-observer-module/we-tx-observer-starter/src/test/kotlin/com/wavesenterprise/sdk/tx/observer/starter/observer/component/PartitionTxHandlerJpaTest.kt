@@ -15,6 +15,8 @@ import com.wavesenterprise.sdk.tx.observer.starter.TxObserverStarterConfig
 import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingServiceFactoryMockConfiguration
 import com.wavesenterprise.sdk.tx.observer.starter.observer.config.ObjectMapperConfig
 import com.wavesenterprise.sdk.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -27,8 +29,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TestTransaction
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -41,7 +41,7 @@ import javax.persistence.PersistenceContext
         TxObserverStarterConfig::class,
         TxObserverJpaConfig::class,
         FlywaySchemaConfiguration::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class PartitionTxHandlerJpaTest {
@@ -62,7 +62,7 @@ internal class PartitionTxHandlerJpaTest {
     fun `should decrease partition priority for error when reading partition`() {
         val samplePartition = TxQueuePartition(
             id = "partitionId",
-            priority = 0
+            priority = 0,
         )
         txQueuePartitionJpaRepository.saveAndFlush(samplePartition)
         TestTransaction.flagForCommit()
@@ -80,7 +80,7 @@ internal class PartitionTxHandlerJpaTest {
     fun `should reset partition priority`() {
         val samplePartition = TxQueuePartition(
             id = "partitionId",
-            priority = -1
+            priority = -1,
         )
         txQueuePartitionJpaRepository.saveAndFlush(samplePartition)
         TestTransaction.flagForCommit()
@@ -108,7 +108,7 @@ internal class PartitionTxHandlerJpaTest {
                 tx = TestDataFactory.createContractTx(id = txId).toDto(),
                 partition = samplePartition,
                 available = false,
-            )
+            ),
         )
         TestTransaction.flagForCommit()
         TestTransaction.end()
@@ -134,7 +134,7 @@ internal class PartitionTxHandlerJpaTest {
                 tx = TestDataFactory.createContractTx(id = txId).toDto(),
                 partition = samplePartition,
                 available = true,
-            )
+            ),
         )
         TestTransaction.flagForCommit()
         TestTransaction.end()
@@ -159,8 +159,8 @@ internal class PartitionTxHandlerJpaTest {
             enqueuedTx(
                 status = EnqueuedTxStatus.NEW,
                 tx = TestDataFactory.createContractTx(id = txId).toDto(),
-                partition = samplePartition
-            )
+                partition = samplePartition,
+            ),
         )
         TestTransaction.flagForCommit()
         TestTransaction.end()
@@ -187,7 +187,7 @@ internal class PartitionTxHandlerJpaTest {
                 status = EnqueuedTxStatus.NEW,
                 tx = TestDataFactory.createContractTx(id = txId).toDto(),
                 partition = samplePartition,
-            )
+            ),
         )
         TestTransaction.flagForCommit()
         TestTransaction.end()

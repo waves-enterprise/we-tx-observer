@@ -6,6 +6,7 @@ import com.wavesenterprise.sdk.tx.observer.jpa.repository.TxQueuePartitionJpaRep
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+@Suppress("LongParameterList")
 open class ScheduledMetricsCollector(
     val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     val txQueuePartitionJpaRepository: TxQueuePartitionJpaRepository,

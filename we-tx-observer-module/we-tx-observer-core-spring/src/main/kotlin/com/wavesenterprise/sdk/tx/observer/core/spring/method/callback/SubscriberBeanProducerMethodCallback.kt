@@ -14,7 +14,7 @@ abstract class SubscriberBeanProducerMethodCallback(
         val subscriber = buildSubscriber(method)
         beanFactory.registerSingleton(
             "${beanName}_${method.declaringClass.name}_${method.name}",
-            subscriber
+            subscriber,
         )
     }
 

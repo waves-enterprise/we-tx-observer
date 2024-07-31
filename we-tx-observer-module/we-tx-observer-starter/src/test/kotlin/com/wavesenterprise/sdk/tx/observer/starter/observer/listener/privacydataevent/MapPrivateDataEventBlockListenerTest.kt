@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.util.Base64Utils
+import java.util.Base64
 import java.util.Optional
 
 @ContextConfiguration(classes = [MapPrivateDataEventBlockListenerTest.ListenerConfig::class])
@@ -29,18 +29,18 @@ class MapPrivateDataEventBlockListenerTest : AbstractPrivateEventBlockListenerTe
         val randomMap = mapOf(
             "key_list" to listOf(
                 mapOf("key_int_1" to 1),
-                mapOf("key_int_2" to 2)
-            )
+                mapOf("key_int_2" to 2),
+            ),
         )
         every {
             privacyService.data(
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(
-            Data.fromByteArray(Base64Utils.encode(objectMapper.writeValueAsBytes(randomMap)))
+            Data.fromByteArray(Base64.getEncoder().encode(objectMapper.writeValueAsBytes(randomMap))),
         )
         enqueue(samplePolicyDataHashTx)
 
@@ -55,7 +55,7 @@ class MapPrivateDataEventBlockListenerTest : AbstractPrivateEventBlockListenerTe
     interface MapPrivateDataEventListener {
         @TxListener
         fun handleEvent(
-            privateDataEvent: PrivateDataEvent<Map<String, List<Map<String, Int>>>>
+            privateDataEvent: PrivateDataEvent<Map<String, List<Map<String, Int>>>>,
         )
     }
 

@@ -43,7 +43,7 @@ abstract class AbstractPrivateEventBlockListenerTest : AbstractListenerTest() {
             TxInfo(
                 height = Height(1),
                 tx = sampleCreatePolicyTx,
-            )
+            ),
         )
 
         every {
@@ -51,7 +51,7 @@ abstract class AbstractPrivateEventBlockListenerTest : AbstractListenerTest() {
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
         } returns Optional.of(privacyInfoResponse)
     }

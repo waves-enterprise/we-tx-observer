@@ -11,7 +11,7 @@ class RollbackInfoServiceImpl(
     override fun list(pageable: Pageable): Page<RollbackInfo> =
         rollbackInfoRepository.findAll(
             { _, _, _ -> null },
-            pageable
+            pageable,
         )
 
     override fun count(): Long =

@@ -1,42 +1,37 @@
 package com.wavesenterprise.sdk.tx.tracker.domain
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType
 import com.wavesenterprise.sdk.tx.observer.common.jpa.util.JSONB_TYPE
 import com.wavesenterprise.sdk.tx.observer.common.jpa.util.TX_TRACKER_SCHEMA_NAME
+import io.hypersistence.utils.hibernate.type.json.JsonType
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
+import jakarta.persistence.ManyToMany
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
 import org.hibernate.annotations.SQLInsert
 import org.hibernate.annotations.Type
-import org.hibernate.annotations.TypeDef
-import org.hibernate.annotations.TypeDefs
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.OffsetDateTime
-import javax.persistence.CascadeType
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.JoinTable
-import javax.persistence.ManyToMany
-import javax.persistence.ManyToOne
-import javax.persistence.Table
 
 @Entity
 @Table(schema = TX_TRACKER_SCHEMA_NAME)
 @EntityListeners(AuditingEntityListener::class)
-@TypeDefs(
-    TypeDef(name = JSONB_TYPE, typeClass = JsonBinaryType::class)
-)
 @SQLInsert(
     sql = """
     insert into $TX_TRACKER_SCHEMA_NAME.tx_track_info 
         (body, created, errors, meta, modified, contract_id, status, type, user_id, id) values
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict do nothing
-"""
+""",
 )
 data class TxTrackInfo(
     @Id
@@ -51,14 +46,14 @@ data class TxTrackInfo(
 
     var type: Int,
 
-    @Type(type = JSONB_TYPE)
+    @Type(JsonType::class)
     @Column(columnDefinition = JSONB_TYPE)
     var body: JsonNode,
 
-    @Type(type = JSONB_TYPE)
+    @Type(JsonType::class)
     var errors: JsonNode? = null,
 
-    @Type(type = JSONB_TYPE)
+    @Type(JsonType::class)
     val meta: Map<String, Any>,
 
     @CreatedDate
@@ -74,14 +69,14 @@ data class TxTrackInfo(
             CascadeType.PERSIST,
             CascadeType.MERGE,
             CascadeType.REFRESH,
-            CascadeType.DETACH
-        ]
+            CascadeType.DETACH,
+        ],
     )
     @JoinTable(
         schema = TX_TRACKER_SCHEMA_NAME,
         name = "track_info_business_object_info",
         joinColumns = [JoinColumn(name = "track_info_id", nullable = false)],
-        inverseJoinColumns = [JoinColumn(name = "business_object_info_id", nullable = false)]
+        inverseJoinColumns = [JoinColumn(name = "business_object_info_id", nullable = false)],
     )
     @SQLInsert(
         sql = """
@@ -91,7 +86,7 @@ data class TxTrackInfo(
             (track_info_id, business_object_info_id) 
         values
             (?, ?) on conflict do nothing
-    """
+    """,
     )
     val businessObjectInfos: List<TxTrackBusinessObjectInfo> = listOf(),
 )

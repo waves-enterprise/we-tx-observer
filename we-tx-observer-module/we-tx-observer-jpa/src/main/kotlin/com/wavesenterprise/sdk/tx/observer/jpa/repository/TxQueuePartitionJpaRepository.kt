@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
+@Suppress("TooManyFunctions")
 @Repository
 interface TxQueuePartitionJpaRepository :
     JpaRepository<TxQueuePartition, String>,
@@ -33,7 +34,7 @@ interface TxQueuePartitionJpaRepository :
                 for update of tqp skip locked
                 limit 1
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun findAndLockLatestPartition(): String?
 
@@ -62,7 +63,7 @@ interface TxQueuePartitionJpaRepository :
                     where tqp.paused_on_tx_id is null
                 order by tqp.priority desc, etx.tx_timestamp
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun findActualPartitions(): List<TxQueuePartition>
 
@@ -72,7 +73,7 @@ interface TxQueuePartitionJpaRepository :
                     set priority = 0
                 where id = :partitionId
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     @Modifying
     fun updateSuccessTxHandle(partitionId: String)
@@ -84,7 +85,7 @@ interface TxQueuePartitionJpaRepository :
                 where id = :partitionId and not 
                 (select available from $TX_OBSERVER_SCHEMA_NAME.enqueued_tx where id = :pausedOnTxId)
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     @Modifying
     fun updatePausedTxId(partitionId: String, pausedOnTxId: String): Int
@@ -95,7 +96,7 @@ interface TxQueuePartitionJpaRepository :
                     set paused_on_tx_id = null
                 where id = :partitionId and paused_on_tx_id = :pausedOnTxId
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     @Modifying
     fun resetPausedTxId(partitionId: String, pausedOnTxId: String): Int
@@ -106,7 +107,7 @@ interface TxQueuePartitionJpaRepository :
                     set priority = (priority - 1)
                 where id = :partitionId
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     @Modifying
     fun updateErrorTxHandle(partitionId: String)
@@ -120,7 +121,7 @@ interface TxQueuePartitionJpaRepository :
                                and etx.partition_id = p.id) 
                 and p.paused_on_tx_id is null;
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun countErrorPartitions(): Long
 
@@ -132,7 +133,7 @@ interface TxQueuePartitionJpaRepository :
                                where etx.status = 'NEW'
                                and etx.partition_id = p.id)
         """,
-        nativeQuery = true
+        nativeQuery = true,
     )
     fun countStuckPartitions(): Long
 
@@ -142,7 +143,7 @@ interface TxQueuePartitionJpaRepository :
             and not exists (select etx.id from EnqueuedTx etx
                                where etx.status = 'NEW'
                                and etx.id = p.pausedOnTxId)
-        """
+        """,
     )
     @Modifying
     fun clearPausedOnTxIds(): Int

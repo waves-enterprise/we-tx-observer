@@ -18,6 +18,8 @@ import com.wavesenterprise.sdk.tx.observer.starter.observer.config.ObjectMapperC
 import com.wavesenterprise.sdk.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
 import io.mockk.every
 import io.mockk.verify
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
@@ -31,8 +33,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TestTransaction
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @DataJpaTest(properties = ["tx-observer.default-partition-id = thatDefaultPartitionId"])
 @ActiveProfiles("test")
@@ -45,7 +45,7 @@ import javax.persistence.PersistenceContext
         TxObserverStarterConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class ErrorHandlingTxPartitionPollerIntegrationTest {
@@ -70,28 +70,28 @@ internal class ErrorHandlingTxPartitionPollerIntegrationTest {
     fun `should decrement priority of a partition with error`(ex: Exception) {
         val firstErrorPartition = TxQueuePartition(
             id = "firstErrorPartitionId",
-            priority = 0
+            priority = 0,
         )
         val secondOkPartition = firstErrorPartition.copy(id = "secondOkPartitionId")
         val thirdErrorPartition = firstErrorPartition.copy(id = "thirdErrorPartitionId")
         val partitions = listOf(
             firstErrorPartition,
             secondOkPartition,
-            thirdErrorPartition
+            thirdErrorPartition,
         )
         txQueuePartitionJpaRepository.saveAll(
-            partitions
+            partitions,
         )
         partitions.map {
             enqueuedTx(
                 tx = TestDataFactory.createContractTx().toDto(),
-                partition = it
+                partition = it,
             )
         }.also { enqueuedTxJpaRepository.saveAll(it) }
 
         val errorPartitions = listOf(
             firstErrorPartition,
-            thirdErrorPartition
+            thirdErrorPartition,
         )
         errorPartitions.forEach {
             every { pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(partitionId = it.id) } throws ex
@@ -132,7 +132,7 @@ internal class ErrorHandlingTxPartitionPollerIntegrationTest {
         @JvmStatic
         fun exceptions() = setOf(
             BlockListenerException("bla bla", Exception()),
-            IllegalArgumentException()
+            IllegalArgumentException(),
         ).map { Arguments.of(it) }.stream()
     }
 }

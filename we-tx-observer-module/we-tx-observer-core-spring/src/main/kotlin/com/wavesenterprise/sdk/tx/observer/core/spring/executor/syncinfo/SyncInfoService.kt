@@ -7,7 +7,7 @@ interface SyncInfoService {
     fun syncedTo(
         height: Long,
         prevBlockSignature: String? = null,
-        syncedBlocks: List<SyncedBlockInfo> = emptyList()
+        syncedBlocks: List<SyncedBlockInfo> = emptyList(),
     )
 
     fun syncedTo(

@@ -31,7 +31,7 @@ class ExecutedCreateContractTxBlockListenerTest : AbstractListenerTest() {
         enqueue(
             sampleAtomicTx,
             createContractTxSimple,
-            createContractTxWithImageToFilter
+            createContractTxWithImageToFilter,
         )
 
         pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(mockPartitionId)
@@ -43,8 +43,8 @@ class ExecutedCreateContractTxBlockListenerTest : AbstractListenerTest() {
             createExecutedContractTxCaptor,
             containsInAnyOrder(
                 createContractTxSimple,
-                createContractTxWithImageToFilter
-            )
+                createContractTxWithImageToFilter,
+            ),
         )
     }
 

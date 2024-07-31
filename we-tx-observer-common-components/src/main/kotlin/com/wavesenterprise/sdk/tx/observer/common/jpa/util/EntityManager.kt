@@ -1,6 +1,6 @@
 package com.wavesenterprise.sdk.tx.observer.common.jpa.util
 
-import javax.persistence.EntityManager
+import jakarta.persistence.EntityManager
 
 fun EntityManager.flushAndClear() {
     flush()

@@ -38,10 +38,10 @@ import org.springframework.context.annotation.Import
     TxObserverJpaConfig::class,
     SyncInfoConfig::class,
     PollerBlockSourceConfiguration::class,
-    SubscriberBlockSourceConfiguration::class
+    SubscriberBlockSourceConfiguration::class,
 )
 @EnableConfigurationProperties(
-    TxEnqueuedPredicateProperties::class
+    TxEnqueuedPredicateProperties::class,
 )
 @SuppressWarnings("TooManyFunctions")
 class BlockInfoSynchronizerConfig(

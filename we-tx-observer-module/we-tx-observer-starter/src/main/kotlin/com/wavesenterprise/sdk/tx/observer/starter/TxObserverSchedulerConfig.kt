@@ -33,6 +33,7 @@ import org.springframework.scheduling.support.ScheduledMethodRunnable
 import kotlin.reflect.KFunction
 import kotlin.reflect.jvm.javaMethod
 
+@Suppress("TooManyFunctions")
 @Configuration
 @Profile("!test")
 @Import(
@@ -112,7 +113,7 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
             poolSize = listOf(
                 txObserverSchedulerProperties.poolSize,
                 privacyAvailabilityCheckProperties.threadCount,
-                partitionPollerProperties.threadCount
+                partitionPollerProperties.threadCount,
             ).sum()
             setThreadNamePrefix("tx-observer-pool-")
             initialize()
@@ -124,10 +125,12 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
             addBlockInfoSynchronizer()
             addEventSubscriber()
             addBlockHistoryCleaner()
-            if (partitionPollerProperties.enabled)
+            if (partitionPollerProperties.enabled) {
                 initPartitionPoller()
-            if (privacyAvailabilityCheckProperties.enabled)
+            }
+            if (privacyAvailabilityCheckProperties.enabled) {
                 initPrivacyChecker()
+            }
             addScheduledForkResolver()
             addQueueCleaner()
             addScheduledMetricsCollector()
@@ -137,59 +140,64 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
     }
 
     private fun ScheduledTaskRegistrar.addScheduledMetricsCollector() {
-        if (metricsCollectorProperties.enabled)
+        if (metricsCollectorProperties.enabled) {
             addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledMetricsCollector,
-                    ScheduledMetricsCollector::metricsCollector
+                    ScheduledMetricsCollector::metricsCollector,
                 ),
-                metricsCollectorProperties.fixedDelay.toMillis()
+                metricsCollectorProperties.fixedDelay,
             )
+        }
     }
 
     private fun ScheduledTaskRegistrar.addQueueCleaner() {
-        if (queueCleanerProperties.enabled)
+        if (queueCleanerProperties.enabled) {
             addCronTask(
                 scheduledMethodRunnable(
                     scheduledTxQueueCleaner,
-                    ScheduledTxQueueCleaner::cleanReadEnqueuedTx
+                    ScheduledTxQueueCleaner::cleanReadEnqueuedTx,
                 ),
-                queueCleanerProperties.cleanCronExpression
+                queueCleanerProperties.cleanCronExpression,
             )
+        }
     }
 
     private fun ScheduledTaskRegistrar.addScheduledForkResolver() {
-        if (forkResolverProperties.enabled)
+        if (forkResolverProperties.enabled) {
             addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledForkResolver,
-                    ScheduledForkResolver::resolveForkedTx
+                    ScheduledForkResolver::resolveForkedTx,
                 ),
-                forkResolverProperties.fixedDelay.toMillis()
+                forkResolverProperties.fixedDelay,
             )
+        }
     }
 
     private fun ScheduledTaskRegistrar.addBlockHistoryCleaner() {
-        if (txObserverProperties.enabled)
+        if (txObserverProperties.enabled) {
             addFixedDelayTask(
                 scheduledMethodRunnable(
                     blockHistoryCleaner,
-                    BlockHistoryCleaner::clean
+                    BlockHistoryCleaner::clean,
                 ),
-                txObserverProperties.blockHistoryCleanDelay.toMillis()
+                txObserverProperties.blockHistoryCleanDelay,
             )
+        }
     }
 
     private fun ScheduledTaskRegistrar.addEventSubscriber() {
         eventSubscriber?.let { eventSubscriber ->
-            if (txObserverProperties.enabled)
+            if (txObserverProperties.enabled) {
                 addFixedDelayTask(
                     scheduledMethodRunnable(
                         eventSubscriber,
-                        EventSubscriber::subscribe
+                        EventSubscriber::subscribe,
                     ),
-                    txObserverProperties.fixedDelay.toMillis()
+                    txObserverProperties.fixedDelay,
                 )
+            }
         }
     }
 
@@ -198,9 +206,9 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
             addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledBlockInfoSynchronizer,
-                    ScheduledBlockInfoSynchronizer::syncNodeBlockInfo
+                    ScheduledBlockInfoSynchronizer::syncNodeBlockInfo,
                 ),
-                txObserverProperties.fixedDelay.toMillis()
+                txObserverProperties.fixedDelay,
             )
         }
     }
@@ -210,9 +218,9 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
             addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledPrivacyChecker,
-                    ScheduledPrivacyChecker::checkPrivacyAvailabilityWhileTheyExist
+                    ScheduledPrivacyChecker::checkPrivacyAvailabilityWhileTheyExist,
                 ),
-                privacyAvailabilityCheckProperties.fixedDelay.toMillis()
+                privacyAvailabilityCheckProperties.fixedDelay,
             )
         }
     }
@@ -222,9 +230,9 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
             addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledPartitionPoller,
-                    ScheduledPartitionPoller::pollWhileHavingActivePartitions
+                    ScheduledPartitionPoller::pollWhileHavingActivePartitions,
                 ),
-                partitionPollerProperties.fixedDelay.toMillis()
+                partitionPollerProperties.fixedDelay,
             )
         }
     }
@@ -234,9 +242,9 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
             addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledPartitionPausedOnTxIdCleaner,
-                    ScheduledPartitionPausedOnTxIdCleaner::clear
+                    ScheduledPartitionPausedOnTxIdCleaner::clear,
                 ),
-                partitionPausedOnTxIdCleanerProperties.fixedDelay.toMillis()
+                partitionPausedOnTxIdCleanerProperties.fixedDelay,
             )
         }
     }
@@ -246,9 +254,9 @@ class TxObserverSchedulerConfig : SchedulingConfigurer {
             addFixedDelayTask(
                 scheduledMethodRunnable(
                     scheduledPartitionCleaner,
-                    ScheduledPartitionCleaner::cleanEmptyPartitions
+                    ScheduledPartitionCleaner::cleanEmptyPartitions,
                 ),
-                partitionCleanerProperties.fixedDelay.toMillis()
+                partitionCleanerProperties.fixedDelay,
             )
         }
     }

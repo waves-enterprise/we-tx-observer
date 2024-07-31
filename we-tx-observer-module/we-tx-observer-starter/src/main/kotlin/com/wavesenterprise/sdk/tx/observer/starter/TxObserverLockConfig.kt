@@ -16,7 +16,6 @@ import javax.sql.DataSource
     havingValue = "true",
     matchIfMissing = true,
 )
-
 @EnableSchedulerLock(
     interceptMode = EnableSchedulerLock.InterceptMode.PROXY_SCHEDULER,
     defaultLockAtMostFor = "PT1M",

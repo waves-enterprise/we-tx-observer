@@ -29,8 +29,8 @@ private const val PROPERTY_TX_TYPE_2 = 3
 
 @DataJpaTest(
     properties = [
-        "tx-observer.predicate.tx-types = $PROPERTY_TX_TYPE_1,$PROPERTY_TX_TYPE_2"
-    ]
+        "tx-observer.predicate.tx-types = $PROPERTY_TX_TYPE_1,$PROPERTY_TX_TYPE_2",
+    ],
 )
 @ActiveProfiles("test")
 @ContextConfiguration(
@@ -42,7 +42,7 @@ private const val PROPERTY_TX_TYPE_2 = 3
         TxObserverJpaAutoConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TxObserverNoConfigurerContextTest {

@@ -15,11 +15,11 @@ import com.wavesenterprise.sdk.tx.observer.domain.EnqueuedTx_
 import com.wavesenterprise.sdk.tx.observer.domain.RollbackInfo
 import com.wavesenterprise.sdk.tx.observer.domain.TxQueuePartition
 import com.wavesenterprise.sdk.tx.observer.domain.TxQueuePartition_
+import jakarta.persistence.criteria.CriteriaBuilder
+import jakarta.persistence.criteria.CriteriaQuery
+import jakarta.persistence.criteria.Predicate
+import jakarta.persistence.criteria.Root
 import org.springframework.data.jpa.domain.Specification
-import javax.persistence.criteria.CriteriaBuilder
-import javax.persistence.criteria.CriteriaQuery
-import javax.persistence.criteria.Predicate
-import javax.persistence.criteria.Root
 
 fun EnqueuedTx.toApiDto(): EnqueuedTxApiDto = EnqueuedTxApiDto(
     id = id,
@@ -35,8 +35,9 @@ fun EnqueuedTx.toApiDto(): EnqueuedTxApiDto = EnqueuedTxApiDto(
 
 fun EnqueuedTxSearchRequest.toSpecification() =
     Specification { root: Root<EnqueuedTx>,
-        _: CriteriaQuery<*>,
-        cb: CriteriaBuilder ->
+                    _: CriteriaQuery<*>,
+                    cb: CriteriaBuilder,
+        ->
 
         val predicates = mutableListOf<Predicate>()
         status?.let {
@@ -48,7 +49,7 @@ fun EnqueuedTxSearchRequest.toSpecification() =
         partitionId?.let {
             predicates += cb.equal(
                 root.join(EnqueuedTx_.partition).get(TxQueuePartition_.id),
-                it
+                it,
             )
         }
         available?.let {
@@ -76,8 +77,9 @@ fun TxQueuePartition.toApiDto(): TxQueuePartitionApiDto = TxQueuePartitionApiDto
 
 fun TxQueuePartitionSearchRequest.toSpecification() =
     Specification { root: Root<TxQueuePartition>,
-        cq: CriteriaQuery<*>,
-        cb: CriteriaBuilder ->
+                    cq: CriteriaQuery<*>,
+                    cb: CriteriaBuilder,
+        ->
 
         val predicates = mutableListOf<Predicate>()
         priority?.let {
@@ -102,7 +104,7 @@ fun TxQueuePartitionSearchRequest.toSpecification() =
 
             subQuery.select(subRoot).where(
                 joinPredicate,
-                cb.equal(subRoot.get(EnqueuedTx_.status), EnqueuedTxStatus.NEW)
+                cb.equal(subRoot.get(EnqueuedTx_.status), EnqueuedTxStatus.NEW),
             )
             val newEnqueuedTxExist = cb.exists(subQuery)
             predicates += if (it) {
@@ -120,7 +122,11 @@ fun TxQueuePartitionSearchRequest.toSpecification() =
         }
     }
 
-fun PriorityComparisonOperator.toPredicate(root: Root<TxQueuePartition>, cb: CriteriaBuilder, priority: Int): Predicate {
+fun PriorityComparisonOperator.toPredicate(
+    root: Root<TxQueuePartition>,
+    cb: CriteriaBuilder,
+    priority: Int,
+): Predicate {
     return when (this) {
         PriorityComparisonOperator.EQ -> cb.equal(root.get(TxQueuePartition_.priority), priority)
         PriorityComparisonOperator.NE -> cb.notEqual(root.get(TxQueuePartition_.priority), priority)

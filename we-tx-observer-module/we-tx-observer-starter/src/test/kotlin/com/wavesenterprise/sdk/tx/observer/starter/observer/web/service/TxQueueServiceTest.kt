@@ -42,12 +42,12 @@ import org.springframework.test.context.transaction.TestTransaction
         TxObserverStarterConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class TxQueueServiceTest(
     @Value("\${tx-observer.error-priority-offset:100}")
-    private val errorPriorityOffset: Int
+    private val errorPriorityOffset: Int,
 ) {
 
     @Autowired
@@ -64,7 +64,15 @@ internal class TxQueueServiceTest(
 
     @BeforeEach
     fun setUp() {
+        enqueuedTxJpaRepository.deleteAll()
+        txQueuePartitionJpaRepository.deleteAll()
         txQueuePartitionJpaRepository.saveAndFlush(mockPartition)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        enqueuedTxJpaRepository.deleteAll()
+        txQueuePartitionJpaRepository.deleteAll()
     }
 
     @Test
@@ -85,8 +93,8 @@ internal class TxQueueServiceTest(
         val errorPartition = txQueuePartitionJpaRepository.saveAndFlush(
             TxQueuePartition(
                 id = "errorPartId",
-                priority = -errorPriorityOffset - 1
-            )
+                priority = -errorPriorityOffset - 1,
+            ),
         )
 
         val txCountError = 4
@@ -95,8 +103,8 @@ internal class TxQueueServiceTest(
                 enqueuedTx(
                     tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("tx_$it".toByteArray())).toDto(),
                     positionInBlock = it,
-                    partition = if (it < txCountError) errorPartition else mockPartition
-                )
+                    partition = if (it < txCountError) errorPartition else mockPartition,
+                ),
             )
         }
 
@@ -109,22 +117,36 @@ internal class TxQueueServiceTest(
         val txs = enqueuedTxJpaRepository.findAll()
         assertAll(
             listOf {
-                assertEquals(txCountError, postponedCount, "Count of Tx with status POSTPONED must be equals $txCountError")
+                assertEquals(
+                    txCountError,
+                    postponedCount,
+                    "Count of Tx with status POSTPONED must be equals $txCountError",
+                )
             }.union(
                 txs.map {
                     if (it.partition.priority < -errorPriorityOffset) {
-                        { assertEquals(EnqueuedTxStatus.POSTPONED, it.status, "Status of Tx ${it.id} in partition ${it.partition.id} with priority lower than -$errorPriorityOffset (actual ${it.partition.priority}) must be equals POSTPONED") }
+                        {
+                            assertEquals(
+                                EnqueuedTxStatus.POSTPONED,
+                                it.status,
+                                "Status of Tx ${it.id} in partition ${it.partition.id}" +
+                                    " with priority lower than -$errorPriorityOffset" +
+                                    " (actual ${it.partition.priority}) must be equals POSTPONED",
+                            )
+                        }
                     } else {
-                        { assertEquals(EnqueuedTxStatus.NEW, it.status, "Status of Tx ${it.id} in partition ${it.partition.id} with priority greater or equals -$errorPriorityOffset (actual ${it.partition.priority}) must be equals NEW") }
+                        {
+                            assertEquals(
+                                EnqueuedTxStatus.NEW,
+                                it.status,
+                                "Status of Tx ${it.id} in partition ${it.partition.id}" +
+                                    " with priority greater or equals -$errorPriorityOffset" +
+                                    " (actual ${it.partition.priority}) must be equals NEW",
+                            )
+                        }
                     }
-                }
-            )
+                },
+            ),
         )
-    }
-
-    @AfterEach
-    fun cleanup() {
-        enqueuedTxJpaRepository.deleteAll()
-        txQueuePartitionJpaRepository.deleteAll()
     }
 }

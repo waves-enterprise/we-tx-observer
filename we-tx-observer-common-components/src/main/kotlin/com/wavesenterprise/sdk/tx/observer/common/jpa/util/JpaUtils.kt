@@ -1,14 +1,15 @@
 package com.wavesenterprise.sdk.tx.observer.common.jpa.util
 
-import javax.persistence.criteria.CriteriaBuilder
-import javax.persistence.criteria.Predicate
-import javax.persistence.criteria.Root
-import javax.persistence.metamodel.SingularAttribute
+import jakarta.persistence.criteria.CriteriaBuilder
+import jakarta.persistence.criteria.Predicate
+import jakarta.persistence.criteria.Root
+import jakarta.persistence.metamodel.SingularAttribute
 
 const val TX_OBSERVER_SCHEMA_NAME = "tx_observer"
 const val TX_TRACKER_SCHEMA_NAME = "tx_tracker"
 const val JSONB_TYPE: String = "jsonb"
 
+@Suppress("VariableNaming")
 fun <R, T> Collection<T>.toIn(
     root: Root<R>,
     cb: CriteriaBuilder,

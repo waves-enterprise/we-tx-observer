@@ -34,7 +34,7 @@ class BooleanValueKeyEventBlockListenerTest : AbstractListenerTest() {
         assertEquals(callContractTxDifferentValueTypes, booleanKeyEventCaptor.captured.tx)
         assertEquals(
             (callContractTxDifferentValueTypes.tx as CallContractTx).contractId.asBase58String(),
-            booleanKeyEventCaptor.captured.contractId
+            booleanKeyEventCaptor.captured.contractId,
         )
         assertEquals("my_fav_object_bool_", booleanKeyEventCaptor.captured.key)
     }
@@ -43,7 +43,7 @@ class BooleanValueKeyEventBlockListenerTest : AbstractListenerTest() {
         @TxListener
         fun handleEvent(
             @KeyFilter(keyPrefix = "my_fav_object_bool_")
-            keyEvent: KeyEvent<Boolean>
+            keyEvent: KeyEvent<Boolean>,
         )
     }
 

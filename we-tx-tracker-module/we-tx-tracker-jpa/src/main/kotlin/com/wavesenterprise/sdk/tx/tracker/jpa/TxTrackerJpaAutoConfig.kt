@@ -22,7 +22,7 @@ import org.springframework.core.Ordered
     basePackageClasses = [
         TxTrackInfo::class,
         TxTrackerJpaRepository::class,
-    ]
+    ],
 )
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
 @AutoConfigureBefore(JpaRepositoriesAutoConfiguration::class, HibernateJpaAutoConfiguration::class)

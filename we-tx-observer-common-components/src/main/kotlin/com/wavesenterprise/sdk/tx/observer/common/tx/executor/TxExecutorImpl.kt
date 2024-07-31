@@ -38,17 +38,23 @@ open class TxExecutorImpl(
         timeout: Int? = null,
         block: () -> T,
     ): T = with(transactionTemplate) {
-        if (propagationBehavior != null)
+        if (propagationBehavior != null) {
             this.propagationBehavior = propagationBehavior
-        if (isolationLevel != null)
+        }
+        if (isolationLevel != null) {
             this.isolationLevel = isolationLevel
-        if (timeout != null)
+        }
+        if (timeout != null) {
             this.timeout = timeout
+        }
         val executionResult = execute {
             ExecutionResult(block())
         }
-        return if (executionResult != null) executionResult.value
-        else throw NoResultTransactionException("No result for execute")
+        return if (executionResult != null) {
+            executionResult.value
+        } else {
+            throw NoResultTransactionException("No result for execute")
+        }
     }
 
     companion object {

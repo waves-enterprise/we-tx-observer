@@ -32,9 +32,9 @@ internal class TxSpElUtilsTest {
                 DataEntry(
                     key = DataKey("key"),
                     value = DataValue.StringDataValue("fffff"),
-                )
-            )
-        )
+                ),
+            ),
+        ),
     )
 
     @Test

@@ -19,14 +19,14 @@ sealed class Action {
             syncedBlockInfo: SyncedBlockInfo? = null,
         ) : this(
             listOf(weBlockInfo),
-            syncedBlockInfo?.let(::listOf) ?: emptyList()
+            syncedBlockInfo?.let(::listOf) ?: emptyList(),
         )
         constructor(
             weBlockInfos: Sequence<WeBlockInfo>,
             syncedBlockInfos: Sequence<SyncedBlockInfo> = emptySequence(),
         ) : this(
             weBlockInfos.toList(),
-            syncedBlockInfos.toList()
+            syncedBlockInfos.toList(),
         )
     }
     class HandleRollback(val weRollbackInfo: WeRollbackInfo) : Action()

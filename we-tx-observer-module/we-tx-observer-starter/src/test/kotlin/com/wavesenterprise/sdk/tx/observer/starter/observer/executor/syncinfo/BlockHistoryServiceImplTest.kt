@@ -39,7 +39,7 @@ class BlockHistoryServiceImplTest {
             observerHeight = 50,
             historyDepth = 30,
             blockHeightWindow = 4,
-            expectedLatestCommonBlockHeight = 50
+            expectedLatestCommonBlockHeight = 50,
         )
     }
 
@@ -49,7 +49,7 @@ class BlockHistoryServiceImplTest {
             observerHeight = 200,
             historyDepth = 10,
             blockHeightWindow = 3,
-            expectedLatestCommonBlockHeight = 190
+            expectedLatestCommonBlockHeight = 190,
         )
     }
 
@@ -59,7 +59,7 @@ class BlockHistoryServiceImplTest {
             observerHeight = 150,
             historyDepth = 20,
             blockHeightWindow = 5,
-            expectedLatestCommonBlockHeight = 140
+            expectedLatestCommonBlockHeight = 140,
         )
     }
 
@@ -73,8 +73,8 @@ class BlockHistoryServiceImplTest {
             Stream.builder<BlockHistory>().apply {
                 add(
                     blockHistory(
-                        height = Random.nextLong(lastBlockHeight, observerHeight)
-                    )
+                        height = Random.nextLong(lastBlockHeight, observerHeight),
+                    ),
                 )
             }.build()
         }
@@ -91,7 +91,7 @@ class BlockHistoryServiceImplTest {
             blockHistoryRepository = blockHistoryRepository,
             historyDepth = historyDepth,
             blocksService = blocksService,
-            blockWindowSize = blockHeightWindow
+            blockWindowSize = blockHeightWindow,
         )
 
         val blockSearchResult = blockHistoryService.latestCommonBlockWithNode(Height(observerHeight))
@@ -100,12 +100,12 @@ class BlockHistoryServiceImplTest {
         verifySequence {
             blockHistoryRepository.findAllByHeightBetweenOrderByHeightDesc(
                 fromHeight = lastBlockHeight,
-                toHeight = observerHeight
+                toHeight = observerHeight,
             )
             for ((fromHeight, toHeight) in blockSeqRanges) {
                 blocksService.blockHeadersSequence(
                     fromHeight = fromHeight,
-                    toHeight = toHeight
+                    toHeight = toHeight,
                 )
             }
         }
@@ -116,16 +116,16 @@ class BlockHistoryServiceImplTest {
         observerHeight: Long,
         historyDepth: Int,
         blockHeightWindow: Long,
-        expectedLatestCommonBlockHeight: Long
+        expectedLatestCommonBlockHeight: Long,
     ) {
         val lastBlockHeight = observerHeight - historyDepth
         val weBlocksApi: BlocksService = BlocksServiceStub(
             (lastBlockHeight..observerHeight).map { height ->
                 blockAtHeight(
                     signature = Signature.fromByteArray("signature_$height".toByteArray()),
-                    height = Height(height)
+                    height = Height(height),
                 )
-            }
+            },
         )
 
         val expectedLatestCommonBlock = weBlocksApi.blockAtHeight(expectedLatestCommonBlockHeight)
@@ -136,13 +136,13 @@ class BlockHistoryServiceImplTest {
                         with(weBlocksApi.blockAtHeight(height)) {
                             blockHistory(
                                 signature = signature.asBase58String(),
-                                height = height
+                                height = height,
                             )
                         }
                     } + (expectedLatestCommonBlockHeight + 1..observerHeight).map { height ->
                         blockHistory(
                             signature = "fork_signature_$height",
-                            height = height
+                            height = height,
                         )
                     }
                     ).stream()
@@ -152,7 +152,7 @@ class BlockHistoryServiceImplTest {
             blockHistoryRepository = blockHistoryRepository,
             historyDepth = historyDepth,
             blocksService = weBlocksApi,
-            blockWindowSize = blockHeightWindow
+            blockWindowSize = blockHeightWindow,
         )
 
         val blockSearchResult = blockHistoryService.latestCommonBlockWithNode(Height(observerHeight))
@@ -160,20 +160,20 @@ class BlockHistoryServiceImplTest {
         assertThat(blockSearchResult).isEqualTo(
             BlockSearchResult.Found(
                 signature = expectedLatestCommonBlock.signature,
-                height = expectedLatestCommonBlock.height
-            )
+                height = expectedLatestCommonBlock.height,
+            ),
         )
     }
 
     private class BlocksServiceStub private constructor(
         private val blockByHeight: Map<Height, BlockAtHeight>,
         private val blockBySignature: Map<Signature, BlockAtHeight>,
-        private val blockHeight: Height
+        private val blockHeight: Height,
     ) : BlocksService {
         constructor(blocks: Iterable<BlockAtHeight>) : this(
             blocks.associateBy { it.height },
             blocks.associateBy { it.signature },
-            Height(blocks.maxOfOrNull { it.height.value } ?: 0)
+            Height(blocks.maxOfOrNull { it.height.value } ?: 0),
         )
 
         override fun blockAtHeight(height: Long): BlockAtHeight = blockByHeight.getValue(Height(height))
@@ -237,7 +237,7 @@ class BlockHistoryServiceImplTest {
                     poaConsensus = poaConsensus,
                     posConsensus = posConsensus,
                     timestamp = timestamp,
-                    height = height
+                    height = height,
                 )
         }
     }

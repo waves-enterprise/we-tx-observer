@@ -20,10 +20,10 @@ import org.springframework.context.annotation.FilterType
         ComponentScan.Filter(
             type = FilterType.ASSIGNABLE_TYPE,
             classes = [
-                TxTrackInfoController::class
-            ]
-        )
-    ]
+                TxTrackInfoController::class,
+            ],
+        ),
+    ],
 )
 @AutoConfigureAfter(TxTrackerReadJpaAutoConfig::class)
 class TxTrackerReadConfig {

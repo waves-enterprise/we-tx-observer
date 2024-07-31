@@ -20,7 +20,7 @@ import org.springframework.core.Ordered
     basePackageClasses = [
         BlockHeightInfo::class,
         BlockHeightJpaRepository::class,
-    ]
+    ],
 )
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
 @AutoConfigureBefore(JpaRepositoriesAutoConfiguration::class, HibernateJpaAutoConfiguration::class)

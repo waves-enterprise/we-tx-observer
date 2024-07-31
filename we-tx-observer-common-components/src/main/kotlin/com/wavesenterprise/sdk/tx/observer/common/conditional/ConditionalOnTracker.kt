@@ -4,7 +4,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 
 @Target(
     AnnotationTarget.CLASS,
-    AnnotationTarget.ANNOTATION_CLASS
+    AnnotationTarget.ANNOTATION_CLASS,
 )
 @Retention(AnnotationRetention.RUNTIME)
 @ConditionalOnProperty(

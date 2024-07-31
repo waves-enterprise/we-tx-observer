@@ -43,9 +43,9 @@ import org.springframework.context.annotation.Import
                 EnqueuedTxController::class,
                 ObserverController::class,
                 TxQueuePartitionController::class,
-            ]
-        )
-    ]
+            ],
+        ),
+    ],
 )
 @EnableConfigurationProperties(
     TxObserverProperties::class,
@@ -55,12 +55,12 @@ class TxQueueConfig {
     @Autowired
     lateinit var nodeBlockingServiceFactory: NodeBlockingServiceFactory
 
+    @Suppress("LongParameterList")
     @Bean
     fun txQueueService(
         syncInfoService: SyncInfoService,
         enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
         blockHeightResetRepository: BlockHeightResetRepository,
-        txQueuePartitionResolveService: TxQueuePartitionResolveService,
         @Qualifier("enqueueingBlockSubscriber")
         enqueueingBlockSubscriber: BlockSubscriber,
         txObserverProperties: TxObserverProperties,

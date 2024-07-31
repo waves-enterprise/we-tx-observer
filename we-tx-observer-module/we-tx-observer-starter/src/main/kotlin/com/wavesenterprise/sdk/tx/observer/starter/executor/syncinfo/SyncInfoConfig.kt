@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @EnableConfigurationProperties(
-    TxObserverProperties::class
+    TxObserverProperties::class,
 )
 class SyncInfoConfig(
     private val blocksService: BlocksService,
@@ -46,12 +46,12 @@ class SyncInfoConfig(
             blocksService = blocksService,
             syncHistory = SyncInfoServiceImpl.SyncHistoryProperties(
                 enabled = txObserverProperties.syncHistory,
-                fromHeight = txObserverProperties.activationHeight
+                fromHeight = txObserverProperties.activationHeight,
             ),
             autoResetHeight = txObserverProperties.autoResetHeight,
             forkNotResolvedHeightDrop = txObserverProperties.forkNotResolvedHeightDrop,
             nodeHeightMetric = nodeHeightMetric,
-            observerHeightMetric = observerHeightMetric
+            observerHeightMetric = observerHeightMetric,
         )
 
     @Bean

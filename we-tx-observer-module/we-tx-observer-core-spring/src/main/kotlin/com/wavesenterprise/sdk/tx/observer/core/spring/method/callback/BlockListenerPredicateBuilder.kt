@@ -49,6 +49,7 @@ import java.lang.reflect.Method
 import java.lang.reflect.Parameter
 import java.util.EnumSet
 
+@Suppress("TooManyFunctions")
 class BlockListenerPredicateBuilder(
     private val beanFactoryResolver: BeanFactoryResolver,
     private val privateContentResolverProvider: ObjectProvider<PrivateContentResolver>,
@@ -68,7 +69,7 @@ class BlockListenerPredicateBuilder(
             PrivateDataEvent::class.java.isAssignableFrom(methodArgType) -> buildDataEventPredicate(method)
             Tx::class.java.isAssignableFrom(methodArgType) -> getTxTypePredicate(methodArgType)
             else -> throw IllegalArgumentException(
-                "TxListener annotated method can have arguments only of type Tx, KeyEvent or PrivateDataEvent"
+                "TxListener annotated method can have arguments only of type Tx, KeyEvent or PrivateDataEvent",
             )
         }
         val expressionPredicate = buildExpressionPredicate(annotation)
@@ -173,8 +174,11 @@ class BlockListenerPredicateBuilder(
                     )
 
         messageFilters.forEach {
-            require(it.metaKey.isNotBlank() && it.metaKeyValue.isNotBlank() || it.metaKeyValueRegExp.isNotBlank()) {
-                "MetaKey and one of the metaKeyValue or metaKeyValueRegExp properties should be specified for MessageFilter"
+            require(
+                it.metaKey.isNotBlank() && it.metaKeyValue.isNotBlank() || it.metaKeyValueRegExp.isNotBlank(),
+            ) {
+                "MetaKey and one of the metaKeyValue or metaKeyValueRegExp" +
+                    " properties should be specified for MessageFilter"
             }
         }
         return messageFilters
@@ -197,6 +201,7 @@ class BlockListenerPredicateBuilder(
                             ((tx as ExecutedContractTx).tx.type() in txTypeCodes)
                     }
                 }
+
                 else -> {
                     { it.type() in txTypeCodes }
                 }
@@ -204,6 +209,7 @@ class BlockListenerPredicateBuilder(
         }
     }
 
+    @Suppress("CyclomaticComplexMethod")
     private fun getAllowedTxTypes(clazz: Class<*>): EnumSet<TxType> =
         if (Tx::class.java.isAssignableFrom(clazz)) {
             // todo match with jsonSubTypes from Tx
@@ -231,6 +237,7 @@ class BlockListenerPredicateBuilder(
                 UpdateContractTx::class.java.isAssignableFrom(clazz) -> EnumSet.of(TxType.UPDATE_CONTRACT)
                 GenesisRegisterNodeTx::class.java.isAssignableFrom(clazz) ->
                     EnumSet.of(TxType.GENESIS_REGISTER_NODE)
+
                 RegisterNodeTx::class.java.isAssignableFrom(clazz) -> EnumSet.of(TxType.REGISTER_NODE)
                 else -> EnumSet.noneOf(TxType::class.java)
             }
@@ -243,9 +250,11 @@ class BlockListenerPredicateBuilder(
             CreateContractTx::class.java.isAssignableFrom(clazz) -> {
                 EnumSet.of(TxType.CREATE_CONTRACT)
             }
+
             CallContractTx::class.java.isAssignableFrom(clazz) -> {
                 EnumSet.of(TxType.CALL_CONTRACT)
             }
+
             else -> {
                 EnumSet.of(TxType.CALL_CONTRACT, TxType.CREATE_CONTRACT)
             }
@@ -254,8 +263,7 @@ class BlockListenerPredicateBuilder(
 
     private fun validateAndGetKeyFilter(methodParameter: Parameter): KeyFilter {
         val keyFilter = methodParameter.getAnnotation(KeyFilter::class.java)
-            ?: throw
-            IllegalArgumentException("VsKeyEvent typed method arguments should be annotated with @KeyFilter")
+            ?: throw IllegalArgumentException("VsKeyEvent typed method arguments should be annotated with @KeyFilter")
         require(keyFilter.keyPrefix.isNotBlank() || keyFilter.keyRegexp.isNotBlank()) {
             "One of the keyRegexp or keyPrefix properties should be specified for KeyFilter"
         }

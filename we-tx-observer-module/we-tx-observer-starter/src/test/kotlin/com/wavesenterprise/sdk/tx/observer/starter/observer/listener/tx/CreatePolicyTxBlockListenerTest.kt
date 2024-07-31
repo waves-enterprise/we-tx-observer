@@ -27,7 +27,7 @@ class CreatePolicyTxBlockListenerTest : AbstractListenerTest() {
     fun `should handle CreatePolicyTx`() {
         enqueue(
             sampleAtomicTx,
-            sampleCreatePolicyTx
+            sampleCreatePolicyTx,
         )
 
         pollingTxSubscriber.dequeuePartitionAndSendToSubscribers(mockPartitionId)

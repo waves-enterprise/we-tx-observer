@@ -16,6 +16,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 
+@Suppress("LongParameterList")
 open class PrivacyAvailabilityChecker(
     val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     val privateContentResolver: PrivateContentResolver,
@@ -40,7 +41,7 @@ open class PrivacyAvailabilityChecker(
         val recentCandidates = getRecentCandidates(candidateCount, oldCandidates)
         logger.debug(
             "Got ${oldCandidates.size} old candidates and ${recentCandidates.size} " +
-                "recent candidates for privacy check"
+                "recent candidates for privacy check",
         )
         sequenceOf(oldCandidates, recentCandidates)
             .flatten()
@@ -50,7 +51,8 @@ open class PrivacyAvailabilityChecker(
                     it.available = privateContentResolver.isAvailable(policyDataHashTx.toDomain())
                 } catch (ex: Exception) {
                     logger.error(
-                        "Error while resolving private content for 114 TX with ID = ${policyDataHashTx.id}", ex
+                        "Error while resolving private content for 114 TX with ID = ${policyDataHashTx.id}",
+                        ex,
                     )
                 }
             }.filter {
@@ -67,7 +69,7 @@ open class PrivacyAvailabilityChecker(
 
     private fun getRecentCandidates(candidateCount: Long, oldCandidates: List<EnqueuedTx>): List<EnqueuedTx> {
         val offset = offsetProvider.provideOffset(
-            candidateCount.toInt() - oldCandidates.size - properties.limitForRecent
+            candidateCount.toInt() - oldCandidates.size - properties.limitForRecent,
         )
         logger.trace("Searching for recent candidates with offset = $offset and limit = ${properties.limitForRecent}")
         return enqueuedTxJpaRepository.findRecentCheckPrivacyAvailabilityCandidates(

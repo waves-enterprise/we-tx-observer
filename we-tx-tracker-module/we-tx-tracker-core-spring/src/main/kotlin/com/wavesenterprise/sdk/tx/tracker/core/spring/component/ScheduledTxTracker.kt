@@ -31,7 +31,7 @@ open class ScheduledTxTracker(
     open fun trackPendingTx() {
         val trackedTxs = txTracker.getTrackedTxsWithStatus(
             txTrackerStatus = TxTrackStatus.PENDING,
-            pageRequest = PageRequest.of(0, txTrackerProperties.trackedTxPageRequestLimit)
+            pageRequest = PageRequest.of(0, txTrackerProperties.trackedTxPageRequestLimit),
         )
         if (trackedTxs.isNotEmpty()) {
             val unconfirmedTxIds = txService.utxInfo()

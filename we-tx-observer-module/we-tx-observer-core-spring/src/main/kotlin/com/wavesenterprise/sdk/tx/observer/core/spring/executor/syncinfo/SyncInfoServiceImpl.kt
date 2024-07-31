@@ -16,6 +16,7 @@ import org.slf4j.lazyLogger
 import org.slf4j.warn
 import java.lang.Long.max
 
+@Suppress("LongParameterList", "TooManyFunctions")
 class SyncInfoServiceImpl(
     private val blockHeightJpaRepository: BlockHeightJpaRepository,
     private val blockHeightResetRepository: BlockHeightResetRepository,
@@ -30,7 +31,7 @@ class SyncInfoServiceImpl(
 ) : SyncInfoService {
     data class SyncHistoryProperties(
         val enabled: Boolean,
-        val fromHeight: Long
+        val fromHeight: Long,
     )
 
     private val log by lazyLogger(SyncInfoServiceImpl::class)
@@ -42,7 +43,7 @@ class SyncInfoServiceImpl(
                         syncHistory.enabled -> syncHistory.fromHeight
                         else -> blocksService.blockHeight().value
                     },
-                )
+                ),
             )
 
     private val observerHeight: Long
@@ -91,10 +92,11 @@ class SyncInfoServiceImpl(
         val heightUpdated = resetToNodeHeightIfNecessary()
         val prevBlockSignatureUpdated = fillPrevBlockSignature()
         val updated = heightUpdated || prevBlockSignatureUpdated
-        return if (updated)
+        return if (updated) {
             blockHeightJpaRepository.save(this)
-        else
+        } else {
             this
+        }
     }
 
     override fun syncInfoOnFork(): SyncInfo =
@@ -110,7 +112,7 @@ class SyncInfoServiceImpl(
                     }
                     setBlockInfo(
                         height = blockSearchResult.height.value + 1,
-                        prevBlockSignature = blockSearchResult.signature.asBase58String()
+                        prevBlockSignature = blockSearchResult.signature.asBase58String(),
                     )
                 }
                 is NotFound -> {
@@ -123,7 +125,7 @@ class SyncInfoServiceImpl(
                     }
                     setBlockInfo(
                         height = height,
-                        prevBlockSignature = prevBlockSignature(height)?.asBase58String()
+                        prevBlockSignature = prevBlockSignature(height)?.asBase58String(),
                     )
                 }
             },
@@ -132,7 +134,7 @@ class SyncInfoServiceImpl(
 
     private fun syncInfo(
         blockHeightInfo: BlockHeightInfo,
-        nodeHeight: Height
+        nodeHeight: Height,
     ): SyncInfo =
         blockHeightInfo.toSyncInfo(nodeHeight).also { syncInfo ->
             blockHistoryService.clean(syncInfo.observerHeight.value)
@@ -148,7 +150,7 @@ class SyncInfoServiceImpl(
 
     private fun updateMetrics(
         nodeHeight: Height,
-        observerHeight: Height
+        observerHeight: Height,
     ) {
         nodeHeightMetric.metricValue = nodeHeight.value
         observerHeightMetric.metricValue = observerHeight.value
@@ -167,7 +169,7 @@ class SyncInfoServiceImpl(
             blockInfoSingleRecord.apply {
                 this.currentHeight = height
                 this.prevBlockSignature = prevBlockSignature
-            }
+            },
         )
 
     override fun syncedTo(height: Long, prevBlockSignature: String?, syncedBlocks: List<SyncedBlockInfo>) {
@@ -182,7 +184,7 @@ class SyncInfoServiceImpl(
         height: Long,
         prevBlockSignature: String?,
         expectedCurrentHeight: Long,
-        syncedBlocks: List<SyncedBlockInfo>
+        syncedBlocks: List<SyncedBlockInfo>,
     ) {
         doSyncedTo(
             height = height,
@@ -196,7 +198,7 @@ class SyncInfoServiceImpl(
         height: Long,
         prevBlockSignature: String?,
         expectedCurrentHeight: Long? = null,
-        syncedBlocks: List<SyncedBlockInfo>
+        syncedBlocks: List<SyncedBlockInfo>,
     ) {
         checkHeight(height)
         log.debug {
@@ -209,7 +211,7 @@ class SyncInfoServiceImpl(
                     id = blockInfoSingleRecord.id,
                     currentHeight = height,
                     prevBlockSignature = prevBlockSignature,
-                    expectedCurrentHeight = expectedCurrentHeight
+                    expectedCurrentHeight = expectedCurrentHeight,
                 ).also { rowsUpdated ->
                     if (rowsUpdated == 0) throw ExpectedHeightMismatchException(expectedCurrentHeight)
                 }
@@ -242,7 +244,7 @@ class SyncInfoServiceImpl(
 
     private class SyncInfoAdapter(
         private val blockHeightInfo: BlockHeightInfo,
-        override val nodeHeight: Height
+        override val nodeHeight: Height,
     ) : SyncInfo {
         override val observerHeight: Height
             get() = Height.fromLong(blockHeightInfo.currentHeight)

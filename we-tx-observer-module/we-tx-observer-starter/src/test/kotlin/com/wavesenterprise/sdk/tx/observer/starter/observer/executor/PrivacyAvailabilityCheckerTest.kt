@@ -24,6 +24,8 @@ import com.wavesenterprise.sdk.tx.observer.starter.observer.config.ObjectMapperC
 import com.wavesenterprise.sdk.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
 import io.mockk.every
 import io.mockk.verify
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.awaitility.Awaitility.await
 import org.awaitility.Duration
 import org.junit.jupiter.api.AfterEach
@@ -40,14 +42,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TestTransaction
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @DataJpaTest(
     properties = [
         "tx-observer.privacy-check.limit-for-old = 2",
-        "tx-observer.privacy-check.limit-for-recent = 3"
-    ]
+        "tx-observer.privacy-check.limit-for-recent = 3",
+    ],
 )
 @ActiveProfiles("test")
 @ContextConfiguration(
@@ -58,7 +58,7 @@ import javax.persistence.PersistenceContext
         TxObserverStarterConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class PrivacyAvailabilityCheckerTest {
@@ -92,7 +92,7 @@ internal class PrivacyAvailabilityCheckerTest {
 
     private val samplePartition = TxQueuePartition(
         id = "partitionId",
-        priority = 0
+        priority = 0,
     )
 
     @BeforeEach
@@ -113,8 +113,8 @@ internal class PrivacyAvailabilityCheckerTest {
             "1,0", "1,1", "1,2", "1,3", "1,4", "1,5", "1,6", "1,7",
             "2,0", "2,1", "2,2", "2,3", "2,4", "2,5", "2,6", "2,7",
             "3,0", "3,1", "3,2", "3,3", "3,4", "3,5", "3,6", "3,7",
-            "4,0", "4,1", "4,2", "4,3", "4,4", "4,5", "4,6", "4,7"
-        ]
+            "4,0", "4,1", "4,2", "4,3", "4,4", "4,5", "4,6", "4,7",
+        ],
     )
     fun `should check availability for not available 114`(offsetForRecent: Int, offsetForOld: Int) {
         every { offsetProvider.provideOffset(any()) } returnsMany listOf(offsetForOld, offsetForRecent)
@@ -125,16 +125,16 @@ internal class PrivacyAvailabilityCheckerTest {
                     tx = TestDataFactory.policyDataHashTx(id = TxId.fromByteArray("$it".toByteArray())).toDto(),
                     positionInBlock = it,
                     partition = samplePartition,
-                    available = false
-                )
+                    available = false,
+                ),
             )
         }
         enqueuedTxJpaRepository.save(
             enqueuedTx(
                 tx = TestDataFactory.policyDataHashTx(id = TxId.fromByteArray("11".toByteArray())).toDto(),
                 positionInBlock = 11,
-                partition = samplePartition
-            )
+                partition = samplePartition,
+            ),
         )
         (1..3).onEach {
             val id = it + 10
@@ -142,8 +142,8 @@ internal class PrivacyAvailabilityCheckerTest {
                 enqueuedTx(
                     tx = TestDataFactory.createContractTx(id = TxId.fromByteArray("$id".toByteArray())).toDto(),
                     positionInBlock = it,
-                    partition = samplePartition
-                )
+                    partition = samplePartition,
+                ),
             )
         }
         em.flushAndClear()
@@ -169,8 +169,8 @@ internal class PrivacyAvailabilityCheckerTest {
                     tx = TestDataFactory.policyDataHashTx(id = txId).toDto(),
                     positionInBlock = index,
                     partition = samplePartition,
-                    available = false
-                )
+                    available = false,
+                ),
             )
         }
         TestTransaction.flagForCommit()
@@ -181,14 +181,14 @@ internal class PrivacyAvailabilityCheckerTest {
             privateContentResolver.isAvailable(
                 match {
                     it.id in setOf(firstIdThatBecameAvailable, secondIdThatBecameAvailable)
-                }
+                },
             )
         } returns true
         every {
             privateContentResolver.isAvailable(
                 match {
                     it.id in setOf(firstIdThatBecameAvailable, secondIdThatBecameAvailable)
-                }
+                },
             )
         } returns true
 
@@ -228,8 +228,8 @@ internal class PrivacyAvailabilityCheckerTest {
                     tx = TestDataFactory.policyDataHashTx(id = TxId.fromByteArray("$it".toByteArray())).toDto(),
                     positionInBlock = it,
                     partition = samplePartition,
-                    available = false
-                )
+                    available = false,
+                ),
             )
         }
         TestTransaction.flagForCommit()
@@ -243,7 +243,7 @@ internal class PrivacyAvailabilityCheckerTest {
         verify {
             partitionHandler.resumePartitionForTx(
                 partitionId = eq(samplePartition.id),
-                txId = capture(resumeOnTxCaptor)
+                txId = capture(resumeOnTxCaptor),
             )
         }
     }

@@ -30,7 +30,7 @@ open class PartitionHandlerJpa(
         } else {
             logger.debug(
                 "Partition $partitionId was not paused because tx has already became available." +
-                    " TX ID = $pausedOnTxId"
+                    " TX ID = $pausedOnTxId",
             )
         }
     }
@@ -45,7 +45,7 @@ open class PartitionHandlerJpa(
         if (partitionJpaRepository.resetPausedTxId(partitionId, txId) == 0) {
             logger.warn(
                 "Partition with ID = $partitionId was not reset by tx with ID = $txId" +
-                    " as it is paused on other tx"
+                    " as it is paused on other tx",
             )
         } else {
             logger.debug("Partition with ID = $partitionId has been successfully resumed by tx with ID = $txId")

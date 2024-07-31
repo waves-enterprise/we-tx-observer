@@ -62,7 +62,7 @@ open class AppContextPollingTxSubscriber(
                 logger.info(
                     "Polled $it transactions from persistent queue for partition with ID = $partitionId. " +
                         "Last tx position and blockHeight - " +
-                        "(${lastReadTx.positionInBlock}, ${lastReadTx.blockHeight})"
+                        "(${lastReadTx.positionInBlock}, ${lastReadTx.blockHeight})",
                 )
             }
         }

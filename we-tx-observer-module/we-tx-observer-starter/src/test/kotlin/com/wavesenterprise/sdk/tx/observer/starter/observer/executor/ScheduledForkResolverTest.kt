@@ -42,7 +42,7 @@ import java.util.Optional
     properties = [
         "tx-observer.fork-resolver.window = 2",
         "tx-observer.fork-resolver.height-offset = 1000",
-    ]
+    ],
 )
 @ActiveProfiles("test")
 @ContextConfiguration(
@@ -53,7 +53,7 @@ import java.util.Optional
         NodeBlockingServiceFactoryMockConfiguration::class,
         TxObserverStarterConfig::class,
         FlywaySchemaConfiguration::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ScheduledForkResolverTest {
@@ -159,8 +159,8 @@ class ScheduledForkResolverTest {
                 tx = TestDataFactory.callContractTx(id = TxId.fromByteArray(Util.randomBytesFromUUID())).toDto(),
                 status = status,
                 partition = NodeBlockingServiceFactoryMockConfiguration.mockPartition,
-                blockHeight = blockHeight
-            )
+                blockHeight = blockHeight,
+            ),
         )
     }
 }

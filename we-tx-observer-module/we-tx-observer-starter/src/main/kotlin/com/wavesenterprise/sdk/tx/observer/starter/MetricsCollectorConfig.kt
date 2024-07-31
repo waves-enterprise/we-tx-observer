@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Import
 @Configuration
 @Import(
     TxObserverJpaConfig::class,
-    BlockInfoSynchronizerConfig::class
+    BlockInfoSynchronizerConfig::class,
 )
 @EnableConfigurationProperties(MetricsCollectorProperties::class)
 class MetricsCollectorConfig {
@@ -38,6 +38,7 @@ class MetricsCollectorConfig {
     fun totalPartitionCountMetric() =
         MetricContainerData(metricName = TOTAL_PARTITION_COUNT)
 
+    @Suppress("LongParameterList")
     @Bean
     fun metricsCollector(
         enqueuedTxJpaRepository: EnqueuedTxJpaRepository,

@@ -32,8 +32,8 @@ class AllTxBlockListenerTest : AbstractListenerTest() {
         assertThat(
             anyTxCaptor,
             containsInAnyOrder(
-                *(mockTxList).toTypedArray()
-            )
+                *(mockTxList).toTypedArray(),
+            ),
         )
     }
 

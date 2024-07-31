@@ -31,6 +31,8 @@ import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingS
 import com.wavesenterprise.sdk.tx.observer.starter.observer.config.ObjectMapperConfig
 import com.wavesenterprise.sdk.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
 import io.mockk.every
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -43,8 +45,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import java.util.Optional
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -58,7 +58,7 @@ import javax.persistence.PersistenceContext
         BlockInfoSynchronizerConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class TxQueueStatusServiceImplTest {
@@ -89,7 +89,7 @@ internal class TxQueueStatusServiceImplTest {
 
     private val samplePartition = TxQueuePartition(
         id = "partitionId",
-        priority = 0
+        priority = 0,
     )
 
     @BeforeEach
@@ -103,26 +103,26 @@ internal class TxQueueStatusServiceImplTest {
         listOf(
             enqueuedTx(
                 tx = sampleCreateContractTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
-                partition = samplePartition
+                partition = samplePartition,
             ),
             enqueuedTx(
                 tx = sampleCreateContractTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
-                partition = samplePartition
-            ),
-            enqueuedTx(
-                tx = samplePolicyDataHashTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
-                partition = samplePartition
+                partition = samplePartition,
             ),
             enqueuedTx(
                 tx = samplePolicyDataHashTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
                 partition = samplePartition,
-                available = false
             ),
             enqueuedTx(
                 tx = samplePolicyDataHashTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
                 partition = samplePartition,
-                available = false
-            )
+                available = false,
+            ),
+            enqueuedTx(
+                tx = samplePolicyDataHashTx.copy(id = TxId.fromByteArray("${i++}".toByteArray())).toDto(),
+                partition = samplePartition,
+                available = false,
+            ),
         ).also {
             enqueuedTxJpaRepository.saveAll(it)
         }

@@ -18,6 +18,7 @@ import com.wavesenterprise.sdk.tx.observer.domain.EnqueuedTxStatus
 import com.wavesenterprise.sdk.tx.observer.jpa.repository.EnqueuedTxJpaRepository
 import org.springframework.transaction.annotation.Transactional
 
+@Suppress("LongParameterList")
 open class EnqueueingBlockSubscriber(
     val enqueuedTxJpaRepository: EnqueuedTxJpaRepository,
     val txQueuePartitionResolveService: TxQueuePartitionResolveService,
@@ -40,14 +41,14 @@ open class EnqueueingBlockSubscriber(
                             positionInBlock = positionInBlock,
                             positionInAtomic = 0,
                             tx = txInfo.tx,
-                            atomicTx = null
-                        )
+                            atomicTx = null,
+                        ),
                     ) + (txInfo.tx as AtomicTx).txs.withIndex().map { (positionInAtomic, txInAtomic) ->
                         TxWithPositionInfo(
                             positionInBlock = positionInBlock,
                             positionInAtomic = positionInAtomic + 1,
                             tx = txInAtomic,
-                            atomicTx = txInfo.tx as AtomicTx
+                            atomicTx = txInfo.tx as AtomicTx,
                         )
                     }
                 } else {
@@ -55,8 +56,8 @@ open class EnqueueingBlockSubscriber(
                         TxWithPositionInfo(
                             positionInBlock = positionInBlock,
                             tx = txInfo.tx,
-                            atomicTx = null
-                        )
+                            atomicTx = null,
+                        ),
                     )
                 }
             }.also { logicalTxs ->
@@ -79,11 +80,11 @@ open class EnqueueingBlockSubscriber(
         val positionInBlock: Int,
         val positionInAtomic: Int? = null,
         val tx: Tx,
-        val atomicTx: AtomicTx?
+        val atomicTx: AtomicTx?,
     )
 
     private fun TxWithPositionInfo.toEnqueuedTx(
-        blockHeight: Long
+        blockHeight: Long,
     ): EnqueuedTx = EnqueuedTx(
         partition = txQueuePartitionResolveService.resolveTxQueuePartition(tx),
         id = tx.id.asBase58String(),
@@ -95,6 +96,6 @@ open class EnqueueingBlockSubscriber(
         blockHeight = blockHeight,
         txTimestamp = tx.timestamp.toDateTimeFromUTCBlockChain(),
         txType = tx.type().code,
-        available = tx.type().code != TxType.POLICY_DATA_HASH.code
+        available = tx.type().code != TxType.POLICY_DATA_HASH.code,
     )
 }

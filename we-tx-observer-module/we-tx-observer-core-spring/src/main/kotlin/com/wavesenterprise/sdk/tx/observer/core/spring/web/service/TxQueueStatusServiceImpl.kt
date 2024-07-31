@@ -51,8 +51,8 @@ open class TxQueueStatusServiceImpl(
             queueSize = queueSize,
             privacyStatusApiDto = PrivacyStatusApiDto(
                 totalNewPolicyDataHashes = enqueuedTxJpaRepository.countPolicyDataHashes(),
-                notAvailableCount = enqueuedTxJpaRepository.countNotAvailablePolicyDataHashes()
-            )
+                notAvailableCount = enqueuedTxJpaRepository.countNotAvailablePolicyDataHashes(),
+            ),
         )
     }
 
@@ -82,7 +82,7 @@ open class TxQueueStatusServiceImpl(
                 override val txList: List<TxInfo> = listOf(transactionInfo)
                 override val signature: Signature = Signature("fake_signature_for_put".toByteArray())
                 override val txCount: Long = 1
-            }
+            },
         )
 
         return requireNotNull(enqueuedTxJpaRepository.findByIdOrNull(txId.asBase58String())) {
@@ -97,12 +97,12 @@ open class TxQueueStatusServiceImpl(
         val enqueuedTx = enqueuedTxJpaRepository.findByIdOrNull(txId)
             ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                "TX with ID = $txId not found in tx-observer queue"
+                "TX with ID = $txId not found in tx-observer queue",
             )
         return enqueuedTxJpaRepository.save(
             enqueuedTx.apply {
                 status = patchTxDto.status
-            }
+            },
         )
     }
 
@@ -114,7 +114,9 @@ open class TxQueueStatusServiceImpl(
     @Transactional
     override fun postponeErrors(): Int {
         return enqueuedTxJpaRepository.setStatusForTxWithStatusEqualsAndPartitionPriorityLowerThan(
-            EnqueuedTxStatus.POSTPONED, EnqueuedTxStatus.NEW, -errorPriorityOffset
+            EnqueuedTxStatus.POSTPONED,
+            EnqueuedTxStatus.NEW,
+            -errorPriorityOffset,
         )
     }
 }

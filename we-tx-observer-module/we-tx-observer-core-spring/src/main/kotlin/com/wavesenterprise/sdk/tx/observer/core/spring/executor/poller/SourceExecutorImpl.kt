@@ -15,7 +15,7 @@ class SourceExecutorImpl(
     override fun execute(blockHeightLowerBound: Long, blockHeightUpperBound: Long): Long {
         val (blocksAtHeightRange, moreBlocksExists) = blocksLoader.download(
             fromHeight = blockHeightLowerBound,
-            tryToHeight = blockHeightUpperBound
+            tryToHeight = blockHeightUpperBound,
         )
         val nextBlockHeight = when {
             blocksAtHeightRange.isEmpty() -> blockHeightLowerBound
@@ -29,7 +29,7 @@ class SourceExecutorImpl(
         for (blocksAtHeightDto in blocksAtHeightRange) {
             logger.debug(
                 "current block height = ${blocksAtHeightDto.height}; " +
-                    "tx count in block = ${blocksAtHeightDto.transactionCount} "
+                    "tx count in block = ${blocksAtHeightDto.transactionCount} ",
             )
 
             blockSubscribers.forEach {

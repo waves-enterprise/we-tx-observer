@@ -43,6 +43,7 @@ code_quality:
     - /^.*hotfix.*$/
 
 tests&build:
+  image: $CI_REGISTRY/integrator/devops/openjdk-17-slim-docker:d837de0d
   extends:
     - .test-gradle
   script:
@@ -55,17 +56,19 @@ tests&build:
   <<: *artifacts
 
 tests&build_for_maven_central:
+  image: $CI_REGISTRY/integrator/devops/openjdk-17-slim-docker:d837de0d
   extends:
     - .test-gradle
   script:
     - cat $we_maven_central_gpg | base64 --decode > "$(pwd)/we_maven_central.gpg"
     - ./gradlew --no-parallel -PsonaTypeMavenUser=$SONATYPE_USER -PsonaTypeMavenPassword=$SONATYPE_PASSWORD -Psigning.keyId=$SIGN_KEY_ID -Psigning.password=$SIGN_PASSWORD -Psigning.secretKeyRingFile="$(pwd)/we_maven_central.gpg" version check build publish
-    - ./gradlew -PsonaTypeMavenUser=$SONATYPE_USER -PsonaTypeMavenPassword=$SONATYPE_PASSWORD closeAndReleaseRepository
+    - ./gradlew -PsonaTypeMavenUser=$SONATYPE_USER -PsonaTypeMavenPassword=$SONATYPE_PASSWORD closeAndReleaseStagingRepository
   only:
     - master
   <<: *artifacts
 
 tests-mr:
+  image: $CI_REGISTRY/integrator/devops/openjdk-17-slim-docker:d837de0d
   extends:
     - .test-mr-gradle
   script:
@@ -78,4 +81,4 @@ tests-mr:
     - git merge origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
     - ./gradlew -PweMavenUser=$MAVEN_USER -PweMavenPassword=$MAVEN_PASSWORD check build
     - docker images --format "{{json . }}" --no-trunc > images.json
-  <<: *artifacts 
+  <<: *artifacts

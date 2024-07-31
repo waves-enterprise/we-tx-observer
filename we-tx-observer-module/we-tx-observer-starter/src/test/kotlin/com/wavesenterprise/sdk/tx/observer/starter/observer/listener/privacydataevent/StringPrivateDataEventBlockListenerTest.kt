@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.util.Base64Utils
+import java.util.Base64
 import java.util.Optional
 
 @ContextConfiguration(classes = [StringPrivateDataEventBlockListenerTest.ListenerConfig::class])
@@ -32,9 +32,9 @@ class StringPrivateDataEventBlockListenerTest : AbstractPrivateEventBlockListene
                 request = PolicyItemRequest(
                     policyId = samplePolicyDataHashTx.policyId,
                     dataHash = samplePolicyDataHashTx.dataHash,
-                )
+                ),
             )
-        } returns Optional.of(Data.fromByteArray(Base64Utils.encode(randomString.toByteArray())))
+        } returns Optional.of(Data.fromByteArray(Base64.getEncoder().encode(randomString.toByteArray())))
 
         enqueue(samplePolicyDataHashTx)
 
@@ -49,7 +49,7 @@ class StringPrivateDataEventBlockListenerTest : AbstractPrivateEventBlockListene
     interface StringPrivateDataEventListener {
         @TxListener
         fun handleEvent(
-            privateDataEvent: PrivateDataEvent<String>
+            privateDataEvent: PrivateDataEvent<String>,
         )
     }
 

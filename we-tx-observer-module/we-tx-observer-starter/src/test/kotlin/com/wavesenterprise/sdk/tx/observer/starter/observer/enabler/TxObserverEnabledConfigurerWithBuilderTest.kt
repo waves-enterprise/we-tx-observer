@@ -41,7 +41,7 @@ import org.springframework.test.context.ContextConfiguration
         TxObserverJpaAutoConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TxObserverEnabledConfigurerWithBuilderTest {

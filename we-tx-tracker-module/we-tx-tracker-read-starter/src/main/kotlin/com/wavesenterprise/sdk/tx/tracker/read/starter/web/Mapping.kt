@@ -7,11 +7,11 @@ import com.wavesenterprise.sdk.tx.tracker.domain.TxTrackInfo
 import com.wavesenterprise.sdk.tx.tracker.domain.TxTrackInfo_
 import com.wavesenterprise.sdk.tx.tracker.read.starter.web.dto.TxTrackInfoApiDto
 import com.wavesenterprise.sdk.tx.tracker.read.starter.web.dto.TxTrackInfoListRequest
+import jakarta.persistence.criteria.CriteriaBuilder
+import jakarta.persistence.criteria.CriteriaQuery
+import jakarta.persistence.criteria.Predicate
+import jakarta.persistence.criteria.Root
 import org.springframework.data.jpa.domain.Specification
-import javax.persistence.criteria.CriteriaBuilder
-import javax.persistence.criteria.CriteriaQuery
-import javax.persistence.criteria.Predicate
-import javax.persistence.criteria.Root
 
 fun TxTrackInfo.toApiDto() = TxTrackInfoApiDto(
     id = id,
@@ -36,7 +36,7 @@ fun TxTrackInfoListRequest.toSpecification(): Specification<TxTrackInfo> =
         contractId?.let {
             predicates += cb.equal(
                 root.join(TxTrackInfo_.smartContractInfo).get(SmartContractInfo_.id),
-                it
+                it,
             )
         }
         status?.let {

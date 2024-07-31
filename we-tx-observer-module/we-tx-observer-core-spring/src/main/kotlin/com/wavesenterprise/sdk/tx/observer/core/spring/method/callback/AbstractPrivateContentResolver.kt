@@ -10,8 +10,8 @@ import com.wavesenterprise.sdk.node.domain.privacy.PolicyItemRequest
 import com.wavesenterprise.sdk.node.domain.tx.CreatePolicyTx
 import com.wavesenterprise.sdk.node.domain.tx.PolicyDataHashTx
 import com.wavesenterprise.sdk.tx.observer.api.privacy.PrivateContentResolver
-import org.springframework.util.Base64Utils
 import java.lang.reflect.Type
+import java.util.Base64
 
 abstract class AbstractPrivateContentResolver(
     private val nodeBlockingServiceFactory: NodeBlockingServiceFactory,
@@ -35,8 +35,8 @@ abstract class AbstractPrivateContentResolver(
                 PolicyItemRequest(
                     policyId = tx.policyId,
                     dataHash = tx.dataHash,
-                )
-            ).orElseGet(null)
+                ),
+            ).orElseGet(null),
         ) {
             "No info about item with policyId=${tx.policyId} and dataHash=${tx.dataHash} in privacy"
         }
@@ -47,12 +47,12 @@ abstract class AbstractPrivateContentResolver(
                 PolicyItemRequest(
                     policyId = tx.policyId,
                     dataHash = tx.dataHash,
-                )
-            ).orElseGet(null)
+                ),
+            ).orElseGet(null),
         ) {
             "No data for item with policyId=${tx.policyId} and dataHash=${tx.dataHash} in privacy"
         }
-        return Base64Utils.decode(data.bytes)
+        return Base64.getDecoder().decode(data.bytes)
     }
 
     protected fun mapPayload(bytes: ByteArray, type: Type): Any {

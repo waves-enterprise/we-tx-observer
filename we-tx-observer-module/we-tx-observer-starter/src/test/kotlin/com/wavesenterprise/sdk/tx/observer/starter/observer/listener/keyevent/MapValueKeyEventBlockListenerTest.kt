@@ -34,15 +34,15 @@ class MapValueKeyEventBlockListenerTest : AbstractListenerTest() {
             mapOf(
                 "key_list" to listOf(
                     mapOf("key_int_1" to 1),
-                    mapOf("key_int_2" to 2)
-                )
+                    mapOf("key_int_2" to 2),
+                ),
             ),
-            mapKeyEventCaptor.captured.payload
+            mapKeyEventCaptor.captured.payload,
         )
         assertEquals(callContractTxDifferentValueTypes, mapKeyEventCaptor.captured.tx)
         assertEquals(
             (callContractTxDifferentValueTypes.tx as CallContractTx).contractId.asBase58String(),
-            mapKeyEventCaptor.captured.contractId
+            mapKeyEventCaptor.captured.contractId,
         )
         assertEquals("my_fav_object_map_", mapKeyEventCaptor.captured.key)
     }
@@ -51,7 +51,7 @@ class MapValueKeyEventBlockListenerTest : AbstractListenerTest() {
         @TxListener
         fun handleEvent(
             @KeyFilter(keyPrefix = "my_fav_object_map_")
-            keyEvent: KeyEvent<Map<String, List<Map<String, Int>>>>
+            keyEvent: KeyEvent<Map<String, List<Map<String, Int>>>>,
         )
     }
 

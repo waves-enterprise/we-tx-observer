@@ -26,8 +26,8 @@ import org.springframework.boot.test.context.SpringBootTest
     ],
     properties = [
         "tx-tracker.enabled = true",
-        "debug=true"
-    ]
+        "debug=true",
+    ],
 )
 internal class TxTrackerConfigTest {
 
@@ -52,7 +52,9 @@ internal class TxTrackerConfigTest {
         val listToBeSentToSubscriber = sampleTxList.map {
             if (it is ExecutableTx) {
                 TestDataFactory.executedContractTx(id = TxId.fromByteArray(Util.randomBytesFromUUID()), tx = it)
-            } else it
+            } else {
+                it
+            }
         }.toList()
         every {
             txTracker.existsInTracker(any())

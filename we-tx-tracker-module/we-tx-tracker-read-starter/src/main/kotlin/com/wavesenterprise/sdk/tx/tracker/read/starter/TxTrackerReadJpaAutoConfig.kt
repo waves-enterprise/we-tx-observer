@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration
     basePackageClasses = [
         TxTrackInfo::class,
         TxTrackerReadJpaRepository::class,
-    ]
+    ],
 )
 @AutoConfigureAfter(DataSourceAutoConfiguration::class)
 @AutoConfigureBefore(JpaRepositoriesAutoConfiguration::class, HibernateJpaAutoConfiguration::class)

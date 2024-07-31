@@ -25,6 +25,7 @@ import org.slf4j.info
 import org.slf4j.lazyLogger
 import org.slf4j.warn
 
+@Suppress("LongParameterList")
 class EventSubscriber(
     private val syncInfoService: SyncInfoService,
     private val weBlockchainEventServices: List<BlockchainEventsService>,
@@ -78,17 +79,18 @@ class EventSubscriber(
         while (true) {
             try {
                 val syncInfo = txExecutor.requiresNew {
-                    if (forkDetected)
+                    if (forkDetected) {
                         syncInfoService.syncInfoOnFork().also {
                             forkDetected = false
                         }
-                    else
+                    } else {
                         syncInfoService.syncInfo()
+                    }
                 }
                 with(syncInfo) {
                     syncState.change(
                         height = observerHeight.value,
-                        prevBlockSignature = prevBlockSignature?.asBase58String()
+                        prevBlockSignature = prevBlockSignature?.asBase58String(),
                     )
                 }
                 with(syncState) {
@@ -102,7 +104,7 @@ class EventSubscriber(
                     }.use { events ->
                         handleEvents(
                             events = events,
-                            strategy = eventHandlingStrategyFactory.create(height = height)
+                            strategy = eventHandlingStrategyFactory.create(height = height),
                         )
                     }
                 }
@@ -115,7 +117,7 @@ class EventSubscriber(
 
     private fun handleEvents(
         events: BlockchainEventsIterator,
-        strategy: EventHandlingStrategy
+        strategy: EventHandlingStrategy,
     ) {
         for (event in events) {
             log.debug { "Received event $event" }
@@ -135,12 +137,13 @@ class EventSubscriber(
                         }
                     }
                     val lastSyncedBlockInfo = syncedBlockInfos.lastOrNull()
-                    if (lastSyncedBlockInfo != null)
+                    if (lastSyncedBlockInfo != null) {
                         syncedTo(
                             height = lastSyncedBlockInfo.height.value + 1,
                             prevBlockSignature = lastSyncedBlockInfo.signature.asBase58String(),
-                            syncedBlocks = syncedBlockInfos
+                            syncedBlocks = syncedBlockInfos,
                         )
+                    }
                 }
             }
             is HandleRollback -> with(action) {
@@ -150,7 +153,7 @@ class EventSubscriber(
                     }
                     syncedTo(
                         height = weRollbackInfo.toHeight.value + 1,
-                        prevBlockSignature = weRollbackInfo.toBlockSignature.asBase58String()
+                        prevBlockSignature = weRollbackInfo.toBlockSignature.asBase58String(),
                     )
                 }
             }
@@ -160,17 +163,17 @@ class EventSubscriber(
     private fun syncedTo(
         height: Long,
         prevBlockSignature: String,
-        syncedBlocks: List<SyncedBlockInfo> = emptyList()
+        syncedBlocks: List<SyncedBlockInfo> = emptyList(),
     ) {
         syncInfoService.syncedTo(
             height = height,
             prevBlockSignature = prevBlockSignature,
             expectedCurrentHeight = syncState.height,
-            syncedBlocks = syncedBlocks
+            syncedBlocks = syncedBlocks,
         )
         syncState.change(
             height = height,
-            prevBlockSignature = prevBlockSignature
+            prevBlockSignature = prevBlockSignature,
         )
     }
 

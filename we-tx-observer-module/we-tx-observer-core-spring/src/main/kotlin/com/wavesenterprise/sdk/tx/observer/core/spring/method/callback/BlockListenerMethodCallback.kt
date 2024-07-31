@@ -28,8 +28,8 @@ class BlockListenerMethodCallback(
                     beanInstance = beanInstance,
                     privateContentResolverProvider = privateContentResolverProvider,
                     objectMapper = objectMapper,
-                ).buildHandlerForMethod(method)
-            )
+                ).buildHandlerForMethod(method),
+            ),
         )
     }
 

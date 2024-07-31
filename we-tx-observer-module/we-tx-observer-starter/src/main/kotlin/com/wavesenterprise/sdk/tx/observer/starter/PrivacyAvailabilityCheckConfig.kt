@@ -40,6 +40,7 @@ class PrivacyAvailabilityCheckConfig {
         privacyAvailabilityChecker = privacyAvailabilityChecker,
     )
 
+    @Suppress("LongParameterList")
     @Bean
     fun privacyAvailabilityChecker(
         enqueuedTxJpaRepository: EnqueuedTxJpaRepository,

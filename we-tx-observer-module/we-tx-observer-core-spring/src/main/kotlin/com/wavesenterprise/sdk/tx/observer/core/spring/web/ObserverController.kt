@@ -29,9 +29,9 @@ class ObserverController(
     }
 
     @GetMapping("/status")
-    fun status(pageable: Pageable): ObserverStatusApiDto =
+    fun status(): ObserverStatusApiDto =
         ObserverStatusApiDto(
-            totalRollbackCount = rollbackInfoService.count()
+            totalRollbackCount = rollbackInfoService.count(),
         )
 
     @GetMapping("/rollback")

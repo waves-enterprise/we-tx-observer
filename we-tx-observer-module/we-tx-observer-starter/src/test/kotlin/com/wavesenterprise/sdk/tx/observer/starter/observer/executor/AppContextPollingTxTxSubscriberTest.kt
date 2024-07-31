@@ -23,6 +23,8 @@ import com.wavesenterprise.sdk.tx.observer.starter.observer.config.NodeBlockingS
 import com.wavesenterprise.sdk.tx.observer.starter.observer.config.ObjectMapperConfig
 import com.wavesenterprise.sdk.tx.observer.starter.observer.util.ModelFactory.enqueuedTx
 import io.mockk.verify
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -37,8 +39,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TestTransaction
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -51,7 +51,7 @@ import javax.persistence.PersistenceContext
         TxObserverStarterConfig::class,
         FlywaySchemaConfiguration::class,
         TxObserverJpaConfig::class,
-    ]
+    ],
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 internal class AppContextPollingTxTxSubscriberTest {
@@ -76,7 +76,7 @@ internal class AppContextPollingTxTxSubscriberTest {
 
     private val samplePartition = TxQueuePartition(
         id = "partitionId",
-        priority = 0
+        priority = 0,
     )
 
     @BeforeEach
@@ -95,7 +95,7 @@ internal class AppContextPollingTxTxSubscriberTest {
                     tx = sampleCreateContractTx.copy(id = TxId.fromByteArray("$it-$it".toByteArray())).toDto(),
                     positionInBlock = it,
                     partition = samplePartition,
-                )
+                ),
             )
         }
 
@@ -124,8 +124,8 @@ internal class AppContextPollingTxTxSubscriberTest {
                     tx = sampleCreateContractTx.copy(id = TxId.fromByteArray("$it-$it".toByteArray())).toDto(),
                     positionInBlock = it,
                     partition = samplePartition,
-                    status = EnqueuedTxStatus.NEW
-                )
+                    status = EnqueuedTxStatus.NEW,
+                ),
             )
         }
         enqueuedTxJpaRepository.save(
@@ -133,8 +133,8 @@ internal class AppContextPollingTxTxSubscriberTest {
                 tx = sampleCreateContractTx.copy(id = TxId.fromByteArray("11-11".toByteArray())).toDto(),
                 positionInBlock = 11,
                 partition = samplePartition,
-                status = EnqueuedTxStatus.READ
-            )
+                status = EnqueuedTxStatus.READ,
+            ),
         )
 
         TestTransaction.flagForCommit()
@@ -160,25 +160,25 @@ internal class AppContextPollingTxTxSubscriberTest {
                 enqueuedTx(
                     tx = firstReadTx,
                     positionInBlock = i++,
-                    partition = samplePartition
+                    partition = samplePartition,
                 ),
                 enqueuedTx(
                     tx = secondReadTx,
                     positionInBlock = i++,
-                    partition = samplePartition
+                    partition = samplePartition,
                 ),
                 enqueuedTx(
                     tx = notAvailablePdhTx,
                     positionInBlock = i++,
                     partition = samplePartition,
-                    available = false
+                    available = false,
                 ),
                 enqueuedTx(
                     tx = notReadTxAfterNotAvailable,
                     positionInBlock = i,
-                    partition = samplePartition
-                )
-            )
+                    partition = samplePartition,
+                ),
+            ),
         )
 
         TestTransaction.flagForCommit()
@@ -216,8 +216,8 @@ internal class AppContextPollingTxTxSubscriberTest {
             enqueuedTx(
                 tx = notAvailableTx,
                 partition = samplePartition,
-                available = false
-            )
+                available = false,
+            ),
         )
 
         TestTransaction.flagForCommit()
